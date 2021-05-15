@@ -1,0 +1,43 @@
+[project]
+name = "w3rkstatt"
+version = "0.1.0"
+description = "Werkstatt Python General Tools"
+authors = [
+    "Orchestrator <orchestrator@bmc.com>"
+]
+
+readme = "README.md"
+python = "^3.6"
+homepage = "https://github.com/Orch3strator/w3rkstatt"
+repository = "https://github.com/Orch3strator/w3rkstatt"
+documentation = "https://github.com/Orch3strator/w3rkstatt"
+
+keywords = ["bmc", "w3rkstatt"]
+
+classifiers=[
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: OS Independent",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: Unix",
+    "Intended Audience :: System Administrators",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Monitoring",
+    "Topic :: System :: Logging",
+    "Topic :: Utilities",
+]
+
+# Requirements
+[dependencies]
+
+[scripts]
+
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+
+build-backend = "setuptools.build_meta"

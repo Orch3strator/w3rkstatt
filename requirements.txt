@@ -1,0 +1,11 @@
+###### Requirements without Version Specifiers ######`
+pyCryptodome
+wheel
+requests 
+urllib3
+json2html 
+jsonpath-ng 
+jsonpath_rw_ext
+
+###### Requirements with Version Specifiers ######`
+
