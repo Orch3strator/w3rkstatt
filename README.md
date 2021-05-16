@@ -62,9 +62,6 @@ python -m pip install json2html jsonpath-ng jsonpath_rw_ext
 
 ## Documentation of Modules
 
-All URIs are relative to */*
-
-## Test 
 **SMTP**:
 Module | Method | Description
 ------------ | ------------- | -------------
