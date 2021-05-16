@@ -37,10 +37,10 @@ python -m pip install json2html jsonpath-ng jsonpath_rw_ext
 | :-------------            | :---:         | :---:         | 
 | Werkstatt Tools           | ⬜            | ✅    | 
 | BMC Control-M             | 🔶            | 🚧    | 
-| BMC Helix ITSM            | 🔶            | 🚧    | 
+| BMC Helix ITSM            | 🔶            | ✅    | 
 | BMC TrueSight             | 🔶            | 🚧    | 
 | ServiceNOW                | 🔶            | 🚧    | 
-| E-Mail                    | 🔶            | 🚧    | 
+| E-Mail                    | 🔶            | ✅    | 
 
 
 
