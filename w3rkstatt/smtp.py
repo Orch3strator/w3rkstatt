@@ -41,6 +41,8 @@ import w3rkstatt
 import smtplib, ssl
 from email.message import EmailMessage
 from email.headerregistry import Address
+from email.header import Header
+from email.utils import formataddr
 from email.utils import make_msgid
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -61,7 +63,7 @@ smtp_host      = w3rkstatt.getJsonValue(path="$.MAIL.host",data=jCfgData)
 smtp_port      = w3rkstatt.getJsonValue(path="$.MAIL.port",data=jCfgData)
 smtp_ssl       = w3rkstatt.getJsonValue(path="$.MAIL.ssl",data=jCfgData)
 smtp_user      = w3rkstatt.getJsonValue(path="$.MAIL.user",data=jCfgData)
-smtp_dsiplay_name = w3rkstatt.getJsonValue(path="$.MAIL.display",data=jCfgData)
+smtp_user_name = w3rkstatt.getJsonValue(path="$.MAIL.display",data=jCfgData)
 smtp_pwd       = w3rkstatt.getJsonValue(path="$.MAIL.pwd",data=jCfgData)
 
 # E-Mail Template
@@ -85,11 +87,12 @@ parser   = argparse.ArgumentParser(prefix_chars=':')
 sUuid    = w3rkstatt.sUuid
 
 
-def prepareEmail(eml_from, eml_to, eml_subbject, eml_message,eml_data="",eml_logo_message="",eml_template=""):
+def prepareEmail(eml_from, eml_from_name, eml_to, eml_subbject, eml_message, eml_data="",eml_logo_message="",eml_template=""):
     '''
     Prepare e-mail content in HTML format 
 
     :param str eml_from: e-mail sendder
+    :param str eml_from_name: e-mail sendder display name
     :param str eml_to: e-mail recipient
     :param str eml_message: e-mail message
     :param str eml_subbject: e-mail subject line
@@ -102,7 +105,6 @@ def prepareEmail(eml_from, eml_to, eml_subbject, eml_message,eml_data="",eml_log
     :raises TypeError: N/A    
     ''' 
 
-    
     email_from = eml_from
     email_rcpt = eml_to
     email_subject = eml_subbject
@@ -111,7 +113,7 @@ def prepareEmail(eml_from, eml_to, eml_subbject, eml_message,eml_data="",eml_log
 
     # transform message data
     if email_data_text is not None:
-        email_data_text = str(email_data)
+        email_data_text = str(email_data_text)
         email_data = w3rkstatt.jsonTranslateValuesAdv(data=email_data_text)    
         email_data_status = w3rkstatt.jsonValidator(data=email_data)
         if email_data_status:
@@ -134,6 +136,17 @@ def prepareEmail(eml_from, eml_to, eml_subbject, eml_message,eml_data="",eml_log
         email_template = w3rkstatt.readHtmlFile(file=template_file)
     else:
         email_template = eml_template
+
+    if eml_from_name is not None:
+        email_from = formataddr((str(Header(eml_from_name, 'utf-8')), email_from))
+
+    if (eml_from_name is None) and (email_from is None):
+        email_from = formataddr((str(Header(smtp_user_name, 'utf-8')), smtp_user))
+
+    if (eml_from_name is None) and (email_from is smtp_user):
+        email_from = formataddr((str(Header(smtp_user_name, 'utf-8')), smtp_user))
+
+    # smtp_user_name
 
     # replace HTML content
     email_html_00 = email_template
@@ -177,6 +190,9 @@ def sendEmailSmtpSSL(eml_from, eml_to, eml_message):
     email_from = eml_from
     email_rcpt = eml_to
     email_message = eml_message
+
+    if (email_from is None):
+        email_from = smtp_user
 
     # SMTP with SSL/TLS enabled and authentication
 
@@ -255,6 +271,7 @@ if __name__ == "__main__":
     # Script Arguments
     xArgp = argparse.ArgumentParser(prog='sendmail.py', usage='%(prog)s [options]', description='BMC Software - E-Mail Integration Helper Tools', epilog='Enjoy the program.')
     xArgp.add_argument('--sender','-x', type=str, action='store', help='E-Mail Sender', nargs='?',required=False)
+    xArgp.add_argument('--name','-n', type=str, action='store', help='E-Mail Sender Display Name', nargs='?',required=False)
     xArgp.add_argument('--recipient','-r', type=str, action='store', help='E-Mail Recipient ', nargs='?',required=True)
     xArgp.add_argument('--subject','-s', type=str, action='store', help='E-Mail Subject Line ', nargs='?',required=True)
     xArgp.add_argument('--message','-m', type=str, action='store', help='E-Mail Message', nargs='?',required=False)
@@ -263,8 +280,8 @@ if __name__ == "__main__":
     xArgps = xArgp.parse_args()
 
 
-
-    email_from = smtp_user
+    email_from = None
+    email_from_name = None
     email_rcpt = ""
     email_subject = ""
     email_message = ""
@@ -290,6 +307,9 @@ if __name__ == "__main__":
     if xArgps.data is not None:
         email_data = xArgps.data 
 
+    if xArgps.name is not None:
+        email_from_name = xArgps.name 
+
 
     if _localDebugAdv: 
         logger.debug('E-Mail From: "%s"', email_from)      
@@ -300,7 +320,7 @@ if __name__ == "__main__":
         logger.debug('SMTP SSL: %s', smtp_ssl ) 
         logger.debug('SMTP User Name: %s', smtp_user ) 
  
-    email_html_message = prepareEmail(eml_from=email_from, eml_to=email_rcpt, eml_subbject=email_subject, eml_message=email_message,eml_data=email_data,eml_template=email_template)
+    email_html_message = prepareEmail(eml_from=email_from, eml_from_name=email_from_name, eml_to=email_rcpt, eml_subbject=email_subject, eml_message=email_message, eml_data=email_data,eml_template=email_template)
 
     if smtp_ssl:
         sendEmailSmtpSSL(eml_from=email_from, eml_to=email_rcpt, eml_message=email_html_message)
