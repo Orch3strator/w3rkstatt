@@ -73,3 +73,20 @@ Module | Method | Description
 **Templates**:
 - Copy your HTML templates to ~/.w3rkstatt/templates
 - Use the internal keywords for string replacement
+
+## Visual Studio Code
+**Launch Config**:
+
+{
+	"name": "Python: Send E-mail",
+	"type": "python",
+	"request": "launch",
+	"program": "${file}",
+	"args": [
+		"--recipient", "user@domain.local",
+		"--subject", "Python Test",
+		"--message", "Hello World Test",
+		"--data", ""
+	],
+	"console": "integratedTerminal"
+}
