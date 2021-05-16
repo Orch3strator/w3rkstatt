@@ -84,6 +84,159 @@ epoch    = w3rkstatt.time.time()
 parser   = argparse.ArgumentParser(prefix_chars=':')
 sUuid    = w3rkstatt.sUuid
 
+
+def prepareEmail(eml_from, eml_to, eml_subbject, eml_message,eml_data="",eml_logo_message="",eml_template=""):
+    '''
+    Prepare e-mail content in HTML format 
+
+    :param str eml_from: e-mail sendder
+    :param str eml_to: e-mail recipient
+    :param str eml_message: e-mail message
+    :param str eml_subbject: e-mail subject line
+    :param json eml_data: e-mail data, will be converted to HTML table
+    :param str eml_logo_message: message above custom logog
+    :param str eml_tempalte: e-mail html template name
+    :return: data
+    :rtype: dict
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    ''' 
+
+    
+    email_from = eml_from
+    email_rcpt = eml_to
+    email_subject = eml_subbject
+    email_message = eml_message
+    email_data_text = eml_data
+
+    # transform message data
+    if email_data_text is not None:
+        email_data_text = str(email_data)
+        email_data = w3rkstatt.jsonTranslateValuesAdv(data=email_data_text)    
+        email_data_status = w3rkstatt.jsonValidator(data=email_data)
+        if email_data_status:
+            email_data_tbl  = json2html.convert(json = email_data )
+        else:
+            email_data_tbl  = email_data
+    else:
+        email_data_tbl  = ""
+
+    # ToDO: format message
+    email_msg_tbl = email_message
+
+    # HTML message above logo
+    if eml_logo_message is None:
+        email_logo_txt = eml_logo_message
+    else:
+        email_logo_txt = "This message was sent by Orchestrator."
+
+    if eml_template is None:
+        email_template = w3rkstatt.readHtmlFile(file=template_file)
+    else:
+        email_template = eml_template
+
+    # replace HTML content
+    email_html_00 = email_template
+    email_html_01 = email_html_00.replace("$$EMAIL_LOGO_TEXT$$",email_logo_txt)
+    email_html_02 = email_html_01.replace("$$EMAIL_MESSAGE$$",email_msg_tbl)
+    email_html_03 = email_html_02.replace("$$EMAIL_DATA$$",email_data_tbl)
+    email_html_04 = email_html_03.replace("$$EMAIL_UUID$$",sUuid)
+    email_new_html = email_html_04
+    
+    # For Text E-Mail
+    email_format_text = """ Simple E-Mail Body"""
+
+    email_message = MIMEMultipart("alternative")
+    email_message["Subject"] = email_subject
+    email_message["From"] = email_from
+    email_message["To"] = email_rcpt
+
+    email_part_text = MIMEText(email_format_text, "plain")
+    email_part_html = MIMEText(email_new_html, "html")
+
+    # Add HTML/plain-text parts to MIMEMultipart message
+    # The email client will try to render the last part first
+    email_message.attach(email_part_text)
+    email_message.attach(email_part_html)
+
+    return email_message
+
+def sendEmailSmtpSSL(eml_from, eml_to, eml_message):
+    '''
+    Send e-mail content in HTML format with SSL
+
+    :param str eml_from: e-mail sendder
+    :param str eml_to: e-mail recipient
+    :param str eml_message: e-mail message
+    :return: 
+    :rtype: 
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''
+
+    email_from = eml_from
+    email_rcpt = eml_to
+    email_message = eml_message
+
+    # SMTP with SSL/TLS enabled and authentication
+
+    logger.debug('SMTP Connection SSL: %s', smtp_ssl ) 
+    smtp_pwd_decrypted = w3rkstatt.decryptPwd(data=smtp_pwd,sKeyFileName=cryptoFile)
+    try:
+        smtp_connection = smtplib.SMTP_SSL(smtp_host, smtp_port)
+        smtp_connection.login(smtp_user, smtp_pwd_decrypted)
+        server_ehlo = smtp_connection.ehlo()
+        server_rsp_id  = server_ehlo[0]
+        server_rsp_msg = str(server_ehlo[1])
+        logger.debug('SMTP Server EHLO: %s', server_rsp_msg ) 
+
+        smtp_connection.sendmail(
+            email_from, email_rcpt, email_message.as_string()
+        )
+
+    except Exception as e:
+        logger.error('SMTP Error: %s', e ) 
+    finally:            
+        smtp_connection.quit() 
+
+def sendEmailSmtp(eml_from, eml_to, eml_message):
+    '''
+    Send e-mail content in HTML format without SSL
+
+    :param str eml_from: e-mail sendder
+    :param str eml_to: e-mail recipient
+    :param str eml_message: e-mail message
+    :return: 
+    :rtype: 
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''
+
+    email_from = eml_from
+    email_rcpt = eml_to
+    email_message = eml_message
+
+    # SMTP with SSL/TLS enabled and authentication
+
+    logger.debug('SMTP Connection SSL: %s', smtp_ssl ) 
+    smtp_pwd = w3rkstatt.decryptPwd(data=smtp_pwd,sKeyFileName=cryptoFile)
+    try:
+        smtp_connection = smtplib.SMTP(smtp_host, smtp_port)
+        server_ehlo = smtp_connection.ehlo()
+        server_rsp_id  = server_ehlo[0]
+        server_rsp_msg = str(server_ehlo[1])
+        logger.debug('SMTP Server EHLO: %s', server_rsp_msg ) 
+
+        smtp_connection.sendmail(
+            email_from, email_rcpt, email_message.as_string()
+        )
+
+    except Exception as e:
+        logger.error('SMTP Error: %s', e ) 
+    finally:            
+        smtp_connection.quit() 
+
+
 if __name__ == "__main__":
     w3rkstatt.logging.basicConfig(filename=logFile, filemode='a', level=w3rkstatt.logging.DEBUG , format='%(asctime)s - %(levelname)s # %(message)s', datefmt='%d-%b-%y %H:%M:%S')
     
@@ -115,11 +268,8 @@ if __name__ == "__main__":
     email_rcpt = ""
     email_subject = ""
     email_message = ""
-    email_template = ""
-    email_data = ""
-
-    
-
+    email_template = None
+    email_data = None
 
     # Extract arguments
     if xArgps.sender is not None:
@@ -150,86 +300,12 @@ if __name__ == "__main__":
         logger.debug('SMTP SSL: %s', smtp_ssl ) 
         logger.debug('SMTP User Name: %s', smtp_user ) 
  
+    email_html_message = prepareEmail(eml_from=email_from, eml_to=email_rcpt, eml_subbject=email_subject, eml_message=email_message,eml_data=email_data,eml_template=email_template)
 
-    # Check if data is JSON format
-    email_data_text = str(email_data)
-    email_data = w3rkstatt.jsonTranslateValuesAdv(data=email_data_text)    
-    email_data_status = w3rkstatt.jsonValidator(data=email_data)
-    if email_data_status:
-        email_msg_tbl  = json2html.convert(json = email_data )
-    else:
-        email_msg_tbl  = email_message
-
-
-    # Fro HTML E-Mail
-    email_logo_txt = "This message was sent by Orchestrator."
-    email_template = w3rkstatt.readHtmlFile(file=template_file)
-
-    # replace HTML content
-    email_html_00 = email_template
-    email_html_01 = email_html_00.replace("$$EMAIL_LOGO_TEXT$$",email_logo_txt)
-    email_html_02 = email_html_01.replace("$$EMAIL_MESSAGE$$",email_msg_tbl)
-    email_html_03 = email_html_02.replace("$$EMAIL_UUID$$",sUuid)
-    email_new_html = email_html_03
-
-
-    # For Text E-Mail
-    email_format_text = """ Simple E-Mail Body"""
-
-    email_message = MIMEMultipart("alternative")
-    email_message["Subject"] = email_subject
-    email_message["From"] = email_from
-    email_message["To"] = email_rcpt
-
-    email_part_text = MIMEText(email_format_text, "plain")
-    email_part_html = MIMEText(email_new_html, "html")
-
-    # Add HTML/plain-text parts to MIMEMultipart message
-    # The email client will try to render the last part first
-    email_message.attach(email_part_text)
-    email_message.attach(email_part_html)
-
-
-
-    # SMTP with SSL/TLS enabled and authentication
     if smtp_ssl:
-        logger.debug('SMTP Connection SSL: %s', smtp_ssl ) 
-        smtp_pwd = w3rkstatt.decryptPwd(data=smtp_pwd,sKeyFileName=cryptoFile)
-        try:
-            smtp_connection = smtplib.SMTP_SSL(smtp_host, smtp_port)
-            smtp_connection.login(smtp_user, smtp_pwd)
-            server_ehlo = smtp_connection.ehlo()
-            server_rsp_id  = server_ehlo[0]
-            server_rsp_msg = str(server_ehlo[1])
-            logger.debug('SMTP Server EHLO: %s', server_rsp_msg ) 
-
-            smtp_connection.sendmail(
-                email_from, email_rcpt, email_message.as_string()
-            )
-
-        except Exception as e:
-            logger.error('SMTP Error: %s', e ) 
-        finally:            
-            smtp_connection.quit()
-
-    # SMTP with SSL/TLS disbaled, no authentication
-    if not smtp_ssl:
-        logger.debug('SMTP Connection SSL: %s', smtp_ssl ) 
-        try:
-            smtp_connection = smtplib.SMTP(smtp_host, smtp_port)
-            server_ehlo = smtp_connection.ehlo()
-            server_rsp_id  = server_ehlo[0]
-            server_rsp_msg = str(server_ehlo[1])
-            logger.debug('SMTP Server EHLO: %s', server_rsp_msg ) 
-
-            smtp_connection.sendmail(
-                email_from, email_rcpt, email_message.as_string()
-            )
-
-        except Exception as e:
-            logger.error('SMTP Error: %s', e ) 
-        finally:            
-            smtp_connection.quit()
+        sendEmailSmtpSSL(eml_from=email_from, eml_to=email_rcpt, eml_message=email_html_message)
+    else:
+        sendEmailSmtp(eml_from=email_from, eml_to=email_rcpt, eml_message=email_html_message)
 
     w3rkstatt.logging.shutdown()
 
