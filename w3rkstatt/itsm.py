@@ -49,8 +49,12 @@ import jsonpath_rw_ext as jp
 # jCfgFile     = os.path.join( w3rkstatt.getCurrentFolder(), "bmcs_core.json")
 # jCfgData     = w3rkstatt.getFileJson(jCfgFile)
 
-jCfgFile     = w3rkstatt.jCfgFile
-jCfgData     = w3rkstatt.jCfgData
+# Get configuration from bmcs_core.json
+jCfgData   = w3rkstatt.getProjectConfig()
+cfgFolder  = w3rkstatt.getJsonValue(path="$.DEFAULT.config_folder",data=jCfgData)
+logFolder  = w3rkstatt.getJsonValue(path="$.DEFAULT.log_folder",data=jCfgData)
+tmpFolder  = w3rkstatt.getJsonValue(path="$.DEFAULT.template_folder",data=jCfgData)
+cryptoFile = w3rkstatt.getJsonValue(path="$.DEFAULT.crypto_file",data=jCfgData)
 
 itsm_host    = w3rkstatt.getJsonValue(path="$.ITSM.host",data=jCfgData)
 itsm_port    = w3rkstatt.getJsonValue(path="$.ITSM.port",data=jCfgData)
@@ -87,7 +91,7 @@ itsm_url     = itsm_protocol + itsm_host + ":" + itsm_port + "/api/" + itsm_api_
 itsm_jwt     = itsm_protocol + itsm_host + ":" + itsm_port + "/api/jwt"
 
 # ITSM Field mappings
-jCfgMapFile  = os.path.join( w3rkstatt.pFolder,"configs", itsm_map_file)
+jCfgMapFile  = os.path.join(cfgFolder, itsm_map_file)
 jCfgMapData  = w3rkstatt.getFileJson(jCfgMapFile)
 
 # Assign module defaults
@@ -96,7 +100,7 @@ _timeFormat  = '%Y-%m-%dT%H:%M:%S'
 _localDebug  = False
 _localDbgAdv = False
 logger   = logging.getLogger(__name__) 
-logFile  = w3rkstatt.logFile
+logFile  = w3rkstatt.getJsonValue(path="$.DEFAULT.log_file",data=jCfgData)
 loglevel = w3rkstatt.getJsonValue(path="$.DEFAULT.loglevel",data=jCfgData)
 epoch    = time.time()
 hostName = w3rkstatt.getHostName()
@@ -108,13 +112,13 @@ if itsm_ssl_ver == False:
 
 def itsmAuthenticate():
     url = itsm_jwt + '/login'
-    itsm_pwd = w3rkstatt.decrypt(itsm_pwd,"")
+    itsm_pwd_decrypted  = w3rkstatt.decryptPwd(data=itsm_pwd,sKeyFileName=cryptoFile)
     response = ""
 
     # Create a dictionary for the request body
     request_body = {}
     request_body['username'] = itsm_user
-    request_body['password'] = itsm_pwd
+    request_body['password'] = itsm_pwd_decrypted
 
     # Create a dictionary for the loging of the request body
     log_request_body = {}
