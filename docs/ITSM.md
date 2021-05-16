@@ -146,3 +146,17 @@ Update the JSON content, utlize project default settings from [hostname].json
 	}
 }
 ```
+
+## ServiceNOW HTTP Body
+Update the JSON content, utlize project default settings from [hostname].json
+
+**Change Management**:
+```bash
+TBB
+```
+
+
+**Incident Management**:
+```bash
+TBB
+```
