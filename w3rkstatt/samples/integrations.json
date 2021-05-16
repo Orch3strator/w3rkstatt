@@ -4,8 +4,13 @@
         "loglevel": "debug",
         "env_name": "lab",
         "insecureRequestWarning": "true",
-        "log_folder": "D:\\Data\\Logs\\",
-        "data_folder": "D:\\Data\\CTM\\Events",
+        "crypto_file": "",
+        "config_file": "",
+        "config_folder": "",
+        "log_file": "",
+        "log_folder": "",
+        "data_folder": "",
+        "template_folder": "",
         "demo": true
     },
     "MAIL": {
@@ -14,7 +19,9 @@
         "ssl": true,
         "ssl_verification": true,
         "user": "",
-        "pwd": ""
+        "pwd": "",
+        "display": "",
+        "template": "email.html"
     },
     "TSIM": {
         "host": "",

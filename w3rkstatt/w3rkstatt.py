@@ -33,7 +33,7 @@ Date (YMD)    Name                  What
 
 
 import logging
-import os, json, socket, platform, errno, shutil, uuid, re
+import os, json, socket, platform, shutil, errno, uuid, re
 import time, datetime
 import pandas as pd
 import urllib
@@ -41,8 +41,6 @@ import json
 from jsonpath_ng import jsonpath
 from jsonpath_ng.ext import parse
 from os.path import expanduser
-
-
 
 from io import StringIO
 from pathlib import Path
@@ -973,38 +971,27 @@ def copyFile(srcFile,dstFile,override=False):
         except OSError as err:
             logger.error('Script: File Copy Error: %s', err)
 
-  
-# Check Custom Config File
-def checkCustomConfigFile(folder):
-    jCfgFName =  sHostname + ".json"
-    cfgFolder = os.path.join( folder,"configs")
+def copyFolder(srcFolker,dstFolder,override=False):
+    '''
+    Copy folder from src to dst
 
-    # Create Config folder if not exists
-    if not getFolderStatus(cfgFolder):
-        createFolder(cfgFolder) 
-
-    jCfgFile  = os.path.join( cfgFolder,jCfgFName)    
-    jCfgFileStatus = getFileStatus(jCfgFile)
-
-    if not jCfgFileStatus:
-        jCfgSampleFName = "integrations.json"
-        jCfgSampleFile  = os.path.join( getCurrentFolder(),"samples",jCfgSampleFName)
-        copyFile(srcFile=jCfgSampleFile,dstFile=jCfgFile)
-    return jCfgFile
-
-# Check Custom Crypto File
-def checkCustomCryptoFile(folder):
-    jCfgFName =  sHostname + ".bin"
-    jCfgFile  = os.path.join( folder,"configs",jCfgFName)
-    jCfgFileStatus = getFileStatus(jCfgFile)
-
-    if not jCfgFileStatus:
-        keySecret = os.urandom(16)
-        with open(jCfgFile, "wb") as keyfile:
-            keyfile.write(keySecret)
-    
-    return jCfgFile  
-
+    :param str src: a given source folder name, fully qualified
+    :param str dst: a given target folder name, fully qualified
+    :return: status
+    :rtype: str
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    ''' 
+    src = str(srcFolker)
+    dst = str(dstFolder)
+    sFolderStatusSource = getFolderStatus(src)    
+    createFolder(path=dst)
+    if sFolderStatusSource:
+        files = os.listdir(src)
+        for file in files:
+            srcname = os.path.join(src, file)
+            dstname = os.path.join(dst, file)
+            copyFile(srcname,dstname,override=override)
 
 # Project Core Folder
 def getProjectFolder():
@@ -1018,36 +1005,46 @@ def getProjectFolder():
     :raises TypeError: N/A    
     '''  
 
-    if platform.system() == "Windows":
-        projectFolder = getCurrentFolder()
-    else:
-        home = expanduser("~")
-        projectFolder = concatPath(home,".w3rkstatt")
-            # Create Config folder if not exists
-        if not getFolderStatus(projectFolder):
-            createFolder(projectFolder) 
+    projectFolder = getCurrentFolder()
 
     return projectFolder
 
+# User Home Folder
+def getHomeFolder():
+    '''
+    Get user home folder
+
+    :param: 
+    :return: path
+    :rtype: str
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''  
+
+    if platform.system() == "Windows":
+        userHomeFolder = getCurrentFolder()
+    else:
+        userHomeFolder = expanduser("~")
+    return userHomeFolder
 
 # Security functions
-def secureCredentials(folder,file,data):
+def secureCredentials(data):
     '''
     Encrypt clear text passwords in config json file and update file
 
-    :param str folder: project folder
-    :param str file: configuration file name
-    :param json data: configuration data in json
+    :param json data: configuration 
     :return: data
     :rtype: json
     :raises ValueError: N/A
     :raises TypeError: N/A    
     '''  
-    # Crypto Support
-    sCryptoKeyFileName = checkCustomCryptoFile(folder=folder)
-    sCfgData = encryptPwds(file=file,data=data,sKeyFileName=sCryptoKeyFileName)
-    return sCfgData
+    jCfgData   = data
+    cfgFile    = getJsonValue(path="$.DEFAULT.config_file",data=jCfgData)
+    cryptoFile = getJsonValue(path="$.DEFAULT.crypto_file",data=jCfgData)
 
+    # Crypto Support
+    sCfgData = encryptPwds(file=cfgFile,data=jCfgData,sKeyFileName=cryptoFile)
+    return sCfgData
 
 def encryptPwds(file,data,sKeyFileName=""):
     '''
@@ -1065,7 +1062,8 @@ def encryptPwds(file,data,sKeyFileName=""):
     sCfgData  = data
     sCfgFile  = file
     for pItem in pItemList:
-        logger.info('Crypto Process Credentials for: %s', pItem)
+        if _localDebug: 
+            logger.info('Crypto Process Credentials for: %s', pItem)
         securePwd = ""
         jSecPwd = ""
 
@@ -1121,7 +1119,6 @@ def encryptPwds(file,data,sKeyFileName=""):
     writeJsonFile(file=sCfgFile,content=sCfgData)
     return sCfgData
 
-
 def decryptPwds(data):
     '''
     Derypt passwords in config json file print 
@@ -1149,52 +1146,203 @@ def decryptPwds(data):
             logger.debug('Core: unSecure Pwd: "%s" ', unSecPwd)
             logger.debug('Core: Secure Pwd: "%s"\n', sPwd)
 
+def createProjectFolders(data):
+    '''
+    Create Project Folder Structure 
+
+    :param:
+    :return: project config
+    :rtype: dict
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''  
+    jLocalCfgData = data
+    sHomeFolder = getHomeFolder()
+    coreProjectFolder          = os.path.join( sHomeFolder,".w3rkstatt")
+    coreProjecConfigFolder     = os.path.join( coreProjectFolder,"configs")
+    coreProjectLogFolder       = os.path.join( coreProjectFolder,"logs")
+    coreProjectDataFolder      = os.path.join( coreProjectFolder,"data")
+    coreProjectTemplatesFolder = os.path.join( coreProjectFolder,"templates")
+
+    lFolders = coreProjecConfigFolder, coreProjectLogFolder, coreProjectDataFolder, coreProjectTemplatesFolder
+    # Create Folders
+    for sFolder in lFolders:
+        if not getFolderStatus(sFolder):
+            createFolder(sFolder) 
+
+    jLocalCfgData["DEFAULT"]["config_folder"] = coreProjecConfigFolder
+    jLocalCfgData["DEFAULT"]["log_folder"] = coreProjectLogFolder
+    jLocalCfgData["DEFAULT"]["data_folder"] = coreProjectDataFolder
+    jLocalCfgData["DEFAULT"]["template_folder"] = coreProjectTemplatesFolder
+
+    return jLocalCfgData
+
+def createProjecConfig(data):
+    '''
+    Copy Project Files 
+
+    :param:
+    :return: project config
+    :rtype: dict
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''  
+    jLocalCfgData = data
+
+    cfgFolder = getJsonValue(path="$.DEFAULT.config_folder",data=jLocalCfgData)
+    logFolder = getJsonValue(path="$.DEFAULT.log_folder",data=jLocalCfgData)
+    datFolder = getJsonValue(path="$.DEFAULT.data_folder",data=jLocalCfgData)
+    tmpFolder = getJsonValue(path="$.DEFAULT.template_folder",data=jLocalCfgData)
+
+    # Custom Crypto File
+    sCryptoFileName =  sHostname + ".bin"
+    sProjectryptoFileName  = os.path.join(cfgFolder,sCryptoFileName)
+    sCfgFilesCryptoFileStatus = getFileStatus(sProjectryptoFileName)
+    jLocalCfgData["DEFAULT"]["crypto_file"] = sProjectryptoFileName
+    
+    if not sCfgFilesCryptoFileStatus:
+        keySecret = os.urandom(16)
+        with open(sProjectryptoFileName, "wb") as keyfile:
+            keyfile.write(keySecret)    
+
+    # Custom Config File
+    sConfigFileName =  sHostname + ".json"
+    sProjectConfigFileName    = os.path.join(cfgFolder,sConfigFileName)
+    sCfgFilesConfigFileStatus = getFileStatus(sProjectConfigFileName)
+    jLocalCfgData["DEFAULT"]["config_file"] = sProjectConfigFileName
+
+    # Custom Log File
+    sLogFile =  sHostname + ".log"
+    sLogFileName = os.path.join(logFolder,sLogFile)
+    jLocalCfgData["DEFAULT"]["log_file"] = sLogFileName
+
+    # Create custom config file
+    if not sCfgFilesConfigFileStatus:
+        writeJsonFile(file=sProjectConfigFileName,content=jLocalCfgData)
+    else:
+        jLocalCfgData = getFileJson(file=sProjectConfigFileName)
+
+    # Copy all configs
+    sLocalFolder = getCurrentFolder()
+    sLocalCfgFolder = os.path.join(sLocalFolder,"configs")  
+    copyFolder(srcFolker=sLocalCfgFolder,dstFolder=cfgFolder,override=False)
+
+    # Copy all templates
+    sLocalFolder = getCurrentFolder()
+    sLocalCfgFolder = os.path.join(sLocalFolder,"templates")  
+    copyFolder(srcFolker=sLocalCfgFolder,dstFolder=tmpFolder,override=False)
+
+    return jLocalCfgData
+
+def getProjectDefaultConfigFileName():
+    '''
+    Get Project Default Config File Name
+
+    :param:
+    :return: project config file name
+    :rtype: str
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''  
+
+    sLocalFolder = getCurrentFolder()
+    sLocalCfgFileNAme = os.path.join(sLocalFolder,"samples","integrations.json")  
+    return sLocalCfgFileNAme
+
+def getProjectDefaultConfig(file):
+    '''
+    Get Project Default Config File Content
+
+    :param file str:
+    :return: default config
+    :rtype: json
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''  
+
+    jCfgFile = file
+    sLocalCfgFileContent = getFileJson(jCfgFile)
+    return sLocalCfgFileContent
+
+def getProjectConfig():
+    '''
+    Get Project Config 
+
+    :param:
+    :return: project config
+    :rtype: dict
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''  
+
+    sHomeFolder = getHomeFolder()
+    coreProjectFolder          = os.path.join( sHomeFolder,".w3rkstatt")
+    coreProjecConfigFolder     = os.path.join( coreProjectFolder,"configs")
+
+    # Get Custom Config File & Content
+    sConfigFileName =  sHostname + ".json"
+    sProjectConfigFileName    = os.path.join(coreProjecConfigFolder,sConfigFileName)
+    sCfgFilesConfigFileStatus = getFileStatus(sProjectConfigFileName)
+
+    if sCfgFilesConfigFileStatus:
+        sCfgFileContent = getFileJson(file=sProjectConfigFileName)
+    else:
+        sCfgFileContent = {}
+
+    return sCfgFileContent
+
+
+
+
 
 # Create a custom logger
 pFolder   = getProjectFolder()
+hFolder   = getHomeFolder()
 sHostname = str(getHostName()).lower()
 sPlatform = platform.system()
 sUuid     = str(uuid.uuid4())
+logger    = logging.getLogger(__name__)
 
-jCfgFile  = checkCustomConfigFile(folder=pFolder)
-jCfgData  = getFileJson(jCfgFile)
-logFolder = getJsonValue(path="$.DEFAULT.log_folder",data=jCfgData)
-loglevel  = getJsonValue(path="$.DEFAULT.loglevel",data=jCfgData)
-datFolder = getJsonValue(path="$.DEFAULT.data_folder",data=jCfgData)
-
-# Central logging facility
-if not getFolderStatus(logFolder):
-    projectFolder = getProjectFolder()
-    logFolder     = os.path.join(projectFolder,"logs")
-    createFolder(logFolder)
-    jCfgData["DEFAULT"]["log_folder"]=logFolder
-
-# Central data folder
-if not getFolderStatus(datFolder):
-    projectFolder = getProjectFolder()
-    datFolder     = os.path.join(projectFolder,"data")
-    createFolder(datFolder)
-    jCfgData["DEFAULT"]["data_folder"]=datFolder
-
-logger  = logging.getLogger(__name__)
-logFile = os.path.join(logFolder,"integrations.log")
 
 if __name__ == "__main__":
+    # Setup log file
+    logFile = os.path.join(pFolder,"w3rkstatt.log")
     logging.basicConfig(filename=logFile, filemode='a', level=logging.DEBUG, format='%(asctime)s - %(levelname)s # %(message)s', datefmt='%d-%b-%y %H:%M:%S')
     logger.info('Werkstatt Python Core Script "Start"')
     logger.info('Version: %s ', _modVer)
     logger.info('System Platform: "%s" ', sPlatform)   
     logger.info('System Name: "%s" ', sHostname)  
-    logger.info('System Config JSON File: "%s" ', jCfgFile)  
     logger.info('Project Folder: "%s" ', pFolder) 
+
+
+    # Get Default Config
+    jCfgFile  = getProjectDefaultConfigFileName()
+    jCfgData  = getProjectDefaultConfig(file=jCfgFile)
+
+    # Setup Project
+    jUpdatedCfgfolders = createProjectFolders(data=jCfgData)
+    jUpdatedCfgData = createProjecConfig(data=jUpdatedCfgfolders)
+    
+    loglevel   = getJsonValue(path="$.DEFAULT.loglevel",data=jUpdatedCfgData)
+    cfgFolder  = getJsonValue(path="$.DEFAULT.config_folder",data=jUpdatedCfgData)
+    logFolder  = getJsonValue(path="$.DEFAULT.log_folder",data=jUpdatedCfgData)
+    datFolder  = getJsonValue(path="$.DEFAULT.data_folder",data=jUpdatedCfgData)
+    tmpFolder  = getJsonValue(path="$.DEFAULT.template_folder",data=jUpdatedCfgData)
+    cfgFile    = getJsonValue(path="$.DEFAULT.config_file",data=jUpdatedCfgData)
+    cryptoFile = getJsonValue(path="$.DEFAULT.crypto_file",data=jUpdatedCfgData)
+
+
+    logger.info('System Config JSON File: "%s" ', jCfgFile)  
     logger.info('Log Folder: "%s" ', logFolder) 
     logger.info('Data Folder: "%s" ', datFolder) 
-    logger.info('Config File: "%s" ', jCfgFile) 
-    logger.info('Crypto Key File: "%s" ', getCryptoKeyFile()) 
+    logger.info('Template Folder: "%s" ', tmpFolder) 
+    logger.info('Config File: "%s" ', cfgFile) 
+    logger.info('Crypto Key File: "%s" ', cryptoFile) 
+    # Central config folder
 
-    sCfgData = secureCredentials(folder=pFolder,file=jCfgFile,data=jCfgData)
+    jSecureCfgData = secureCredentials(data=jUpdatedCfgData)
     if _SecureDebug:
-        decryptPwds(data=sCfgData)
+        decryptPwds(data=jSecureCfgData)
 
     logger.info('Werkstatt Python Core Script "End"')
     logging.shutdown()

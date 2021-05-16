@@ -37,11 +37,7 @@ See also: https://realpython.com/python-send-email/
 import sys, getopt, platform, argparse
 import os, json
 import subprocess
-
-# fix to bbe able to add global module
-
 import w3rkstatt
-
 import smtplib, ssl
 from email.message import EmailMessage
 from email.headerregistry import Address
@@ -53,12 +49,11 @@ from json2html import *
 
 
 # Get configuration from bmcs_core.json
-
-jCfgFile    = w3rkstatt.jCfgFile
-jCfgData    = w3rkstatt.jCfgData
-log_folder  = w3rkstatt.logFolder
-data_folder = log_folder
-sUuid       = w3rkstatt.sUuid
+jCfgData   = w3rkstatt.getProjectConfig()
+cfgFolder  = w3rkstatt.getJsonValue(path="$.DEFAULT.config_folder",data=jCfgData)
+logFolder  = w3rkstatt.getJsonValue(path="$.DEFAULT.log_folder",data=jCfgData)
+tmpFolder  = w3rkstatt.getJsonValue(path="$.DEFAULT.template_folder",data=jCfgData)
+cryptoFile = w3rkstatt.getJsonValue(path="$.DEFAULT.crypto_file",data=jCfgData)
 
 
 # SMTP Server Settigns
@@ -68,8 +63,11 @@ smtp_ssl       = w3rkstatt.getJsonValue(path="$.MAIL.ssl",data=jCfgData)
 smtp_user      = w3rkstatt.getJsonValue(path="$.MAIL.user",data=jCfgData)
 smtp_dsiplay_name = w3rkstatt.getJsonValue(path="$.MAIL.display",data=jCfgData)
 smtp_pwd       = w3rkstatt.getJsonValue(path="$.MAIL.pwd",data=jCfgData)
+
+# E-Mail Template
 template_name  = w3rkstatt.getJsonValue(path="$.MAIL.template",data=jCfgData)
-template_file  = os.path.join(w3rkstatt.pFolder,"templates",template_name) 
+template_file  = w3rkstatt.concatPath(path=tmpFolder,folder=template_name)
+
 
 
 # Assign module defaults
@@ -80,8 +78,8 @@ _modVer = "0.01"
 _timeFormat = '%d %b %Y %H:%M:%S,%f'
 
 logger   = w3rkstatt.logging.getLogger(__name__) 
-logFile  = w3rkstatt.logFile
-loglevel = w3rkstatt.loglevel
+logFile  = w3rkstatt.getJsonValue(path="$.DEFAULT.log_file",data=jCfgData)
+loglevel = w3rkstatt.getJsonValue(path="$.DEFAULT.loglevel",data=jCfgData)
 epoch    = w3rkstatt.time.time()
 parser   = argparse.ArgumentParser(prefix_chars=':')
 sUuid    = w3rkstatt.sUuid
@@ -196,7 +194,7 @@ if __name__ == "__main__":
     # SMTP with SSL/TLS enabled and authentication
     if smtp_ssl:
         logger.debug('SMTP Connection SSL: %s', smtp_ssl ) 
-        smtp_pwd = w3rkstatt.decryptPwd(data=smtp_pwd)
+        smtp_pwd = w3rkstatt.decryptPwd(data=smtp_pwd,sKeyFileName=cryptoFile)
         try:
             smtp_connection = smtplib.SMTP_SSL(smtp_host, smtp_port)
             smtp_connection.login(smtp_user, smtp_pwd)
