@@ -51,13 +51,15 @@ E-Mail Python module for Werkstatt projects
 **Function**:
 Module | Method | Description
 ------------ | ------------- | ------------- 
-*smtp* | [**prepareEmail**](docs/SMTP.md)      | Prepare HTML content, bbased on template
-*smtp* | [**sendEmailSmtpSSL**](docs/SMTP.md)  | Send E-mail with SSL enabled
+*smtp* | [**prepareEmail**]     | Prepare HTML content, bbased on template
+*smtp* | [**sendEmailSmtpSSL**] | Send E-mail with SSL enabled
 
 
+**Internals**:
 | Key Word                  | Description           
-| :-------------            | :---:         
-| EMAIL_LOGO_TEXT           | Text above custom logo
-| EMAIL_MESSAGE             | Email Messsage
-| EMAIL_DATA                | Data in JSON format, will be converted to HTML Table
-| EMAIL_UUID                | UUID to track activity in [hostname].log file
+| :-------------            | -------------        
+| *EMAIL_LOGO_TEXT*         | Text above custom logo
+| *EMAIL_MESSAGE*           | Email Messsage
+| *EMAIL_DATA*              | Data in JSON format, will be converted to HTML Table
+| *EMAIL_UUID*              | UUID to track activity in [hostname].log file
+| *Template*                | Tempaltes in Folder: ~/.w3rkstatt/templates
