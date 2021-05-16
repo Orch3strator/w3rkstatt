@@ -235,7 +235,7 @@ def sendEmailSmtp(eml_from, eml_to, eml_message):
     # SMTP with SSL/TLS enabled and authentication
 
     logger.debug('SMTP Connection SSL: %s', smtp_ssl ) 
-    smtp_pwd = w3rkstatt.decryptPwd(data=smtp_pwd,sKeyFileName=cryptoFile)
+    smtp_pwd_decrypted = w3rkstatt.decryptPwd(data=smtp_pwd,sKeyFileName=cryptoFile)
     try:
         smtp_connection = smtplib.SMTP(smtp_host, smtp_port)
         server_ehlo = smtp_connection.ehlo()
