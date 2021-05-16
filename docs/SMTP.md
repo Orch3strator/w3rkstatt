@@ -62,4 +62,12 @@ Module | Method | Description
 | *EMAIL_MESSAGE*           | Email Messsage
 | *EMAIL_DATA*              | Data in JSON format, will be converted to HTML Table
 | *EMAIL_UUID*              | UUID to track activity in [hostname].log file
-| *Template*                | Tempaltes in Folder: ~/.w3rkstatt/templates
+
+| Parameters                | Description           
+| :-------------            | -------------   
+| *Template*                | Templates in Folder: ~/.w3rkstatt/templates
+
+
+**Templates**:
+- Copy your HTML templates to ~/.w3rkstatt/templates
+- Use the internal keywords for string replacement
