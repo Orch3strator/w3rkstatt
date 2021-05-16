@@ -66,6 +66,7 @@ All URIs are relative to */*
 
 ## Test 
 
-Class | Method | HTTP request | Description
+Module | Method | Description
 ------------ | ------------- | ------------- | -------------
-*Security* | [**get_archive_job_log**](docs/ArchiveApi.md#get_archive_job_log) | **GET** /archive/{jobId}/log | Get job log
+*smtp* | [**prepareEmail**] (docs/SMTP.md     | Prepare HTML content, based on template
+*smtp* | [**sendEmailSmtpSSL**] (docs/SMTP.md | Send E-mail with SSL enabled
