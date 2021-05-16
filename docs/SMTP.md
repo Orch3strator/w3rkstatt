@@ -43,7 +43,9 @@ E-Mail Python module for Werkstatt projects
 - Get an application password
 - Add application password to [hostname].json
 
-**Info**: 
+
+## Module Information
+**Mail Server Configuration**: 
 - Folder: ~/.w3rkstatt/configs
 - File: [hostname].json - custome config file
 
