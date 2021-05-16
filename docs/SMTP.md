@@ -1,15 +1,18 @@
 # Werkstatt Tools
-Security Python module for Werkstatt projects
+E-Mail Python module for Werkstatt projects
 
 ## Core functions for integrating with solutions using Python
-- Encryption of credential 
+- Send E-mail in HTML format
 
 ## Core Libraries and purpose
-- **w3rkstatt** encrypt the cleartext passwords
+- **w3rkstatt** basic project functions
+- **smtp** basic SMTP e-mail functions
 
 ## Dependencies
 - [X] **Basic Libraries**
 - [X] **Cryptodome**
+- [X] **SMTPLib**
+
 
 ## Solutions leveraging the base tools
 | Solution                  | API           | Python        |
@@ -24,9 +27,7 @@ Security Python module for Werkstatt projects
 
 **ToDO**: 
 - [x] Initial Core Development
-- [ ] update custom json config file
-- [ ] execute w3rkstatt.py
-- [ ] secure [hostname].bin on OS level
+
 
 **Configuration**: 
 - After the inital run of w3rkstatt.py a local crypto key file is being generated in the /configs folder with [hostname].bin
@@ -36,9 +37,27 @@ Security Python module for Werkstatt projects
 - All password in cleartext will be removed
 - Update file level access for [hostname].bin to only authorized OS accounts. If the file [hostname].bin is being deleted, the encrypted passwords cannot be recovered 
 - The account running the python scripts needs to have access to [hostname].json and [hostname].bin
+- Update SMTP Server settings
+
+**Google**:
+- Get an application password
+- Add application password to [hostname].json
 
 **Info**: 
-Cryptodome is beind utilized for safekeeping of the credentials
 - Folder: ~/.w3rkstatt/configs
 - File: [hostname].json - custome config file
-- File: [hostname].bin - crypto key for security functions
+
+
+**Function**:
+Module | Method | Description
+------------ | ------------- | ------------- 
+*smtp* | [**prepareEmail**](docs/SMTP.md)      | Prepare HTML content, bbased on template
+*smtp* | [**sendEmailSmtpSSL**](docs/SMTP.md)  | Send E-mail with SSL enabled
+
+
+| Key Word                  | Description           
+| :-------------            | :---:         
+| EMAIL_LOGO_TEXT           | Text above custom logo
+| EMAIL_MESSAGE             | Email Messsage
+| EMAIL_DATA                | Data in JSON format, will be converted to HTML Table
+| EMAIL_UUID                | UUID to track activity in [hostname].log file
