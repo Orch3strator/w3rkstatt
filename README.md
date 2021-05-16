@@ -65,8 +65,26 @@ python -m pip install json2html jsonpath-ng jsonpath_rw_ext
 All URIs are relative to */*
 
 ## Test 
-
+**SMTP**:
 Module | Method | Description
 ------------ | ------------- | -------------
 *smtp* | [**prepareEmail**](docs/SMTP.md)     | Prepare HTML content, based on template
 *smtp* | [**sendEmailSmtpSSL**](docs/SMTP.md) | Send E-mail with SSL enabled
+
+**Helix ITSM Application**:
+Module | Method | Description
+------------ | ------------- | -------------
+*itsm* | [**createChange**](docs/ITSM.md) | Create ITSM Change Request
+*itsm* | [**getChange**](docs/ITSM.md) | Get ITSM Change Request status
+*itsm* | [**extractChangeState**](docs/ITSM.md) | Translate ITSM Change Request details
+*itsm* | [**createIncident**](docs/ITSM.md) | Create ITSM Incident
+*itsm* | [**getIncident**](docs/ITSM.md) | Get ITSM Incident details
+*itsm* | [**getIncidentStatus**](docs/ITSM.md) | Get ITSM Incident status
+
+**Helix ITSM Core**:
+Module | Method | Description
+------------ | ------------- | -------------
+*itsm* | [**itsmAuthenticate**](docs/ITSM.md) | Login to Helix ITSM
+*itsm* | [**itsmLogout**](docs/ITSM.md) | Logout of Helix ITSM
+*itsm* | [**itsmFormGet**](docs/ITSM.md) | HTTP Get from Helix ITSM Form
+*itsm* | [**itsmFormPost**](docs/ITSM.md) | HTTP Post to Helix ITSM Form
