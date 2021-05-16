@@ -76,7 +76,7 @@ Module | Method | Description
 
 ## Visual Studio Code
 **Launch Config**:
-
+```bash
 {
 	"name": "Python: Send E-mail",
 	"type": "python",
@@ -90,3 +90,4 @@ Module | Method | Description
 	],
 	"console": "integratedTerminal"
 }
+```
