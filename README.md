@@ -68,5 +68,5 @@ All URIs are relative to */*
 
 Module | Method | Description
 ------------ | ------------- | -------------
-*smtp* | [**prepareEmail**] (docs/SMTP.md     | Prepare HTML content, based on template
-*smtp* | [**sendEmailSmtpSSL**] (docs/SMTP.md | Send E-mail with SSL enabled
+*smtp* | [**prepareEmail**](docs/SMTP.md     | Prepare HTML content, based on template
+*smtp* | [**sendEmailSmtpSSL**](docs/SMTP.md | Send E-mail with SSL enabled
