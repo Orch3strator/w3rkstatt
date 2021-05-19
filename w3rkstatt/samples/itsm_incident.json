@@ -1,0 +1,25 @@
+{
+    "values": {
+        "z1D_Action": "CREATE",
+        "First_Name": "",
+        "Last_Name": "",
+        "Description": "",
+        "Impact": "",
+        "Urgency": "",
+        "Status": "",
+        "Reported Source": "",
+        "Service_Type": "",
+        "ServiceCI": "",
+        "Assigned Group": "",
+        "Assigned Support Company": "",
+        "Assigned Support Organization": "",
+        "Categorization Tier 1": "",
+        "Categorization Tier 2": "",
+        "Categorization Tier 3": "",
+        "Product Categorization Tier 1": "",
+        "Product Categorization Tier 2": "",
+        "Product Categorization Tier 3": "",
+        "Product Name": "",
+        "TemplateID": ""
+    }
+}
