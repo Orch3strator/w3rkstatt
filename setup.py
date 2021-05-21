@@ -16,8 +16,9 @@ from setuptools import find_packages
 from setuptools import setup
 
 NAME = "w3rkstatt"
-VERSION = "0.1.0"
+VERSION = "20.21.05.00"
 DESCRIPTION_FILE ="SETUP.md"
+
 
 def read(filename):
     filename = os.path.join(os.path.dirname(__file__), filename)
@@ -67,7 +68,7 @@ setup(
         "Topic :: Utilities",
     ],
     package_dir={"": "src"},
-    packages=find_packages(exclude=('tests',),where='./w3rkstatt'),
+    packages=find_packages(exclude=('tests',),where='./src'),
     python_requires=">=3.6",
     platforms='Posix; MacOS X; Windows',
 )

@@ -40,7 +40,9 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from src import w3rkstatt as w3rkstatt
 from src import core_ctm as ctm
 from src import core_itsm as itsm
+from src import core_tsim as tsim
 from src import core_smtp as smtp
+
 
 
 
@@ -58,6 +60,8 @@ loglevel = w3rkstatt.getJsonValue(path="$.DEFAULT.loglevel",data=jCfgData)
 epoch    = time.time()
 hostName = w3rkstatt.getHostName()
 hostIP   = w3rkstatt.getHostIP(hostName)
+hostFqdn = w3rkstatt.getHostFqdn(hostName)
+domain   = w3rkstatt.getHostDomain(hostFqdn)
 
 # Assign module defaults
 _modVer = "20.21.05.00"
@@ -161,7 +165,47 @@ def testChangeCreate(token):
     result = itsm.createChange(token,data)
     return result 
 
+# TrueSight Operations MAnager Integration
+def tsimDefineEvent():
+    # Create a dictionary to hold the attributes for the event.
+    # Be sure to use valid slot names as the keys.
+    event_data = {}
+    event_data['severity'] = 'WARNING'
+    event_data['CLASS'] = 'EVENT'
+    event_data['msg'] = 'This event was created using the TSOM REST API'
+    event_data['cdmclass'] = 'BMC_ComputerSystem'
+    event_data['componentalias'] = 'BMC_ComputerSystem:' + hostFqdn + "'"
+    event_data['instancename'] = hostFqdn
+    event_data['itsm_product_name'] = 'Control-M'
+    event_data['mc_host'] = 'ctm-em.trybmc.com'
+    event_data['mc_host_address'] = hostIP
+    event_data['mc_location'] = domain
+    event_data['mc_object'] = 'Job'
+    event_data['mc_object_class'] = 'Control-M'
+    event_data['mc_origin'] = 'Enterprise Manager'
+    event_data['mc_origin_class'] = 'Control-M'
+    event_data['mc_tool_id'] = 'epoch=' + str(epoch)
+    event_data['mc_tool'] = 'Python Script'
+    event_data['mc_tool_rule'] = 'uat.py'
+    event_data['mc_tool_uri'] = 'git.io'
 
+    # The TSOM create event call expects a list of events,
+    # even for just a single event.
+    event_list = []
+
+    # Define the dictionary that wraps each event.
+    event_wrapper = {}
+    event_wrapper['eventSourceHostName'] = hostFqdn
+    event_wrapper['attributes'] = event_data
+
+    # Add the event to the list
+    event_list.append(event_wrapper)
+
+    # Convert event data to the JSON format required by the API.
+    json_data = json.dumps(event_list)
+    logger.debug('TSIM: event json payload: %s', json_data)
+
+    return json_data
 
 # Demo Control-M
 def demoCTM():
@@ -252,7 +296,20 @@ def demoITSM():
 
     itsm.itsmLogout(token=authToken)
 
+# Demo TrueSight Operations Manager Integration
+# routingIdKeyParam
+def demoTSIM():
+  tsim.tsimAuthenticate()
+  # data = "Helix Expert"
+  # ci_json = tsimComputeCI(data=data)
+  # tsim_data = tsimCreateCI(data=ci_json)
 
+  tsim_data     = tsimDefineEvent()
+  tsim_event_id = tsim.tsimCreateEvent(event_data=tsim_data)
+  logger.debug('TSIM: event id: %s', tsim_event_id)
+  return tsim_event_id
+
+# Demo E-Mail vi SMTP in HTML format
 def demoSMTP():
 
     email_from = None
@@ -289,9 +346,13 @@ if __name__ == "__main__":
     if w3rkstatt.getJsonValue(path="$.CTM.demo",data=jCfgData):
         demoCTM()
 
-    # Demo Helix ITSMIntegration
+    # Demo Helix ITSM Integration
     if w3rkstatt.getJsonValue(path="$.ITSM.demo",data=jCfgData):
         demoITSM()
+
+    # Demo TrueSight Operations Manager Integration
+    if w3rkstatt.getJsonValue(path="$.TSIM.demo",data=jCfgData):
+        demoTSIM()
 
     # Demo SMTP Integration
     if w3rkstatt.getJsonValue(path="$.MAIL.demo",data=jCfgData):
