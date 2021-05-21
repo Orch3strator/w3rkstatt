@@ -40,6 +40,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from src import w3rkstatt as w3rkstatt
 from src import core_ctm as ctm
 from src import core_itsm as itsm
+from src import core_smtp as smtp
 
 
 
@@ -49,6 +50,7 @@ cfgFolder  = w3rkstatt.getJsonValue(path="$.DEFAULT.config_folder",data=jCfgData
 logFolder  = w3rkstatt.getJsonValue(path="$.DEFAULT.log_folder",data=jCfgData)
 tmpFolder  = w3rkstatt.getJsonValue(path="$.DEFAULT.template_folder",data=jCfgData)
 cryptoFile = w3rkstatt.getJsonValue(path="$.DEFAULT.crypto_file",data=jCfgData)
+smtp_ssl   = w3rkstatt.getJsonValue(path="$.MAIL.ssl",data=jCfgData)
 
 logger   = w3rkstatt.logging.getLogger(__name__) 
 logFile  = w3rkstatt.getJsonValue(path="$.DEFAULT.log_file",data=jCfgData)
@@ -58,7 +60,7 @@ hostName = w3rkstatt.getHostName()
 hostIP   = w3rkstatt.getHostIP(hostName)
 
 # Assign module defaults
-_modVer = "0.1.0"
+_modVer = "20.21.05.00"
 _timeFormat = '%d %b %Y %H:%M:%S,%f'
 _localDebug = False
 _localDebugAdv = False
@@ -251,6 +253,25 @@ def demoITSM():
     itsm.itsmLogout(token=authToken)
 
 
+def demoSMTP():
+
+    email_from = None
+    email_from_name = None
+    email_rcpt = w3rkstatt.getJsonValue(path="$.MAIL.user",data=jCfgData)
+    email_subject = "W3rkstatt Community Python Scripts"
+    email_message = "User Acceptance Testing in progress"
+    email_data = None
+    email_template  = None
+
+    # Create E-Mail Body
+    email_html_message = smtp.prepareEmail(eml_from=email_from, eml_from_name=email_from_name, eml_to=email_rcpt, eml_subbject=email_subject, eml_message=email_message, eml_data=email_data,eml_template=email_template)
+
+    # Send E-mail
+    if smtp_ssl:
+        smtp.sendEmailSmtpSSL(eml_from=email_from, eml_to=email_rcpt, eml_message=email_html_message)
+    else:
+        smtp.sendEmailSmtp(eml_from=email_from, eml_to=email_rcpt, eml_message=email_html_message)
+
 if __name__ == "__main__":
     
     logging.basicConfig(filename=logFile, filemode='w', level=logging.DEBUG , format='%(asctime)s - %(levelname)s # %(message)s', datefmt='%d-%b-%y %H:%M:%S')
@@ -264,13 +285,17 @@ if __name__ == "__main__":
     logger.info('CTM User: %s', ctm.ctm_user)
     logger.info('Epoch: %s', epoch)
 
-    # Demo Integration
+    # Demo Control-M Integration
     if w3rkstatt.getJsonValue(path="$.CTM.demo",data=jCfgData):
         demoCTM()
 
-    # Demo Integration
+    # Demo Helix ITSMIntegration
     if w3rkstatt.getJsonValue(path="$.ITSM.demo",data=jCfgData):
         demoITSM()
+
+    # Demo SMTP Integration
+    if w3rkstatt.getJsonValue(path="$.MAIL.demo",data=jCfgData):
+        demoSMTP()
 
     logger.info('W3rkstatt: User Acceptance Test')
     logging.shutdown()

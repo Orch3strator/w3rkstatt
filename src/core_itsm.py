@@ -95,7 +95,7 @@ jCfgMapFile  = os.path.join(cfgFolder, itsm_map_file)
 jCfgMapData  = w3rkstatt.getFileJson(jCfgMapFile)
 
 # Assign module defaults
-_modVer = "1.0"
+_modVer = "20.21.05.00"
 _timeFormat  = '%Y-%m-%dT%H:%M:%S'
 _localDebug  = False
 _localDbgAdv = False

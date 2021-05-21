@@ -77,7 +77,7 @@ template_file  = w3rkstatt.concatPath(path=tmpFolder,folder=template_name)
 _localDebug = False
 _localDebugAdv = True
 _localInfo = True
-_modVer = "0.01"
+_modVer = "20.21.05.00"
 _timeFormat = '%d %b %Y %H:%M:%S,%f'
 
 logger   = w3rkstatt.logging.getLogger(__name__) 

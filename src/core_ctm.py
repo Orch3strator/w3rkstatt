@@ -79,7 +79,7 @@ ctm_server = w3rkstatt.getHostFromFQDN(ctm_host)
 ctm_agent  = ctm_server
 
 # Assign module defaults
-_modVer = "3.0"
+_modVer = "20.21.05.00"
 _timeFormat = '%d %b %Y %H:%M:%S,%f'
 _localDebug = False
 _localDebugAdv = False
