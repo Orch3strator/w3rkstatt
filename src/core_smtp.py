@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#Filename: smtp.py
+#Filename: core_smtp.py
 
 """
 (c) 2020 Volker Scheithauer
@@ -32,12 +32,9 @@ See also: https://realpython.com/python-send-email/
 """
 
 
-
-
 import sys, getopt, platform, argparse
 import os, json
 import subprocess
-import w3rkstatt
 import smtplib, ssl
 from email.message import EmailMessage
 from email.headerregistry import Address
@@ -46,8 +43,12 @@ from email.utils import formataddr
 from email.utils import make_msgid
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-
 from json2html import *
+
+# fix import issues for modules
+sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+from src import w3rkstatt as w3rkstatt
+
 
 
 # Get configuration from bmcs_core.json

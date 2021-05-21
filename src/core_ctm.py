@@ -1,5 +1,5 @@
 #!/usr/bin/python
-#Filename: ctm.py
+#Filename: core_ctm.py
 
 """
 (c) 2020 Volker Scheithauer
@@ -29,15 +29,16 @@ Date (YMD)    Name                  What
 
 """
 
-import w3rkstatt
+
 import os, json, logging
 import re
 import time, datetime
 import sys, getopt
 import requests, urllib3
 from collections import OrderedDict 
-
-
+import urllib3
+from urllib3 import disable_warnings
+from urllib3.exceptions import NewConnectionError, MaxRetryError, InsecureRequestWarning
 
 # Control-M Python support
 # python3 -m pip install git+https://github.com/dcompane/controlm_py.git
@@ -46,9 +47,9 @@ import controlm_py as ctm
 from controlm_py.rest import ApiException
 # from controlm_py.models.run_report_info import RunReportInfo
 
-import urllib3
-from urllib3 import disable_warnings
-from urllib3.exceptions import NewConnectionError, MaxRetryError, InsecureRequestWarning
+# fix import issues for modules
+sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+from src import w3rkstatt as w3rkstatt
 
 # To Handle CTM JSON with '
 # https://pypi.org/project/demjson/
@@ -85,7 +86,7 @@ _localDebugAdv = False
 _localQA = False
 
 logger   = logging.getLogger(__name__) 
-logFile  = w3rkstatt.logFile
+logFile  = w3rkstatt.getJsonValue(path="$.DEFAULT.log_file",data=jCfgData)
 loglevel = w3rkstatt.getJsonValue(path="$.DEFAULT.loglevel",data=jCfgData)
 epoch    = time.time()
 hostName = w3rkstatt.getHostName()
@@ -1333,43 +1334,7 @@ def extractFolderJobDetails(data):
     pass
 
 
-def demoCTM():
-    ctm_demo_agt    = w3rkstatt.getJsonValue(path="$.CTM.ctmag.demo",data=jCfgData)
-    ctm_demo_jobs   = w3rkstatt.getJsonValue(path="$.CTM.jobs.demo",data=jCfgData)
-    ctm_demo_alerts = w3rkstatt.getJsonValue(path="$.CTM.alerts.demo",data=jCfgData)
 
-    if ctm_demo_alerts:
-        ctm_alert_ids = w3rkstatt.getJsonValue(path="$.CTM.alerts.ids",data=jCfgData)
-        ctm_alert_msg = w3rkstatt.getJsonValue(path="$.CTM.alerts.comment",data=jCfgData)
-        ctm_alert_urgency = w3rkstatt.getJsonValue(path="$.CTM.alerts.urgency",data=jCfgData)
-        ctm_alert_status = w3rkstatt.getJsonValue(path="$.CTM.alerts.status",data=jCfgData)
-
-        # Alert Comment
-        # ctmAlertsCore   = updateCtmAlertCore(ctmApiClient=ctmApiClient,ctmAlertIDs=ctm_alert_ids, ctmAlertComment=ctm_alert_msg, ctmAlertUrgency=ctm_alert_urgency)
-        # logger.info('CTM Alert Core: %s', ctmAlertsCore)
-        
-        # Alert Status
-        ctmAlertsStatus = updateCtmAlertStatus(ctmApiClient=ctmApiClient,ctmAlertIDs=ctm_alert_ids, ctmAlertStatus=ctm_alert_status)
-        logger.info('CTM Alert Status: %s', ctmAlertsStatus)
-        # ctmAlerts = updateCtmAlert(ctmApiClient=ctmApiClient,ctmAlertIDs=ctm_alert_ids, ctmAlertComment=ctm_alert_msg)
-        # ctmAlerts = w3rkstatt.jsonTranslateValues(ctmAlerts)
-        
-
-
-        # logger.info('CTM Alert: %s', ctmAlerts)
-
-    if ctm_demo_agt:
-        ctmAgents = getCtmAgents(ctmApiClient=ctmApiClient,ctmServer=ctm_server)
-        logger.info('CTM Agents: %s', ctmAgents)
-    
-    if ctm_demo_jobs:
-        ctm_job_oderid  = w3rkstatt.getJsonValue(path="$.CTM.jobs.oderid",data=jCfgData)
-        ctm_job_srv     = w3rkstatt.getJsonValue(path="$.CTM.jobs.server",data=jCfgData)
-        ctm_job_runid   = ctm_job_srv + ":" + ctm_job_oderid
-
-        ctmJobInfo      = getCtmJobInfo(ctmApiClient=ctmApiClient,ctmServer=ctm_job_srv,ctmOrderID=ctm_job_oderid)
-        # ctmJobStatusAdv = getCtmJobStatusAdv(ctmApiClient=ctmApiClient,ctmServer=ctm_job_srv,ctmOrderID=ctm_job_oderid)
-        logger.info('CTM Job: %s', ctmJobInfo)
 
 
 if __name__ == "__main__":
@@ -1384,16 +1349,6 @@ if __name__ == "__main__":
     logger.info('CTM Url: %s', ctm_url)
     logger.info('CTM User: %s', ctm_user)
     logger.info('Epoch: %s', epoch)
-
-    # Test CTM API login
-    ctmApiObj    = getCtmConnection()
-    ctmApiClient = ctmApiObj.api_client
-
-    # Demo Integration
-    if w3rkstatt.getJsonValue(path="$.DEFAULT.demo",data=jCfgData):
-        demoCTM()
-
-    delCtmConnection(ctmApiObj)
     logger.info('CTM: Workload Management End')
     logging.shutdown()
     print (f"Version: {_modVer}")

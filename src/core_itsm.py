@@ -1,5 +1,5 @@
 #!/usr/bin/python
-#Filename: itsm.py
+#Filename: core_itsm.py
 
 """
 (c) 2020 Volker Scheithauer
@@ -29,21 +29,21 @@ Date (YMD)    Name                  What
 
 """
 
-# import bmcs_core as bmcs
-import w3rkstatt
+
 import os, json, logging
 import time, datetime
 import sys, getopt
 import requests, urllib3
-import subprocess
 import urllib3
 from urllib3 import disable_warnings
 from urllib3.exceptions import NewConnectionError, MaxRetryError, InsecureRequestWarning
-
-import json
 from jsonpath_ng import jsonpath
 from jsonpath_ng.ext import parse
 import jsonpath_rw_ext as jp
+
+# fix import issues for modules
+sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+from src import w3rkstatt as w3rkstatt
 
 # Get configuration from bmcs_core.json
 # jCfgFile     = os.path.join( w3rkstatt.getCurrentFolder(), "bmcs_core.json")
@@ -559,41 +559,6 @@ def testChangeCreate(token):
     result = createChange(token,data)
     return result 
 
-def demoITSM():
-    itsm_demo_crq   = w3rkstatt.getJsonValue(path="$.ITSM.change.demo",data=jCfgData)
-    itsm_demo_inc   = w3rkstatt.getJsonValue(path="$.ITSM.incident.demo",data=jCfgData)
-    
-    authToken    = itsmAuthenticate()
-
-    # Demo ITSM Change Integration
-    if itsm_demo_crq:
-        changeID     = testChangeCreate(token=authToken)
-        logger.info('ITSM: Change   ID: "%s"', changeID) 
-
-        crqInfo      = getChange(token=authToken,change=changeID)
-        logger.info('ITSM: Change Info: %s', crqInfo) 
-
-        crqStatus    = extractChangeState(change=crqInfo)
-        logger.info('ITSM: Change State: "%s"', crqStatus) 
-    
-    # Demo ITSM Incident Integration
-    if itsm_demo_inc:
-        incidentID   = testIncidentCreate(token=authToken)
-        logger.info('ITSM: Incident ID: "%s"', incidentID) 
-
-        incInfo    = getIncident(token=authToken,incident=incidentID)
-        logger.info('ITSM: Incident: %s', incInfo) 
-
-        incStatus  = getIncidentStatus(token=authToken,incident=incidentID)
-        logger.info('ITSM: Incident State: "%s"', incStatus) 
-
-        incWLogStatus = testIncidentWorklog(token=authToken,incident=incidentID)
-        logger.info('ITSM: Incident Worklog Status: "%s"', incWLogStatus) 
-
-
-
-    itsmLogout(token=authToken)
-
 
 if __name__ == "__main__":
   logging.basicConfig(filename=logFile, filemode='w', level=logging.DEBUG , format='%(asctime)s - %(levelname)s # %(message)s', datefmt='%d-%b-%y %H:%M:%S')
@@ -608,9 +573,7 @@ if __name__ == "__main__":
   logger.info('Secure Pwd: "%s"', itsm_pwd)
   logger.info('Epoch: %s', epoch)
 
-  # Demo Integration
-  if w3rkstatt.getJsonValue(path="$.DEFAULT.demo",data=jCfgData):
-      demoITSM()
+
 
   logger.info('Helix: ITSM Management End')
   logging.shutdown()

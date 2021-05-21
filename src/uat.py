@@ -1,0 +1,277 @@
+#!/usr/bin/python
+#Filename: uat.py
+
+"""
+(c) 2020 Volker Scheithauer
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit
+persons to whom the Software is furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice (including the next paragraph) shall be included in all copies or
+substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+https://opensource.org/licenses/MIT
+# SPDX-License-Identifier: MIT
+For information on SDPX, https://spdx.org/licenses/MIT.html
+
+BMC Software Python Core Tools 
+Provide core functions for BMC Software related python scripts
+
+Change Log
+Date (YMD)    Name                  What
+--------      ------------------    ------------------------
+20210521      Volker Scheithauer    Consolidate test cases
+
+"""
+
+# Fix module import issues
+import sys
+import os, json, logging
+import time, datetime
+
+# fix import issues for modules
+sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+
+from src import w3rkstatt as w3rkstatt
+from src import core_ctm as ctm
+from src import core_itsm as itsm
+
+
+
+# Get configuration from bmcs_core.json
+jCfgData   = w3rkstatt.getProjectConfig()
+cfgFolder  = w3rkstatt.getJsonValue(path="$.DEFAULT.config_folder",data=jCfgData)
+logFolder  = w3rkstatt.getJsonValue(path="$.DEFAULT.log_folder",data=jCfgData)
+tmpFolder  = w3rkstatt.getJsonValue(path="$.DEFAULT.template_folder",data=jCfgData)
+cryptoFile = w3rkstatt.getJsonValue(path="$.DEFAULT.crypto_file",data=jCfgData)
+
+logger   = w3rkstatt.logging.getLogger(__name__) 
+logFile  = w3rkstatt.getJsonValue(path="$.DEFAULT.log_file",data=jCfgData)
+loglevel = w3rkstatt.getJsonValue(path="$.DEFAULT.loglevel",data=jCfgData)
+epoch    = time.time()
+hostName = w3rkstatt.getHostName()
+hostIP   = w3rkstatt.getHostIP(hostName)
+
+# Assign module defaults
+_modVer = "0.1.0"
+_timeFormat = '%d %b %Y %H:%M:%S,%f'
+_localDebug = False
+_localDebugAdv = False
+_localQA = False
+
+
+# Helix ITSM Sample data
+def testIncidentCreate(token):
+    data =  {
+                "values": {
+                    "z1D_Action" : "CREATE",
+                    "First_Name": w3rkstatt.getJsonValue(path="$.ITSM.defaults.name-first",data=jCfgData),
+                    "Last_Name": w3rkstatt.getJsonValue(path="$.ITSM.defaults.name-last",data=jCfgData),
+                    "Description": "CTM WCM: Incident Creation " + str(epoch),
+                    "Impact": w3rkstatt.getJsonValue(path="$.ITSM.incident.impact",data=jCfgData),
+                    "Urgency": w3rkstatt.getJsonValue(path="$.ITSM.incident.urgency",data=jCfgData),
+                    "Status": w3rkstatt.getJsonValue(path="$.ITSM.incident.status",data=jCfgData),
+                    "Reported Source": w3rkstatt.getJsonValue(path="$.ITSM.incident.reported-source",data=jCfgData),
+                    "Service_Type": w3rkstatt.getJsonValue(path="$.ITSM.incident.service-type",data=jCfgData),
+                    "ServiceCI": w3rkstatt.getJsonValue(path="$.ITSM.defaults.service-ci",data=jCfgData),
+                    "Assigned Group": w3rkstatt.getJsonValue(path="$.ITSM.defaults.assigned-group",data=jCfgData),
+                    "Assigned Support Company": w3rkstatt.getJsonValue(path="$.ITSM.defaults.support-company",data=jCfgData),
+                    "Assigned Support Organization": w3rkstatt.getJsonValue(path="$.ITSM.defaults.support-organization",data=jCfgData),
+                    "Categorization Tier 1": w3rkstatt.getJsonValue(path="$.ITSM.defaults.op_cat_1",data=jCfgData),
+                    "Categorization Tier 2": w3rkstatt.getJsonValue(path="$.ITSM.defaults.op_cat_2",data=jCfgData),
+                    "Categorization Tier 3": w3rkstatt.getJsonValue(path="$.ITSM.defaults.op_cat_3",data=jCfgData),
+                    "Product Categorization Tier 1": w3rkstatt.getJsonValue(path="$.ITSM.defaults.prod_cat_1",data=jCfgData),
+                    "Product Categorization Tier 2": w3rkstatt.getJsonValue(path="$.ITSM.defaults.prod_cat_2",data=jCfgData),
+                    "Product Categorization Tier 3": w3rkstatt.getJsonValue(path="$.ITSM.defaults.prod_cat_3",data=jCfgData),
+                    "Product Name": w3rkstatt.getJsonValue(path="$.ITSM.defaults.product_name",data=jCfgData),
+                    "TemplateID": "AGGAA5V0GO2Y0APMV93LPLY5FREVV1"
+                    # "Urgency" : "3-Medium",
+                    # "Vendor Ticket Number" : "INC9969625",
+                    # "z1D_View_Access":"Internal",
+                    # "z1D_WorklogDetails": "Test",
+                    # "z1D_Activity_Type": "General Information",
+                    # "z1D_CommunicationSource": "Other",
+                    # "z1D_Secure_Log": "Locked",
+                    # "z1D_Details": "Adding Work notes"                                   
+                }
+            } 
+    data2log = w3rkstatt.jsonTranslateValuesAdv(data=data)
+    logger.info('ITSM Incident Data: %s ', data2log) 
+    result = itsm.createIncident(token,data)
+    return result 
+
+def testIncidentWorklog(token,incident):
+    data =  {
+                "values": {
+                    "Work Log Submitter": "user",
+                    "Status": "Enabled",
+                    "Description": "Integration Demo",
+                    "Detailed Description": "Added via Python REST API",
+                    "Incident Number": "" + str(incident) + "",
+                    "Work Log Type": "Incident Task / Action",
+                    "View Access": "Public",
+                    "Secure Work Log": "No"
+                }
+            } 
+    result = itsm.createIncidentWorklog(token,data)
+    return result 
+
+def testChangeCreate(token):
+    timeDelta  = w3rkstatt.getJsonValue(path="$.ITSM.defaults.timedelta",data=jCfgData)
+    startDate  = w3rkstatt.getCurrentDate(timeFormat=_timeFormat)
+    endDate    = w3rkstatt.addTimeDelta(date=startDate,timeFormat=_timeFormat,delta=timeDelta)
+
+    data =  {
+                "values": {
+                    "z1D_Action" : "CREATE",
+                    "First Name": w3rkstatt.getJsonValue(path="$.ITSM.defaults.name-first",data=jCfgData),
+                    "Last Name": w3rkstatt.getJsonValue(path="$.ITSM.defaults.name-last",data=jCfgData),
+                    "Description": "CTM WCM: Change Creation " + str(epoch),
+                    "Impact": w3rkstatt.getJsonValue(path="$.ITSM.change.impact",data=jCfgData),
+                    "Urgency": w3rkstatt.getJsonValue(path="$.ITSM.change.urgency",data=jCfgData),
+                    "Status": w3rkstatt.getJsonValue(path="$.ITSM.change.status",data=jCfgData),
+                    "Status Reason": w3rkstatt.getJsonValue(path="$.ITSM.change.status_reason",data=jCfgData),
+                    "Vendor Ticket Number": "CMT 99",
+                    "ServiceCI": w3rkstatt.getJsonValue(path="$.ITSM.defaults.service-ci",data=jCfgData),
+                    "Company3": w3rkstatt.getJsonValue(path="$.ITSM.defaults.support-company",data=jCfgData),
+                    "Support Organization": w3rkstatt.getJsonValue(path="$.ITSM.defaults.support-organization",data=jCfgData),
+                    "Support Group Name": w3rkstatt.getJsonValue(path="$.ITSM.defaults.assigned-group",data=jCfgData),
+                    "Location Company": w3rkstatt.getJsonValue(path="$.ITSM.defaults.location-company",data=jCfgData),
+                    "Region": w3rkstatt.getJsonValue(path="$.ITSM.defaults.region",data=jCfgData),
+                    "Site Group": w3rkstatt.getJsonValue(path="$.ITSM.defaults.site-group",data=jCfgData),
+                    "Site": w3rkstatt.getJsonValue(path="$.ITSM.defaults.site",data=jCfgData),
+                    "Categorization Tier 1": w3rkstatt.getJsonValue(path="$.ITSM.defaults.op_cat_1",data=jCfgData),
+                    "Categorization Tier 2": w3rkstatt.getJsonValue(path="$.ITSM.defaults.op_cat_2",data=jCfgData),
+                    "Categorization Tier 3": w3rkstatt.getJsonValue(path="$.ITSM.defaults.op_cat_3",data=jCfgData),
+                    "Product Cat Tier 1(2)": w3rkstatt.getJsonValue(path="$.ITSM.defaults.prod_cat_1",data=jCfgData),
+                    "Product Cat Tier 2 (2)": w3rkstatt.getJsonValue(path="$.ITSM.defaults.prod_cat_2",data=jCfgData),
+                    "Product Cat Tier 3 (2)": w3rkstatt.getJsonValue(path="$.ITSM.defaults.prod_cat_3",data=jCfgData),
+                    "Scheduled Start Date": startDate, 
+                    "Scheduled End Date": endDate,
+                    "TemplateID": itsm.itsm_tmpl_crq               
+                }
+            } 
+    result = itsm.createChange(token,data)
+    return result 
+
+
+
+# Demo Control-M
+def demoCTM():
+    # CTM Login
+    try:
+        ctmApiObj    = ctm.getCtmConnection()
+        ctmApiClient = ctmApiObj.api_client
+        _ctmActiveApi    = True
+    except:
+        _ctmActiveApi = False
+        ctmApiClient = None
+
+    # Log CTM login state
+    logger.info('CTM Login Status: %s', _ctmActiveApi)
+
+    ctm_demo_agt    = w3rkstatt.getJsonValue(path="$.CTM.ctmag.demo",data=jCfgData)
+    ctm_demo_jobs   = w3rkstatt.getJsonValue(path="$.CTM.jobs.demo",data=jCfgData)
+    ctm_demo_alerts = w3rkstatt.getJsonValue(path="$.CTM.alerts.demo",data=jCfgData)
+
+    if _ctmActiveApi:
+        if ctm_demo_alerts:
+            ctm_alert_ids = w3rkstatt.getJsonValue(path="$.CTM.alerts.ids",data=jCfgData)
+            ctm_alert_msg = w3rkstatt.getJsonValue(path="$.CTM.alerts.comment",data=jCfgData)
+            ctm_alert_urgency = w3rkstatt.getJsonValue(path="$.CTM.alerts.urgency",data=jCfgData)
+            ctm_alert_status = w3rkstatt.getJsonValue(path="$.CTM.alerts.status",data=jCfgData)
+
+            # Alert Comment
+            # ctmAlertsCore   = updateCtmAlertCore(ctmApiClient=ctmApiClient,ctmAlertIDs=ctm_alert_ids, ctmAlertComment=ctm_alert_msg, ctmAlertUrgency=ctm_alert_urgency)
+            # logger.info('CTM Alert Core: %s', ctmAlertsCore)
+            
+            # Alert Status
+            ctmAlertsStatus = ctm.updateCtmAlertStatus(ctmApiClient=ctmApiClient,ctmAlertIDs=ctm_alert_ids, ctmAlertStatus=ctm_alert_status)
+            logger.info('CTM Alert Status: %s', ctmAlertsStatus)
+            # ctmAlerts = updateCtmAlert(ctmApiClient=ctmApiClient,ctmAlertIDs=ctm_alert_ids, ctmAlertComment=ctm_alert_msg)
+            # ctmAlerts = w3rkstatt.jsonTranslateValues(ctmAlerts)
+            
+
+
+            # logger.info('CTM Alert: %s', ctmAlerts)
+
+        if ctm_demo_agt:
+            ctm_server = w3rkstatt.getJsonValue(path="$.CTM.datacenter[0].name",data=jCfgData)
+            ctmAgents = ctm.getCtmAgents(ctmApiClient=ctmApiClient,ctmServer=ctm_server)
+            logger.info('CTM Agents: %s', ctmAgents)
+        
+        if ctm_demo_jobs:
+            ctm_job_oderid  = w3rkstatt.getJsonValue(path="$.CTM.jobs.oderid",data=jCfgData)
+            ctm_job_srv     = w3rkstatt.getJsonValue(path="$.CTM.jobs.server",data=jCfgData)
+            ctm_job_runid   = ctm_job_srv + ":" + ctm_job_oderid
+
+            ctmJobInfo      = ctm.getCtmJobInfo(ctmApiClient=ctmApiClient,ctmServer=ctm_job_srv,ctmOrderID=ctm_job_oderid)
+            # ctmJobStatusAdv = getCtmJobStatusAdv(ctmApiClient=ctmApiClient,ctmServer=ctm_job_srv,ctmOrderID=ctm_job_oderid)
+            logger.info('CTM Job: %s', ctmJobInfo)
+
+# Demo Helix ITSM
+def demoITSM():
+    itsm_demo_crq   = w3rkstatt.getJsonValue(path="$.ITSM.change.demo",data=jCfgData)
+    itsm_demo_inc   = w3rkstatt.getJsonValue(path="$.ITSM.incident.demo",data=jCfgData)
+    
+    authToken    = itsm.itsmAuthenticate()
+
+    # Demo ITSM Change Integration
+    if itsm_demo_crq:
+        changeID     = testChangeCreate(token=authToken)
+        logger.info('ITSM: Change   ID: "%s"', changeID) 
+
+        crqInfo      = itsm.getChange(token=authToken,change=changeID)
+        logger.info('ITSM: Change Info: %s', crqInfo) 
+
+        crqStatus    = itsm.extractChangeState(change=crqInfo)
+        logger.info('ITSM: Change State: "%s"', crqStatus) 
+    
+    # Demo ITSM Incident Integration
+    if itsm_demo_inc:
+        incidentID   = testIncidentCreate(token=authToken)
+        logger.info('ITSM: Incident ID: "%s"', incidentID) 
+
+        incInfo    = itsm.getIncident(token=authToken,incident=incidentID)
+        logger.info('ITSM: Incident: %s', incInfo) 
+
+        incStatus  = itsm.getIncidentStatus(token=authToken,incident=incidentID)
+        logger.info('ITSM: Incident State: "%s"', incStatus) 
+
+        incWLogStatus = testIncidentWorklog(token=authToken,incident=incidentID)
+        logger.info('ITSM: Incident Worklog Status: "%s"', incWLogStatus) 
+
+
+
+    itsm.itsmLogout(token=authToken)
+
+
+if __name__ == "__main__":
+    
+    logging.basicConfig(filename=logFile, filemode='w', level=logging.DEBUG , format='%(asctime)s - %(levelname)s # %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+    logger.info('W3rkstatt: User Acceptance Test')
+    logger.info('Version: %s ', _modVer)
+    logger.info('System Platform: %s ', w3rkstatt.platform.system())
+    logger.info('Log Level: %s', loglevel)
+    logger.info('Host Name: %s', hostName)
+    logger.info('Host IP: %s', hostIP)
+    logger.info('CTM Url: %s', ctm.ctm_url)
+    logger.info('CTM User: %s', ctm.ctm_user)
+    logger.info('Epoch: %s', epoch)
+
+    # Demo Integration
+    if w3rkstatt.getJsonValue(path="$.CTM.demo",data=jCfgData):
+        demoCTM()
+
+    # Demo Integration
+    if w3rkstatt.getJsonValue(path="$.ITSM.demo",data=jCfgData):
+        demoITSM()
+
+    logger.info('W3rkstatt: User Acceptance Test')
+    logging.shutdown()
+    print (f"Version: {_modVer}")

@@ -66,6 +66,7 @@ _timeFormat = '%d %b %Y %H:%M:%S,%f'
 _localDebug = False
 _SecureDebug = False
 
+
 # Global functions
 def getCurrentFolder():
     '''
