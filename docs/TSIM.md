@@ -120,13 +120,13 @@ MC_EV_CLASS:
     {
         mc_tool                     : default="CTM Enterprise Manager";
         mc_tool_class               : default = "CTM Event", dup_detect = yes;
-		mc_host_address             : dup_detect=yes;
-		mc_origin_key               : dup_detect=yes;
-        mc_owner			        : STRING;
-	    mc_object			        : STRING;
-	    mc_object_class			    : STRING;
-        mc_ueid				        : STRING;
-	    mc_long_msg			        : STRING;
+        mc_host_address             : dup_detect=yes;
+        mc_origin_key               : dup_detect=yes;
+        mc_owner                    : STRING;
+        mc_object                   : STRING;
+        mc_object_class             : STRING;
+        mc_ueid                     : STRING;
+        mc_long_msg                 : STRING;
         msg				            : STRING;
         severity			        : SEVERITY, default=WARNING;        
         ctmUpdateType               : STRING; # Alert update type 'I' Insert - new alert 'U' Update existing alert
