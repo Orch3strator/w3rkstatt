@@ -6,7 +6,7 @@ Event Management Python module for Werkstatt projects
 
 ## Core Libraries and purpose
 - **w3rkstatt** basic project functions
-- **core_tsim** basic Helix ITSM integration
+- **core_tsim** basic TrueSight Operations Manager integration
 
 ## Dependencies
 - [X] **Basic Libraries**
