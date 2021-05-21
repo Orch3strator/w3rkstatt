@@ -8,8 +8,8 @@ Basic Python modules for Werkstatt projects
 - External configuration in custom json file
 
 ## Core Library and purpose
-- **general** base python functions for project support
-- **security** encrypt the cleartext passwords
+- **w3rkstatt** base python functions for project support
+- **w3rkstatt** encrypt the cleartext passwords
 
 ## Dependencies
 - [ ] **Basic Libraries**
@@ -36,9 +36,9 @@ python -m pip install json2html jsonpath-ng jsonpath_rw_ext
 | Solution                  | API           | Python        |
 | :-------------            | :---:         | :---:         | 
 | Werkstatt Tools           | ⬜            | ✅    | 
-| BMC Control-M             | 🔶            | 🚧    | 
+| BMC Control-M             | 🔶            | ✅    | 
 | BMC Helix ITSM            | 🔶            | ✅    | 
-| BMC TrueSight             | 🔶            | 🚧    | 
+| BMC TrueSight             | 🔶            | ✅    | 
 | ServiceNOW                | 🔶            | 🚧    | 
 | E-Mail                    | 🔶            | ✅    | 
 
@@ -65,23 +65,40 @@ python -m pip install json2html jsonpath-ng jsonpath_rw_ext
 **SMTP**:
 Module | Method | Description
 ------------ | ------------- | -------------
-*smtp* | [**prepareEmail**](docs/SMTP.md)     | Prepare HTML content, based on template
-*smtp* | [**sendEmailSmtpSSL**](docs/SMTP.md) | Send E-mail with SSL enabled
+*core_smtp* | [**prepareEmail**](docs/SMTP.md)     | Prepare HTML content, based on template
+*core_smtp* | [**sendEmailSmtpSSL**](docs/SMTP.md) | Send E-mail with SSL enabled
 
 **Helix ITSM Application**:
 Module | Method | Description
 ------------ | ------------- | -------------
-*itsm* | [**createChange**](docs/ITSM.md) | Create ITSM Change Request
-*itsm* | [**getChange**](docs/ITSM.md) | Get ITSM Change Request status
-*itsm* | [**extractChangeState**](docs/ITSM.md) | Translate ITSM Change Request details
-*itsm* | [**createIncident**](docs/ITSM.md) | Create ITSM Incident
-*itsm* | [**getIncident**](docs/ITSM.md) | Get ITSM Incident details
-*itsm* | [**getIncidentStatus**](docs/ITSM.md) | Get ITSM Incident status
+*core_itsm* | [**createChange**](docs/ITSM.md) | Create ITSM Change Request
+*core_itsm* | [**getChange**](docs/ITSM.md) | Get ITSM Change Request status
+*core_itsm* | [**extractChangeState**](docs/ITSM.md) | Translate ITSM Change Request details
+*core_itsm* | [**createIncident**](docs/ITSM.md) | Create ITSM Incident
+*core_itsm* | [**getIncident**](docs/ITSM.md) | Get ITSM Incident details
+*core_itsm* | [**getIncidentStatus**](docs/ITSM.md) | Get ITSM Incident status
 
 **Helix ITSM Core**:
 Module | Method | Description
 ------------ | ------------- | -------------
-*itsm* | [**itsmAuthenticate**](docs/ITSM.md) | Login to Helix ITSM
-*itsm* | [**itsmLogout**](docs/ITSM.md) | Logout of Helix ITSM
-*itsm* | [**itsmFormGet**](docs/ITSM.md) | HTTP Get from Helix ITSM Form
-*itsm* | [**itsmFormPost**](docs/ITSM.md) | HTTP Post to Helix ITSM Form
+*core_itsm* | [**itsmAuthenticate**](docs/ITSM.md) | Login to Helix ITSM
+*core_itsm* | [**itsmLogout**](docs/ITSM.md) | Logout of Helix ITSM
+*core_itsm* | [**itsmFormGet**](docs/ITSM.md) | HTTP Get from Helix ITSM Form
+*core_itsm* | [**itsmFormPost**](docs/ITSM.md) | HTTP Post to Helix ITSM Form
+
+**TrueSight Operations Manager Application**:
+Module | Method | Description
+------------ | ------------- | -------------
+*core_tsim* | [**tsimGetEventID**](docs/TSIM.md)| Extract TSIM Event mc_ueid
+*core_tsim* | [**tsimCreateCI**](docs/TSIM.md) | Create TSIM CI
+*core_tsim* | [**tsimComputeCI**](docs/TSIM.md) | Compute TSIM CI Details
+*core_tsim* | [**tsimSearchCI**](docs/TSIM.md) | Search for TSIM CI
+*core_tsim* | [**tsimSearchCiAdvanced**](docs/TSIM.md)| Search for TSIM CI Advanced
+
+**TrueSight Operations Manager Core**:
+Module | Method | Description
+------------ | ------------- | -------------
+*core_tsim* | [**tsimAuthenticate**](docs/TSIM.md)| Login to TrueSight Presentation Server
+*core_tsim* | [**tsimCreateEvent**](docs/TSIM.md) | Create TSIM Event
+*core_tsim* | [**tsimUpdateEvent**](docs/TSIM.md) | Update TSIM Event
+*core_tsim* | [**tsimSearchEvent**](docs/TSIM.md) | Search for TSIM Event
