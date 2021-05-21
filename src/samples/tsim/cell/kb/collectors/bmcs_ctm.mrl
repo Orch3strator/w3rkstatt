@@ -1,0 +1,43 @@
+#--------------------------------------------------------------------
+# windows_logs_collectors.mrl
+# Created by Karlis Peterson, BMC Software, Software Consultant
+# located in %mcell_home%/etc/%cell%/kb/collectors
+#--------------------------------------------------------------------
+
+collector 'Hyper Automation':
+{
+        r['Service Administrators','Event Administrator','Service Operators - Senior','Event Supervisor','Service Operators','Event Operator','Service Managers - Senior','Service Managers']
+        w['Service Administrators','Event Administrator','Service Operators - Senior','Event Supervisor','Service Operators','Event Operator','Service Managers - Senior','Service Managers']
+        x['Service Administrators','Event Administrator','Service Operators - Senior','Event Supervisor','Service Operators','Event Operator','Service Managers - Senior','Service Managers']
+}
+END
+
+collector 'Hyper Automation'.Workload:
+CTMX_JOB 
+where [
+   $THIS.status == OPEN 
+ ]
+END
+
+collector 'Hyper Automation'.Workload.*:
+CTMX_JOB 
+where [
+   $THIS.status == OPEN 
+ ]
+ create $THIS.mc_object_owner
+END
+
+collector 'Hyper Automation'.Infrastructure:
+CTMX_EVENT
+where [
+    $THIS.status == OPEN 
+]
+END
+
+collector 'Hyper Automation'.Infrastructure.*:
+CTMX_EVENT
+where [
+    $THIS.status == OPEN
+]
+create $THIS.mc_host
+END

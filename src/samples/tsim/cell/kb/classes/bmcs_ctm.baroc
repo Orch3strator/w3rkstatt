@@ -1,0 +1,89 @@
+#
+# File name: bmcs_ctm.baroc
+# Version: 11.3.03
+# Copyright 1998-2020 BMC Software, Inc. All Rights Reserved
+#
+
+MC_EV_CLASS:
+    CTMX_EVENT ISA EVENT
+    DEFINES
+    {
+        mc_tool                     : default="CTM Enterprise Manager";
+        mc_tool_class               : default = "CTM Event", dup_detect = yes;
+		mc_host_address             : dup_detect=yes;
+		mc_origin_key               : dup_detect=yes;
+        mc_owner			        : STRING;
+	    mc_object			        : STRING;
+        # mc_incident_time		    : STRING, representation = date;
+	    mc_object_class			    : STRING;
+        mc_ueid				        : STRING;
+	    mc_long_msg			        : STRING;
+        msg				            : STRING;
+        severity			        : SEVERITY, default=WARNING;
+	    
+        # itsm_operational_category1	: STRING;
+	    # itsm_operational_category2	: STRING;
+	    # itsm_operational_category3	: STRING;
+        # itsm_incident_id              : STRING;
+        # itsm_incident_status          : STRING;
+
+        # order_id			        : STRING;
+        # group				        : STRING;	
+        # order_table			    : STRING;
+        # rerun_counter		        : STRING;
+        # next_time			        : STRING; representation = date;
+        # job_status			    : STRING;
+        # alarmStatus			    : STRING;
+        # application_type		    : STRING;        
+        
+        ctmUpdateType               : STRING; # Alert update type 'I' Insert - new alert 'U' Update existing alert
+        ctmAlertId                  : STRING; # Alert id Unique alert identifier
+        ctmDataCenter               : STRING; # Control-M server name
+        ctmMemName                  : STRING; # Job member name
+        ctmOrderId                  : STRING; # Job order id
+        ctmSeverity                 : STRING; # Alert severity 'R' - regular 'U' - urgent 'V' - very urgent
+        ctmTime                     : STRING; # representation = date; # Alert creation time (YYYYMMDDhhmmss)
+        ctmStatus                   : STRING; # Alert status (Not_Noticed, Noticed or Handled)
+        ctmNodeId                   : STRING; # Job node id
+        ctmJobName                  : STRING; # Job name
+        ctmMessage                  : STRING; # Alert message
+        ctmApplication              : STRING; # Job application name
+        ctmSubApplication           : STRING; # Job sub application name
+        ctmAlertType                : STRING; # Alert type B - BIM alert type R or empty - regular alert type
+        ctmClosedFromEM             : STRING; # Closed from Control-M/Enterprise Manager Y - yes N or empty - no
+        ctmTicketNumber             : STRING; # Remedy ticket number
+        ctmRunCounter               : STRING; # Job's run counter
+        ctmUser                     : STRING; # Last updated by, user name
+        ctmUpdateTime               : STRING; # representation = date; # Last time the alert was updated (YYYYMMDDhhmmss)
+        ctmOwner                    : STRING; # The user who runs the job
+        ctmNotes                    : STRING; # Alert notes
+        ctmFolder                   : STRING; # Job folder
+        ctmFolderID                 : STRING; # Job folder ID
+        ctmJobID                    : STRING; # Job ID
+        ctmJobHeld                  : STRING; # Job hold status
+        xctmCallType                : STRING; # Alert update type 'I' Insert - new alert 'U' Update existing alert
+        xctmSerial                  : STRING; # Serial number
+        xctmCompType                : STRING; # Alert id Unique alert identifier
+        xctmCompMachine             : STRING; # Control-M server name
+        xctmCompName                : STRING; # Job member name
+        xctmMessageId               : STRING; # Job order id
+        xctmXSeverity               : STRING; # Alert severity '0' - Undefined '1' - Severe '2' - Error '3' - Warning
+        xctmMessage                 : STRING; # representation = date; # Alert creation time (YYYYMMDDhhmmss)
+        xctmXTime                   : STRING; # Alert status (Not_Noticed, Noticed or Handled)
+        xctmXTimeOFLast             : STRING; # Job node id
+        xctmCounter                 : STRING; # Job name
+        xctmStatus                  : STRING; # Alert message
+        xctmNote                    : STRING; # Job application name
+        xctmKey1                    : STRING; # Job group name
+        xctmKey2                    : STRING; # Alert type B - BIM alert type R or empty - regular alert type
+        xctmKey3                    : STRING; # Closed from Control-M/Enterprise Manager Y - yes N or empty - no
+        xctmKey4                    : STRING; # Remedy ticket number
+        xctmKey5                    : STRING; # Job's run counter
+
+    };
+END
+
+
+MC_EV_CLASS :
+	CTMX_JOB ISA CTMX_EVENT;
+END
