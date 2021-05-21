@@ -53,8 +53,8 @@ E-Mail Python module for Werkstatt projects
 **Function**:
 Module | Method | Description
 ------------ | ------------- | ------------- 
-*smtp* | [**prepareEmail**]     | Prepare HTML content, based on template
-*smtp* | [**sendEmailSmtpSSL**] | Send E-mail with SSL enabled
+*core_smtp* | [**prepareEmail**]     | Prepare HTML content, based on template
+*core_smtp* | [**sendEmailSmtpSSL**] | Send E-mail with SSL enabled
 
 
 **Internals**:

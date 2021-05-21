@@ -63,20 +63,20 @@ E-Mail Python module for Werkstatt projects
 **Helix ITSM Application**:
 Module | Method | Description
 ------------ | ------------- | -------------
-*itsm* | [**createChange**] | Create ITSM Change Request
-*itsm* | [**getChange**] | Get ITSM Change Request status
-*itsm* | [**extractChangeState**] | Translate ITSM Change Request details
-*itsm* | [**createIncident**]| Create ITSM Incident
-*itsm* | [**getIncident**] | Get ITSM Incident details
-*itsm* | [**getIncidentStatus**]| Get ITSM Incident status
+*core_itsm* | [**createChange**] | Create ITSM Change Request
+*core_itsm* | [**getChange**] | Get ITSM Change Request status
+*core_itsm* | [**extractChangeState**] | Translate ITSM Change Request details
+*core_itsm* | [**createIncident**]| Create ITSM Incident
+*core_itsm* | [**getIncident**] | Get ITSM Incident details
+*core_itsm* | [**getIncidentStatus**]| Get ITSM Incident status
 
 **Helix ITSM Core**:
 Module | Method | Description
 ------------ | ------------- | -------------
-*itsm* | [**itsmAuthenticate**]| Login to Helix ITSM
-*itsm* | [**itsmLogout**] | Logout of Helix ITSM
-*itsm* | [**itsmFormGet**]| HTTP Get from Helix ITSM Form
-*itsm* | [**itsmFormPost**]| HTTP Post to Helix ITSM Form
+*core_itsm* | [**itsmAuthenticate**]| Login to Helix ITSM
+*core_itsm* | [**itsmLogout**] | Logout of Helix ITSM
+*core_itsm* | [**itsmFormGet**]| HTTP Get from Helix ITSM Form
+*core_itsm* | [**itsmFormPost**]| HTTP Post to Helix ITSM Form
 
 
 ## Helix ITSM HTTP Body
