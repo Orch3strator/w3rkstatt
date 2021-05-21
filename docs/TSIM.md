@@ -109,6 +109,7 @@ Sample TSIM Event payload
 # File name: bmcs_ctm.baroc
 # Version: 11.3.03
 # located in %mcell_home%/etc/%cell%/kb/classes
+# ToDo: add to .load, compile cell
 # Copyright 1998-2020 BMC Software, Inc. All Rights Reserved
 # Created by Orchestrator, BMC Software, Software Consultant
 #--------------------------------------------------------------------
@@ -189,6 +190,7 @@ END
 # Version: 11.3.03
 # windows_logs_collectors.mrl
 # located in %mcell_home%/etc/%cell%/kb/collectors
+# ToDo: add to .load, compile cell
 # Created by Orchestrator, BMC Software, Software Consultant
 # Copyright 1998-2020 BMC Software, Inc. All Rights Reserved
 #--------------------------------------------------------------------
