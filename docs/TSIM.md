@@ -11,7 +11,7 @@ Event Management Python module for Werkstatt projects
 ## Dependencies
 - [X] **Basic Libraries**
 - [X] **Cryptodome**
-- [X] *TrueSight Operations Manager**
+- [X] **TrueSight Operations Manager**
 
 
 ## Solutions leveraging the base tools
