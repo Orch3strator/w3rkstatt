@@ -127,8 +127,8 @@ MC_EV_CLASS:
         mc_object_class             : STRING;
         mc_ueid                     : STRING;
         mc_long_msg                 : STRING;
-        msg				            : STRING;
-        severity			        : SEVERITY, default=WARNING;        
+        msg                         : STRING;
+        severity                    : SEVERITY, default=WARNING;        
         ctmUpdateType               : STRING; # Alert update type 'I' Insert - new alert 'U' Update existing alert
         ctmAlertId                  : STRING; # Alert id Unique alert identifier
         ctmDataCenter               : STRING; # Control-M server name
