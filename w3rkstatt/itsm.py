@@ -500,6 +500,8 @@ def testIncidentCreate(token):
                     # "z1D_Details": "Adding Work notes"                                   
                 }
             } 
+    data2log = w3rkstatt.jsonTranslateValuesAdv(data=data)
+    logger.info('ITSM Incident Data: %s ', data2log) 
     result = createIncident(token,data)
     return result 
 

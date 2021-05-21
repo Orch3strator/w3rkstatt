@@ -1307,7 +1307,7 @@ logger    = logging.getLogger(__name__)
 if __name__ == "__main__":
     # Setup log file
     logFile = os.path.join(pFolder,"w3rkstatt.log")
-    logging.basicConfig(filename=logFile, filemode='a', level=logging.DEBUG, format='%(asctime)s - %(levelname)s # %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+    logging.basicConfig(filename=logFile, filemode='w', level=logging.DEBUG, format='%(asctime)s - %(levelname)s # %(message)s', datefmt='%d-%b-%y %H:%M:%S')
     logger.info('Werkstatt Python Core Script "Start"')
     logger.info('Version: %s ', _modVer)
     logger.info('System Platform: "%s" ', sPlatform)   
