@@ -1,8 +1,10 @@
-#
+#--------------------------------------------------------------------
 # File name: bmcs_ctm.baroc
 # Version: 11.3.03
+# located in %mcell_home%/etc/%cell%/kb/classes
 # Copyright 1998-2020 BMC Software, Inc. All Rights Reserved
-#
+# Created by Orchestrator, BMC Software, Software Consultant
+#--------------------------------------------------------------------
 
 MC_EV_CLASS:
     CTMX_EVENT ISA EVENT

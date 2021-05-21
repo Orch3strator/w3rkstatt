@@ -105,11 +105,13 @@ Sample TSIM Event payload
 
 **TSIM Cell Control-M Event Class**:
 ```bash
-#
+#--------------------------------------------------------------------
 # File name: bmcs_ctm.baroc
 # Version: 11.3.03
+# located in %mcell_home%/etc/%cell%/kb/classes
 # Copyright 1998-2020 BMC Software, Inc. All Rights Reserved
-#
+# Created by Orchestrator, BMC Software, Software Consultant
+#--------------------------------------------------------------------
 
 MC_EV_CLASS:
     CTMX_EVENT ISA EVENT
@@ -183,9 +185,12 @@ END
 **TSIM Cell Collector MRL**:
 ```bash
 #--------------------------------------------------------------------
+# File name: bmcs_ctm.mrl
+# Version: 11.3.03
 # windows_logs_collectors.mrl
-# Created by Karlis Peterson, BMC Software, Software Consultant
 # located in %mcell_home%/etc/%cell%/kb/collectors
+# Created by Orchestrator, BMC Software, Software Consultant
+# Copyright 1998-2020 BMC Software, Inc. All Rights Reserved
 #--------------------------------------------------------------------
 
 collector 'Hyper Automation':
