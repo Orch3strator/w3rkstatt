@@ -94,6 +94,15 @@ if tso_ssl_ver == False:
 
 
 def authenticate():
+    '''
+    Login to TSO platform
+
+    :return: authentication token
+    :rtype: str
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''  
+
     authToken = None
     url = tso_url + '/rest/login'
     tso_pwd_decrypted = w3rkstatt.decryptPwd(data=tso_pwd,sKeyFileName=cryptoFile)
@@ -144,6 +153,13 @@ def authenticate():
     return authToken
 
 def logout(data):
+    '''
+    Logout from TSO platform
+
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''    
+
     url = tso_url + '/rest/logout'
     authToken = data
 
@@ -186,6 +202,18 @@ def logout(data):
         # exit()
 
 def apiGet(api,headers,body=""):
+    '''
+    Execute a TSO API GET
+
+    :param str api: TSO api
+    :param str headers: request headers
+    :param str body: request body
+    :return: content
+    :rtype: dict
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''        
+
     url = tso_url + '/rest/' + api
     # Create a dictionary for the request body
     request_body = body
@@ -234,6 +262,18 @@ def apiGet(api,headers,body=""):
         # exit()
 
 def apiPost(api,headers,body=""):
+    '''
+    Execute a TSO API POST
+
+    :param str api: TSO api
+    :param str headers: request headers
+    :param str body: request body
+    :return: content
+    :rtype: dict
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''    
+
     url = tso_url + '/rest/' + api
     # Create a dictionary for the request body
     request_body = body
@@ -286,6 +326,16 @@ def apiPost(api,headers,body=""):
         # exit()
 
 def getTsoModules(token):
+    '''
+    Get the TSO modules
+
+    :param str token: authentication token
+    :return: content
+    :rtype: dict
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''      
+
     # 'repo': "false" , pattern
     tsoApi = "module"
     authToken = token
@@ -312,6 +362,15 @@ def getTsoModules(token):
     return json_data
 
 def getTsoModulesAdv(token):
+    '''
+    Get the TSO modules with additional information
+
+    :param str token: authentication token
+    :return: content
+    :rtype: dict
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''       
     # 'repo': "false" , pattern
     tsoApi = "module"
     authToken = token
@@ -352,6 +411,16 @@ def getTsoModulesAdv(token):
     return json_data
 
 def getTsoAdapters(token):
+    '''
+    Get the TSO adapters
+
+    :param str token: authentication token
+    :return: content
+    :rtype: dict
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''   
+
     tsoApi = "adapter?configDataType=JSON"
     authToken = token
     headers = {
@@ -380,6 +449,18 @@ def getTsoAdapters(token):
     return json_data
 
 def executeTsoProcess(token,process,data=""):
+    '''
+    Execute a TSO workflow
+
+    :param str token: authentication token
+    :param str process: workflow name
+    :param str data: workflow payload
+    :return: content
+    :rtype: dict
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''       
+
     # https://<hostname>:<port>/baocdp/rest/process/<process_name>/execute
     # process/<process_name>/execute
     tsoProcess = w3rkstatt.encodeUrl(process)
@@ -398,6 +479,16 @@ def executeTsoProcess(token,process,data=""):
     return tso_data
     
 def executeProcess(process,data=""):
+    '''
+    Execute a TSO workflow
+
+    :param str process: workflow name
+    :param str data: workflow payload
+    :return: content
+    :rtype: dict
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''        
     if _localDebug:
         logger.debug('TSO Process Name: %s', process)
         logger.debug('TSO Process Data: %s', data)

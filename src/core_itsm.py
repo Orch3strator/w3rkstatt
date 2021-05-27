@@ -111,6 +111,15 @@ if itsm_ssl_ver == False:
   urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def authenticate():
+    '''
+    Login to platform
+
+    :return: authentication token
+    :rtype: str
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''  
+
     authToken = None
     url = itsm_jwt + '/login'
     itsm_pwd_decrypted  = w3rkstatt.decryptPwd(data=itsm_pwd,sKeyFileName=cryptoFile)
@@ -213,6 +222,19 @@ def logout(token):
 # https://docs.bmc.com/docs/ars2008/date-and-time-formats-929628201.html
 
 def apiGet(form,headers,entry=""):
+    '''
+    Execute an ITSM API GET
+
+    :param str form: ITSM form name
+    :param str headers: request headers
+    :param str entry: request entry
+    :return: content
+    :rtype: dict
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''        
+
+    data = None
     if len(entry) > 1:
         if "?" in entry:
             url = itsm_url + '/entry/' + form + entry
@@ -257,9 +279,23 @@ def apiGet(form,headers,entry=""):
         return data
     else:
         logger.error('Authentication Failure Response Code: %s', response)
-        # exit()
+    return data
 
 def apiPost(form,headers,body="",fields=""):
+    '''
+    Execute an ITSM API POST
+
+    :param str form: ITSM form name
+    :param str headers: request headers
+    :param str body: form data
+    :param str fields: response fields
+    :return: content
+    :rtype: dict
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''        
+
+    data = None
     if len(fields) > 1:
         url = itsm_url + '/entry/' + form + '/?' + fields
     else:
@@ -298,38 +334,44 @@ def apiPost(form,headers,body="",fields=""):
         data = "Error"
         if _localDebug:
             logger.debug('ITSM: Text: %s', rst) 
-        return data
     elif rsc == 501:
         logger.error('HTTP Response Status: %s', rsc)
         data = "Error"
         if _localDebug:
             logger.debug('ITSM: Text: %s', rst) 
-        return data
     elif rsc == 400:
         logger.error('HTTP Response Status: %s', rsc)     
         logger.error('HTTP Response Text: %s', rst)    
         data = rst
         if _localDebug:
-            logger.debug('ITSM: Text: %s', rst) 
-        return data         
+            logger.debug('ITSM: Text: %s', rst)       
     elif rsc != 201:
         logger.error('HTTP Response Status: %s', rsc)
         data = "Error"
         if _localDebug:
-            logger.debug('ITSM: Text: %s', rst) 
-        return data        
+            logger.debug('ITSM: Text: %s', rst)       
     elif rsc == 201:
         # rshd = response.headers
         rst  = response.text
         data = rst
         if _localDebug:
             logger.debug('ITSM: Text: %s', rst) 
-        return data
     else:
         logger.error('Authentication Failure Response Code: %s', response)
-        # exit()
+    return data
 
 def createIncident(token,data):
+    '''
+    Create ITSM Incident
+
+    :param str token: authentication token
+    :param str data: application data
+    :return: content
+    :rtype: dict
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''   
+
     authToken = "AR-JWT " + token
     headers = {
         'content-type': 'application/json',
@@ -346,6 +388,17 @@ def createIncident(token,data):
 
 # http://<server_name>:<port>/api/arsys/v1/entry/HPD:IncidentInterface_Create/Incident Number
 def getIncident(token,incident):
+    '''
+    Get ITSM Incident details
+
+    :param str token: authentication token
+    :param str incident: incident  number
+    :return: content
+    :rtype: dict
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''     
+
     entryJson = {}
     authToken = "AR-JWT " + token
     headers = {
@@ -361,12 +414,34 @@ def getIncident(token,incident):
     return entryRespone
 
 def getIncidentStatus(token,incident):
+    '''
+    Get ITSM Incident status
+
+    :param str token: authentication token
+    :param str incident: incident  number
+    :return: content
+    :rtype: dict
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''     
+
     incInfo = json.loads(getIncident(token=token,incident=incident))
     status  = w3rkstatt.getJsonValue(path="$.values.Status",data=incInfo)
 
     return status
 
 def createChange(token,data):
+    '''
+    Create ITSM Change
+
+    :param str token: authentication token
+    :param str data: application data
+    :return: content
+    :rtype: dict
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''   
+       
     authToken = "AR-JWT " + token
     headers = {
         'content-type': 'application/json',
@@ -385,6 +460,17 @@ def createChange(token,data):
     return entryID
 
 def createChangeWorklog(token,data):
+    '''
+    Create ITSM Change Worklog entry
+
+    :param str token: authentication token
+    :param str data: application data
+    :return: content
+    :rtype: dict
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''   
+
     authToken = "AR-JWT " + token
     headers = {
         'content-type': 'application/json',
@@ -398,6 +484,17 @@ def createChangeWorklog(token,data):
     return entryID
 
 def createIncidentWorklog(token,data):
+    '''
+    Create ITSM Incident Worklog entry
+
+    :param str token: authentication token
+    :param str data: application data
+    :return: content
+    :rtype: dict
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''   
+
     authToken = "AR-JWT " + token
     headers = {
         'content-type': 'application/json',
@@ -409,6 +506,17 @@ def createIncidentWorklog(token,data):
     return entryRespone
 
 def getChange(token,change):
+    '''
+    Get ITSM Change details
+
+    :param str token: authentication token
+    :param str change: change number
+    :return: content
+    :rtype: dict
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''     
+
     authToken = "AR-JWT " + token
     headers = {
         'content-type': 'application/json',
@@ -425,6 +533,16 @@ def getChange(token,change):
     return entryRespone
 
 def extractChangeState(change):
+    '''
+    Extract ITSM Change state
+
+    :param str change: change details
+    :return: content
+    :rtype: str
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''     
+
     status = ""
     jData   = json.loads(change)
     crqInfo = w3rkstatt.getJsonValue(path="$.entries..values",data=jData)

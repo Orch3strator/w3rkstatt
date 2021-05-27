@@ -210,6 +210,36 @@ def tsimDefineEvent():
 
     return json_data
 
+def computeCI(data):
+
+    ci_name = data
+    ci_attributeMap = {}
+    ci_attributeMap['Name'] = ci_name
+    ci_attributeMap['CLASS'] = ""
+    ci_attributeMap['Description'] = "CTM Application"
+    ci_attributeMap['Priority'] = "PRIORITY_5"
+    ci_attributeMap['HomeCell'] = tsim.tsim_cell
+    ci_attributeMap['ReadSecurity'] = "[Full Access]"
+    ci_attributeMap['WriteSecurity'] = "[Full Access]"
+    ci_attributeMap['status'] = "OK"
+    ci_attributeMap['maintenance_mode'] = "NO"
+    ci_attributeMap['ComponentAliases'] = "[ctm-em:TryBMC:Business Service Automation:TryBMC Payroll:]"
+    ci_attributeMap['HomePageURI'] = "http://www.trybmc.com"
+    ci_attributeMap['ManufacturerName'] = "BMC Software"
+    ci_attributeMap['TokenId'] = "ctm-em:TryBMC:Business Service Automation:TryBMC Payroll:"
+    
+     
+
+    # Define the dictionary that wraps each event.
+    ci_wrapper = {}
+    ci_wrapper["id"] = ci_name
+    ci_wrapper["className"] = "BMC_ApplicationService"
+    ci_wrapper["attributeMap"] = ci_attributeMap
+    json_data = '{"cilist":[' + w3rkstatt.jsonTranslateValues(str(ci_wrapper)) + ']}'
+    if _localDebug:
+      logger.debug('CTM: CI json payload: %s', json_data)  
+    return json_data
+
 # Demo Control-M
 def demoCTM():
     # CTM Login

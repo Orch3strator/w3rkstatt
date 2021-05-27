@@ -85,7 +85,17 @@ hostIP   = w3rkstatt.getHostIP(hostName)
 domain   = w3rkstatt.getHostDomain(w3rkstatt.getHostFqdn(hostName))
   
 
-def tsimAuthenticate():
+def authenticate():
+  '''
+  Login to platform
+
+  :return: authentication token
+  :rtype: str
+  :raises ValueError: N/A
+  :raises TypeError: N/A    
+  '''  
+  
+  authToken = None
   url = tsps_url + 'token'
   tsom_pwd_decrypted = w3rkstatt.decryptPwd(data=tsom_pwd,sKeyFileName=cryptoFile)
 
@@ -132,16 +142,13 @@ def tsimAuthenticate():
     if _localDebug:
       logger.info('TSPS: Response: %s', json_data)
       logger.info('TSPS: authToken: %s', authToken)
-    return authToken
   else:
       logger.error('Authentication Failure Response Code: %s', response)
-      # exit()
-  # end of get_authToken() function
+  return authToken
 
-def tsimCreateEvent(event_data):
+def createEvent(token,event_data):
   tsim_event_id = ""
-  # Authenticate first.
-  authToken = tsimAuthenticate()
+  authToken = token
   url = tsim_url + 'Event/create?routingId=' + tsim_cell + '&routingType=' + tsim_routing
   headers = {
       'content-type': "application/json",
@@ -181,10 +188,9 @@ def tsimCreateEvent(event_data):
     logger.error('TSIM: failed to create the event: %s', response)
   return tsim_event_id
 
-def tsimUpdateEvent(event_data):
+def updateEvent(token,event_data):
   status = False
-  # Authenticate first.
-  authToken = tsimAuthenticate()
+  authToken = token
   url = tsim_url + 'Event/update?routingId=' + tsim_cell + '&routingType=' + tsim_routing
   headers = {
       'content-type': "application/json",
@@ -221,12 +227,11 @@ def tsimUpdateEvent(event_data):
     logger.error('TSIM: failed to create the event: %s', response)
   return status
 
-def tsimSearchEvent(tsimEventIdentifier,tsimEventValue):
+def searchEvent(token,tsimEventIdentifier,tsimEventValue):
   tsim_event_id = ""
   # Authenticate first.
   # https://docs.bmc.com/docs/TSInfrastructure/113/listing-events-774797826.html
-
-  authToken = tsimAuthenticate()
+  authToken = token
   url = tsim_url + 'Event/search?routingId=' + tsim_cell + '&routingType=' + tsim_routing
   headers = {
       'content-type': "application/json",
@@ -279,7 +284,7 @@ def tsimSearchEvent(tsimEventIdentifier,tsimEventValue):
     logger.error('TSIM: failed to search the event: %s', response)
   return tsim_event_id
  
-def tsimGetEventID(data):
+def getEventID(data):
   # {'responseTimeStamp': '2020-05-23T20:11:30', 'statusCode': '200', 'statusMsg': 'OK', 'responseList': [{'mc_ueid': 'mc.pncell_bmcs-ts-om.1ec98372.0', 'statusCode': '200', 'statusMsg': 'OK'}]}
   key     = "mc_ueid"
   mc_ueid = ""
@@ -295,22 +300,23 @@ def tsimGetEventID(data):
 
 # Main function
 
-def tsimEvent(data):
-  tsim_event_id = ""
+def tsimEvent(token,data):
+  authToken = token
+  tsim_event_id = None
   # Define the TSOM event slots and create a JSON object.
   logger.info('TSIM: define event')
   # json_data = tsimDefineEvent()
 
   # Make the call to the API to create the event,
   logger.info('TSIM: invoke event creation')
-  tsim_event_id = tsimCreateEvent(data)
+  tsim_event_id = createEvent(token=authToken,data=data)
   return tsim_event_id
 
-def tsimSearchCI(tsimCiIdentifier,tsimCiValue):
+def searchCI(token,tsimCiIdentifier,tsimCiValue):
   # Authenticate first.
   # https://docs.bmc.com/docs/TSInfrastructure/113/listing-events-774797826.html
 
-  authToken = tsimAuthenticate()
+  authToken = token
   url = tsim_url + 'CI/search'
   headers = {
       'content-type': "application/json",
@@ -358,12 +364,12 @@ def tsimSearchCI(tsimCiIdentifier,tsimCiValue):
     logger.error('TSIM: failed to search for CI: %s', response)
   return tsim_data  
 
-def tsimSearchCiAdvanced(tsimCiSearchFilter):
+def searchCIAdvanced(token,tsimCiSearchFilter):
   tsim_data = {}
   # Authenticate first.
   # https://docs.bmc.com/docs/TSInfrastructure/113/listing-events-774797826.html
 
-  authToken = tsimAuthenticate()
+  authToken = token
   url = tsim_url + 'CI/search'
   headers = {
       'content-type': "application/json",
@@ -399,10 +405,10 @@ def tsimSearchCiAdvanced(tsimCiSearchFilter):
     logger.error('TSIM: failed to search for CI: %s', response)
   return tsim_data  
 
-def tsimCreateCI(data,ciType="CI"):
-  tsim_data = ""
+def createCI(token,data,ciType="CI"):
+  tsim_data = None
   # Authenticate first.
-  authToken = tsimAuthenticate()
+  authToken = token
   # http://bppmwsserver:80/bppmws/api/CI/create?routingIdKeyParam=CI_ID&routingId=ci5&routingIdType=CACHE_KEY&ciType=CI
   # routingIdType=SERVER_NAME
   url = tsim_url + 'CI/create?routingIdKeyParam=NAME&routingIdType=SERVER_NAME&routingId=' + tsim_cell + '&ciType=' + ciType
@@ -443,35 +449,6 @@ def tsimCreateCI(data,ciType="CI"):
     logger.error('TSIM: failed to create the CI: %s', response)
   return tsim_data
 
-def tsimComputeCI(data):
-
-    ci_name = data
-    ci_attributeMap = {}
-    ci_attributeMap['Name'] = ci_name
-    ci_attributeMap['CLASS'] = ""
-    ci_attributeMap['Description'] = "CTM Application"
-    ci_attributeMap['Priority'] = "PRIORITY_5"
-    ci_attributeMap['HomeCell'] = tsim_cell
-    ci_attributeMap['ReadSecurity'] = "[Full Access]"
-    ci_attributeMap['WriteSecurity'] = "[Full Access]"
-    ci_attributeMap['status'] = "OK"
-    ci_attributeMap['maintenance_mode'] = "NO"
-    ci_attributeMap['ComponentAliases'] = "[ctm-em:TryBMC:Business Service Automation:TryBMC Payroll:]"
-    ci_attributeMap['HomePageURI'] = "http://www.trybmc.com"
-    ci_attributeMap['ManufacturerName'] = "BMC Software"
-    ci_attributeMap['TokenId'] = "ctm-em:TryBMC:Business Service Automation:TryBMC Payroll:"
-    
-     
-
-    # Define the dictionary that wraps each event.
-    ci_wrapper = {}
-    ci_wrapper["id"] = ci_name
-    ci_wrapper["className"] = "BMC_ApplicationService"
-    ci_wrapper["attributeMap"] = ci_attributeMap
-    json_data = '{"cilist":[' + w3rkstatt.jsonTranslateValues(str(ci_wrapper)) + ']}'
-    if _localDebug:
-      logger.debug('CTM: CI json payload: %s', json_data)  
-    return json_data
     
 
 
@@ -490,7 +467,7 @@ if __name__ == "__main__":
     logger.info('TSIM Cell: %s', tsim_cell)
     logger.info('Tenant: %s', tsom_tenant)
     logger.info('User: %s', tsom_user)
-    logger.info('TSIM Token: %s', tsimAuthenticate())
+    logger.info('TSIM Token: %s', authenticate())
     logger.info('Epoch: %s', epoch)
     
 
