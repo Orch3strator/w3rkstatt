@@ -413,11 +413,14 @@ def jsonTranslateValues(data):
     :raises ValueError: N/A
     :raises TypeError: N/A    
     '''      
-    # data = str(data)
+    sData = ""
+    data = str(data)
+    sData = str(data).replace("'",'"')
 
-    if jsonValidator(data=data):
+    isJsonData = jsonValidator(data=sData)
+    if isJsonData:
 
-        jData = json.loads(data)
+        jData = json.loads(sData)
         if isinstance(jData, dict):
             for key in jData:
                 if jData[key] is False:

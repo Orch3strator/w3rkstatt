@@ -41,6 +41,7 @@ from src import w3rkstatt as w3rkstatt
 from src import core_ctm as ctm
 from src import core_itsm as itsm
 from src import core_tsim as tsim
+from src import core_tso as tso
 from src import core_smtp as smtp
 
 
@@ -297,7 +298,6 @@ def demoITSM():
     itsm.itsmLogout(token=authToken)
 
 # Demo TrueSight Operations Manager Integration
-# routingIdKeyParam
 def demoTSIM():
   tsim.tsimAuthenticate()
   # data = "Helix Expert"
@@ -308,6 +308,27 @@ def demoTSIM():
   tsim_event_id = tsim.tsimCreateEvent(event_data=tsim_data)
   logger.debug('TSIM: event id: %s', tsim_event_id)
   return tsim_event_id
+
+# Demo TrueSight Orchestrator Integration
+def demoTSO():
+    authToken = tso.authenticate()
+    workflow    = w3rkstatt.getJsonValue(path="$.TSO.ctm.wcm",data=jCfgData)
+    data        = {
+                    "inputParameters": [
+                            {
+                                "name": "data",
+                                "value": "test"
+                            }
+                        ]
+                }
+
+    response  = tso.executeTsoProcess(token=authToken,process=workflow,data=data)
+    response  = w3rkstatt.jsonTranslateValues(data=response)
+    logger.info('TSO Demo: %s', response)
+
+    response = tso.getTsoModulesAdv(token=authToken)
+    response = w3rkstatt.jsonTranslateValues(data=response)
+    logger.info('TSO Demo: %s', response)
 
 # Demo E-Mail vi SMTP in HTML format
 def demoSMTP():
@@ -342,20 +363,30 @@ if __name__ == "__main__":
     logger.info('CTM User: %s', ctm.ctm_user)
     logger.info('Epoch: %s', epoch)
 
+    demoStatusCTM  = w3rkstatt.getJsonValue(path="$.CTM.demo",data=jCfgData)
+    demoStatusITSM = w3rkstatt.getJsonValue(path="$.ITSM.demo",data=jCfgData)
+    demoStatusTSIM = w3rkstatt.getJsonValue(path="$.TSIM.demo",data=jCfgData)
+    demoStatusTSO  = w3rkstatt.getJsonValue(path="$.TSO.demo",data=jCfgData)
+    demoStatusSMTP = w3rkstatt.getJsonValue(path="$.MAIL.demo",data=jCfgData)
+
     # Demo Control-M Integration
-    if w3rkstatt.getJsonValue(path="$.CTM.demo",data=jCfgData):
+    if demoStatusCTM:
         demoCTM()
 
     # Demo Helix ITSM Integration
-    if w3rkstatt.getJsonValue(path="$.ITSM.demo",data=jCfgData):
+    if demoStatusITSM:
         demoITSM()
 
     # Demo TrueSight Operations Manager Integration
-    if w3rkstatt.getJsonValue(path="$.TSIM.demo",data=jCfgData):
+    if demoStatusTSIM:
         demoTSIM()
 
+    # Demo TrueSight ORchestrator Integration
+    if demoStatusTSO:
+        demoTSO()
+
     # Demo SMTP Integration
-    if w3rkstatt.getJsonValue(path="$.MAIL.demo",data=jCfgData):
+    if demoStatusSMTP:
         demoSMTP()
 
     logger.info('W3rkstatt: User Acceptance Test')
