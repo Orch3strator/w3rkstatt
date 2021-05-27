@@ -26,6 +26,7 @@ Change Log
 Date (YMD)    Name                  What
 --------      ------------------    ------------------------
 20210521      Volker Scheithauer    Consolidate test cases
+20210527      Volker Scheithauer    Update UAT
 
 """
 
@@ -63,6 +64,7 @@ hostName = w3rkstatt.getHostName()
 hostIP   = w3rkstatt.getHostIP(hostName)
 hostFqdn = w3rkstatt.getHostFqdn(hostName)
 domain   = w3rkstatt.getHostDomain(hostFqdn)
+
 
 # Assign module defaults
 _modVer = "20.21.05.00"
@@ -266,7 +268,7 @@ def demoITSM():
     itsm_demo_crq   = w3rkstatt.getJsonValue(path="$.ITSM.change.demo",data=jCfgData)
     itsm_demo_inc   = w3rkstatt.getJsonValue(path="$.ITSM.incident.demo",data=jCfgData)
     
-    authToken    = itsm.itsmAuthenticate()
+    authToken    = itsm.authenticate()
 
     # Demo ITSM Change Integration
     if itsm_demo_crq:

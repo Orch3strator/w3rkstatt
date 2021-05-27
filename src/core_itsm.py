@@ -26,7 +26,7 @@ Change Log
 Date (YMD)    Name                  What
 --------      ------------------    ------------------------
 20210513      Volker Scheithauer    Tranfer Development from other projects
-
+20210527      Volker Scheithauer    Update UAT
 """
 
 
@@ -110,7 +110,8 @@ hostIP   = w3rkstatt.getHostIP(hostName)
 if itsm_ssl_ver == False:
   urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-def itsmAuthenticate():
+def authenticate():
+    authToken = None
     url = itsm_jwt + '/login'
     itsm_pwd_decrypted  = w3rkstatt.decryptPwd(data=itsm_pwd,sKeyFileName=cryptoFile)
     response = ""
@@ -155,12 +156,11 @@ def itsmAuthenticate():
         authToken = response.text
         if _localDebug:
             logger.debug('ITSM: authToken: "%s"', authToken)
-        return authToken
     else:
         logger.error('Authentication Failure Response Code: %s', response)
-        # exit()
+    return authToken
 
-def itsmLogout(token):
+def logout(token):
     url = itsm_jwt + '/logout'
     authToken = token
 
@@ -212,7 +212,7 @@ def itsmLogout(token):
 # http://serverName:port/api/arsys/v1/entry/HPD:IncidentInterface_Create?fields=values(Incident Number)  
 # https://docs.bmc.com/docs/ars2008/date-and-time-formats-929628201.html
 
-def itsmFormGet(form,headers,entry=""):
+def apiGet(form,headers,entry=""):
     if len(entry) > 1:
         if "?" in entry:
             url = itsm_url + '/entry/' + form + entry
@@ -259,7 +259,7 @@ def itsmFormGet(form,headers,entry=""):
         logger.error('Authentication Failure Response Code: %s', response)
         # exit()
 
-def itsmFormPost(form,headers,body="",fields=""):
+def apiPost(form,headers,body="",fields=""):
     if len(fields) > 1:
         url = itsm_url + '/entry/' + form + '/?' + fields
     else:
@@ -338,7 +338,7 @@ def createIncident(token,data):
     }    
    
     entryFields  = "fields=values(Incident Number)"
-    entryRespone = itsmFormPost(form=itsm_form_inc,headers=headers,body=data,fields=entryFields).replace(" ","")
+    entryRespone = apiPost(form=itsm_form_inc,headers=headers,body=data,fields=entryFields).replace(" ","")
     entryJson    = json.loads(entryRespone)
     entryID      = w3rkstatt.getJsonValue(path="$.*.IncidentNumber",data=entryJson)
 
@@ -355,7 +355,7 @@ def getIncident(token,incident):
     }    
     
     entryID      = incident
-    entryRespone = itsmFormGet(form=itsm_search_inc,headers=headers,entry=entryID)
+    entryRespone = apiGet(form=itsm_search_inc,headers=headers,entry=entryID)
     logger.debug('ITSM: Entry: %s', entryRespone) 
 
     return entryRespone
@@ -374,7 +374,7 @@ def createChange(token,data):
         'Authorization': authToken
     }    
     entryFields  = "fields=values(Infrastructure Change Id)"
-    entryRespone = itsmFormPost(form=itsm_form_crq,headers=headers,body=data,fields=entryFields)
+    entryRespone = apiPost(form=itsm_form_crq,headers=headers,body=data,fields=entryFields)
 
     entryRespone = entryRespone.replace(" ","")
     if entryRespone == "Error":
@@ -392,7 +392,7 @@ def createChangeWorklog(token,data):
         'Authorization': authToken
     }    
     entryFields  = "fields=values(Infrastructure Change Id)"
-    entryRespone = itsmFormPost(form=itsm_form_crq,headers=headers,body=data,fields=entryFields).replace(" ","")
+    entryRespone = apiPost(form=itsm_form_crq,headers=headers,body=data,fields=entryFields).replace(" ","")
     entryJson    = json.loads(entryRespone)
     entryID      = w3rkstatt.getJsonValue(path="$.*.InfrastructureChangeId",data=entryJson)
     return entryID
@@ -404,7 +404,7 @@ def createIncidentWorklog(token,data):
         'cache-control': "no-cache" ,
         'Authorization': authToken
     }    
-    entryRespone = itsmFormPost(form=itsm_form_wlog,headers=headers,body=data)
+    entryRespone = apiPost(form=itsm_form_wlog,headers=headers,body=data)
     
     return entryRespone
 
@@ -419,7 +419,7 @@ def getChange(token,change):
 
     itsm_form    = itsm_form_crq.split("_")[0]
     entryID      = '/?q=(' + "'Infrastructure Change ID'" + '="' + change + '")' 
-    entryRespone = itsmFormGet(form=itsm_form,headers=headers,entry=entryID)
+    entryRespone = apiGet(form=itsm_form,headers=headers,entry=entryID)
     logger.debug('ITSM: Entry: %s', entryRespone) 
 
     return entryRespone
@@ -465,99 +465,6 @@ def extractChangeState(change):
         status = "Unknown"
 
     return status
-
-def testIncidentCreate(token):
-    data =  {
-                "values": {
-                    "z1D_Action" : "CREATE",
-                    "First_Name": w3rkstatt.getJsonValue(path="$.ITSM.defaults.name-first",data=jCfgData),
-                    "Last_Name": w3rkstatt.getJsonValue(path="$.ITSM.defaults.name-last",data=jCfgData),
-                    "Description": "CTM WCM: Incident Creation " + str(epoch),
-                    "Impact": w3rkstatt.getJsonValue(path="$.ITSM.incident.impact",data=jCfgData),
-                    "Urgency": w3rkstatt.getJsonValue(path="$.ITSM.incident.urgency",data=jCfgData),
-                    "Status": w3rkstatt.getJsonValue(path="$.ITSM.incident.status",data=jCfgData),
-                    "Reported Source": w3rkstatt.getJsonValue(path="$.ITSM.incident.reported-source",data=jCfgData),
-                    "Service_Type": w3rkstatt.getJsonValue(path="$.ITSM.incident.service-type",data=jCfgData),
-                    "ServiceCI": w3rkstatt.getJsonValue(path="$.ITSM.defaults.service-ci",data=jCfgData),
-                    "Assigned Group": w3rkstatt.getJsonValue(path="$.ITSM.defaults.assigned-group",data=jCfgData),
-                    "Assigned Support Company": w3rkstatt.getJsonValue(path="$.ITSM.defaults.support-company",data=jCfgData),
-                    "Assigned Support Organization": w3rkstatt.getJsonValue(path="$.ITSM.defaults.support-organization",data=jCfgData),
-                    "Categorization Tier 1": w3rkstatt.getJsonValue(path="$.ITSM.defaults.op_cat_1",data=jCfgData),
-                    "Categorization Tier 2": w3rkstatt.getJsonValue(path="$.ITSM.defaults.op_cat_2",data=jCfgData),
-                    "Categorization Tier 3": w3rkstatt.getJsonValue(path="$.ITSM.defaults.op_cat_3",data=jCfgData),
-                    "Product Categorization Tier 1": w3rkstatt.getJsonValue(path="$.ITSM.defaults.prod_cat_1",data=jCfgData),
-                    "Product Categorization Tier 2": w3rkstatt.getJsonValue(path="$.ITSM.defaults.prod_cat_2",data=jCfgData),
-                    "Product Categorization Tier 3": w3rkstatt.getJsonValue(path="$.ITSM.defaults.prod_cat_3",data=jCfgData),
-                    "Product Name": w3rkstatt.getJsonValue(path="$.ITSM.defaults.product_name",data=jCfgData),
-                    "TemplateID": "AGGAA5V0GO2Y0APMV93LPLY5FREVV1"
-                    # "Urgency" : "3-Medium",
-                    # "Vendor Ticket Number" : "INC9969625",
-                    # "z1D_View_Access":"Internal",
-                    # "z1D_WorklogDetails": "Test",
-                    # "z1D_Activity_Type": "General Information",
-                    # "z1D_CommunicationSource": "Other",
-                    # "z1D_Secure_Log": "Locked",
-                    # "z1D_Details": "Adding Work notes"                                   
-                }
-            } 
-    data2log = w3rkstatt.jsonTranslateValuesAdv(data=data)
-    logger.info('ITSM Incident Data: %s ', data2log) 
-    result = createIncident(token,data)
-    return result 
-
-def testIncidentWorklog(token,incident):
-    data =  {
-                "values": {
-                    "Work Log Submitter": "user",
-                    "Status": "Enabled",
-                    "Description": "Integration Demo",
-                    "Detailed Description": "Added via Python REST API",
-                    "Incident Number": "" + str(incident) + "",
-                    "Work Log Type": "Incident Task / Action",
-                    "View Access": "Public",
-                    "Secure Work Log": "No"
-                }
-            } 
-    result = createIncidentWorklog(token,data)
-    return result 
-
-def testChangeCreate(token):
-    timeDelta  = w3rkstatt.getJsonValue(path="$.ITSM.defaults.timedelta",data=jCfgData)
-    startDate  = w3rkstatt.getCurrentDate(timeFormat=_timeFormat)
-    endDate    = w3rkstatt.addTimeDelta(date=startDate,timeFormat=_timeFormat,delta=timeDelta)
-
-    data =  {
-                "values": {
-                    "z1D_Action" : "CREATE",
-                    "First Name": w3rkstatt.getJsonValue(path="$.ITSM.defaults.name-first",data=jCfgData),
-                    "Last Name": w3rkstatt.getJsonValue(path="$.ITSM.defaults.name-last",data=jCfgData),
-                    "Description": "CTM WCM: Change Creation " + str(epoch),
-                    "Impact": w3rkstatt.getJsonValue(path="$.ITSM.change.impact",data=jCfgData),
-                    "Urgency": w3rkstatt.getJsonValue(path="$.ITSM.change.urgency",data=jCfgData),
-                    "Status": w3rkstatt.getJsonValue(path="$.ITSM.change.status",data=jCfgData),
-                    "Status Reason": w3rkstatt.getJsonValue(path="$.ITSM.change.status_reason",data=jCfgData),
-                    "Vendor Ticket Number": "CMT 99",
-                    "ServiceCI": w3rkstatt.getJsonValue(path="$.ITSM.defaults.service-ci",data=jCfgData),
-                    "Company3": w3rkstatt.getJsonValue(path="$.ITSM.defaults.support-company",data=jCfgData),
-                    "Support Organization": w3rkstatt.getJsonValue(path="$.ITSM.defaults.support-organization",data=jCfgData),
-                    "Support Group Name": w3rkstatt.getJsonValue(path="$.ITSM.defaults.assigned-group",data=jCfgData),
-                    "Location Company": w3rkstatt.getJsonValue(path="$.ITSM.defaults.location-company",data=jCfgData),
-                    "Region": w3rkstatt.getJsonValue(path="$.ITSM.defaults.region",data=jCfgData),
-                    "Site Group": w3rkstatt.getJsonValue(path="$.ITSM.defaults.site-group",data=jCfgData),
-                    "Site": w3rkstatt.getJsonValue(path="$.ITSM.defaults.site",data=jCfgData),
-                    "Categorization Tier 1": w3rkstatt.getJsonValue(path="$.ITSM.defaults.op_cat_1",data=jCfgData),
-                    "Categorization Tier 2": w3rkstatt.getJsonValue(path="$.ITSM.defaults.op_cat_2",data=jCfgData),
-                    "Categorization Tier 3": w3rkstatt.getJsonValue(path="$.ITSM.defaults.op_cat_3",data=jCfgData),
-                    "Product Cat Tier 1(2)": w3rkstatt.getJsonValue(path="$.ITSM.defaults.prod_cat_1",data=jCfgData),
-                    "Product Cat Tier 2 (2)": w3rkstatt.getJsonValue(path="$.ITSM.defaults.prod_cat_2",data=jCfgData),
-                    "Product Cat Tier 3 (2)": w3rkstatt.getJsonValue(path="$.ITSM.defaults.prod_cat_3",data=jCfgData),
-                    "Scheduled Start Date": startDate, 
-                    "Scheduled End Date": endDate,
-                    "TemplateID": itsm_tmpl_crq               
-                }
-            } 
-    result = createChange(token,data)
-    return result 
 
 
 if __name__ == "__main__":
