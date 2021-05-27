@@ -94,6 +94,7 @@ if tso_ssl_ver == False:
 
 
 def authenticate():
+    authToken = None
     url = tso_url + '/rest/login'
     tso_pwd_decrypted = w3rkstatt.decryptPwd(data=tso_pwd,sKeyFileName=cryptoFile)
 
@@ -138,10 +139,9 @@ def authenticate():
         authToken = rshd["Authentication-Token"]
         if _localDebug:
             logger.debug('TSO: authToken: "%s"', authToken)
-        return authToken
     else:
         logger.error('Authentication Failure Response Code: %s', response)
-        # exit()
+    return authToken
 
 def logout(data):
     url = tso_url + '/rest/logout'

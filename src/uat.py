@@ -312,23 +312,25 @@ def demoTSIM():
 # Demo TrueSight Orchestrator Integration
 def demoTSO():
     authToken = tso.authenticate()
-    workflow    = w3rkstatt.getJsonValue(path="$.TSO.ctm.wcm",data=jCfgData)
-    data        = {
-                    "inputParameters": [
-                            {
-                                "name": "data",
-                                "value": "test"
-                            }
-                        ]
-                }
+    logger.info('TSO Login: %s',  authToken)
+    if authToken != None:
+        workflow    = w3rkstatt.getJsonValue(path="$.TSO.ctm.wcm",data=jCfgData)
+        data        = {
+                        "inputParameters": [
+                                {
+                                    "name": "data",
+                                    "value": "test"
+                                }
+                            ]
+                    }
 
-    response  = tso.executeTsoProcess(token=authToken,process=workflow,data=data)
-    response  = w3rkstatt.jsonTranslateValues(data=response)
-    logger.info('TSO Demo: %s', response)
+        response  = tso.executeTsoProcess(token=authToken,process=workflow,data=data)
+        response  = w3rkstatt.jsonTranslateValues(data=response)
+        logger.info('TSO Demo: %s', response)
 
-    response = tso.getTsoModulesAdv(token=authToken)
-    response = w3rkstatt.jsonTranslateValues(data=response)
-    logger.info('TSO Demo: %s', response)
+        response = tso.getTsoModulesAdv(token=authToken)
+        response = w3rkstatt.jsonTranslateValues(data=response)
+        logger.info('TSO Demo: %s', response)
 
 # Demo E-Mail vi SMTP in HTML format
 def demoSMTP():
