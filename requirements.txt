@@ -1,8 +1,17 @@
 ###### Requirements without Version Specifiers ######`
-pyCryptodome
+
 wheel
-requests 
+python_dateutil
+six
+pytz
+numpy
+pandas
 urllib3
+chardet
+certifi
+idna
+requests
+pyCryptodome
 json2html 
 jsonpath-ng 
 jsonpath_rw_ext

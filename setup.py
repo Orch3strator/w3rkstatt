@@ -47,7 +47,7 @@ setup(
 
     include_package_data=True,
     install_requires=(
-        'pyCryptodome','requests','urllib3','json2html','jsonpath-ng','jsonpath_rw_ext',
+        'wheel','python_dateutil','six','pytz','numpy','pandas','urllib3','chardet','certifi','idna','requests','pyCryptodome','json2html','jsonpath-ng','jsonpath_rw_ext'
     ),
 
     classifiers=[
