@@ -37,7 +37,7 @@ python -m pip install git+https://github.com/dcompane/controlm_py.git
 - [ ] **Donwload Control-M**
 - [ ] **Donwload jsonpath-rw-1.4.0.tar.gz**
 - [ ] **Donwload json2html-1.3.0.tar.gz**
-- [ ] **Extract *.tar.gz files**
+- [ ] **Extract tar.gz files**
 - [ ] **Install with python .\setup.py install**
 
 
