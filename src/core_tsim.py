@@ -36,8 +36,13 @@ import requests, urllib3
 import time, datetime
 import sys, getopt
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-from src import w3rkstatt as w3rkstatt
+# handle dev environment vs. production 
+try:
+    import w3rkstatt as w3rkstatt
+except:
+    # fix import issues for modules
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+    from src import w3rkstatt as w3rkstat
 
 # Define global variables from w3rkstatt.ini file
 # Get configuration from bmcs_core.json

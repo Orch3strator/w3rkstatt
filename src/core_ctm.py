@@ -47,9 +47,13 @@ import controlm_py as ctm
 from controlm_py.rest import ApiException
 # from controlm_py.models.run_report_info import RunReportInfo
 
-# fix import issues for modules
-sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-from src import w3rkstatt as w3rkstatt
+# handle dev environment vs. production 
+try:
+    import w3rkstatt as w3rkstatt
+except:
+    # fix import issues for modules
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+    from src import w3rkstatt as w3rkstat
 
 # To Handle CTM JSON with '
 # https://pypi.org/project/demjson/

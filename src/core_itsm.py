@@ -41,9 +41,13 @@ from jsonpath_ng import jsonpath
 from jsonpath_ng.ext import parse
 import jsonpath_rw_ext as jp
 
-# fix import issues for modules
-sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-from src import w3rkstatt as w3rkstatt
+# handle dev environment vs. production 
+try:
+    import w3rkstatt as w3rkstatt
+except:
+    # fix import issues for modules
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+    from src import w3rkstatt as w3rkstat
 
 # Get configuration from bmcs_core.json
 # jCfgFile     = os.path.join( w3rkstatt.getCurrentFolder(), "bmcs_core.json")

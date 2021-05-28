@@ -38,14 +38,21 @@ import time, datetime
 # fix import issues for modules
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
-from src import w3rkstatt as w3rkstatt
-from src import core_ctm as ctm
-from src import core_itsm as itsm
-from src import core_tsim as tsim
-from src import core_tso as tso
-from src import core_smtp as smtp
-
-
+# handle dev environment vs. production 
+try:
+    import w3rkstatt as w3rkstatt
+    import core_ctm as ctm
+    import core_itsm as itsm
+    import core_tsim as tsim
+    import core_tso as tso
+    import core_smtp as smtp
+except:
+    from src import w3rkstatt as w3rkstatt
+    from src import core_ctm as ctm
+    from src import core_itsm as itsm
+    from src import core_tsim as tsim
+    from src import core_tso as tso
+    from src import core_smtp as smtp
 
 
 # Get configuration from bmcs_core.json
@@ -301,70 +308,67 @@ def demoITSM():
     itsm_demo_inc   = w3rkstatt.getJsonValue(path="$.ITSM.incident.demo",data=jCfgData)
     
     authToken    = itsm.authenticate()
+    if authToken != None:
+        # Demo ITSM Change Integration
+        if itsm_demo_crq:
+            changeID     = testChangeCreate(token=authToken)
+            logger.info('ITSM: Change   ID: "%s"', changeID) 
 
-    # Demo ITSM Change Integration
-    if itsm_demo_crq:
-        changeID     = testChangeCreate(token=authToken)
-        logger.info('ITSM: Change   ID: "%s"', changeID) 
+            crqInfo      = itsm.getChange(token=authToken,change=changeID)
+            logger.info('ITSM: Change Info: %s', crqInfo) 
 
-        crqInfo      = itsm.getChange(token=authToken,change=changeID)
-        logger.info('ITSM: Change Info: %s', crqInfo) 
+            crqStatus    = itsm.extractChangeState(change=crqInfo)
+            logger.info('ITSM: Change State: "%s"', crqStatus) 
+        
+        # Demo ITSM Incident Integration
+        if itsm_demo_inc:
+            incidentID   = testIncidentCreate(token=authToken)
+            logger.info('ITSM: Incident ID: "%s"', incidentID) 
 
-        crqStatus    = itsm.extractChangeState(change=crqInfo)
-        logger.info('ITSM: Change State: "%s"', crqStatus) 
-    
-    # Demo ITSM Incident Integration
-    if itsm_demo_inc:
-        incidentID   = testIncidentCreate(token=authToken)
-        logger.info('ITSM: Incident ID: "%s"', incidentID) 
+            incInfo    = itsm.getIncident(token=authToken,incident=incidentID)
+            logger.info('ITSM: Incident: %s', incInfo) 
 
-        incInfo    = itsm.getIncident(token=authToken,incident=incidentID)
-        logger.info('ITSM: Incident: %s', incInfo) 
+            incStatus  = itsm.getIncidentStatus(token=authToken,incident=incidentID)
+            logger.info('ITSM: Incident State: "%s"', incStatus) 
 
-        incStatus  = itsm.getIncidentStatus(token=authToken,incident=incidentID)
-        logger.info('ITSM: Incident State: "%s"', incStatus) 
+            incWLogStatus = testIncidentWorklog(token=authToken,incident=incidentID)
+            logger.info('ITSM: Incident Worklog Status: "%s"', incWLogStatus) 
 
-        incWLogStatus = testIncidentWorklog(token=authToken,incident=incidentID)
-        logger.info('ITSM: Incident Worklog Status: "%s"', incWLogStatus) 
-
-
-
-    itsm.logout(token=authToken)
+        itsm.logout(token=authToken)
 
 # Demo TrueSight Operations Manager Integration
 def demoTSIM():
-  authToken = tsim.authenticate()
-  # data = "Helix Expert"
-  # ci_json = tsimComputeCI(data=data)
-  # tsim_data = tsimCreateCI(data=ci_json)
-
-  tsim_data     = tsimDefineEvent()
-  tsim_event_id = tsim.createEvent(token=authToken,event_data=tsim_data)
-  logger.debug('TSIM: event id: %s', tsim_event_id)
-  return tsim_event_id
+    authToken = tsim.authenticate()
+    tsim_event_id = None
+    if authToken != None:
+        tsim_data     = tsimDefineEvent()
+        tsim_event_id = tsim.createEvent(token=authToken,event_data=tsim_data)
+        logger.debug('TSIM: event id: %s', tsim_event_id)
+    return tsim_event_id
 
 # Demo TrueSight Orchestrator Integration
 def demoTSO():
     authToken = tso.authenticate()
-    logger.info('TSO Login: %s',  authToken)
     if authToken != None:
-        workflow    = w3rkstatt.getJsonValue(path="$.TSO.ctm.wcm",data=jCfgData)
-        data        = {
-                        "inputParameters": [
-                                {
-                                    "name": "data",
-                                    "value": "test"
-                                }
-                            ]
-                    }
+        logger.info('TSO Login: %s',  authToken)
+        if authToken != None:
+            workflow    = w3rkstatt.getJsonValue(path="$.TSO.ctm.wcm",data=jCfgData)
+            data        = {
+                            "inputParameters": [
+                                    {
+                                        "name": "data",
+                                        "value": "test"
+                                    }
+                                ]
+                        }
 
-        response  = tso.executeTsoProcess(token=authToken,process=workflow,data=data)
-        response  = w3rkstatt.jsonTranslateValues(data=response)
-        logger.info('TSO Demo: %s', response)
+            response  = tso.executeTsoProcess(token=authToken,process=workflow,data=data)
+            response  = w3rkstatt.jsonTranslateValues(data=response)
+            logger.info('TSO Demo: %s', response)
 
-        response = tso.getTsoModulesAdv(token=authToken)
-        response = w3rkstatt.jsonTranslateValues(data=response)
-        logger.info('TSO Demo: %s', response)
+            response = tso.getTsoModulesAdv(token=authToken)
+            response = w3rkstatt.jsonTranslateValues(data=response)
+            logger.info('TSO Demo: %s', response)
 
 # Demo E-Mail vi SMTP in HTML format
 def demoSMTP():

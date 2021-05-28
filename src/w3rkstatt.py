@@ -49,7 +49,6 @@ from urllib.parse import urlparse
 
 try:
     # Cryptodome
-    pass
     from base64 import b64encode, b64decode
     from Cryptodome.Cipher import AES
     from Cryptodome.Util.Padding import pad, unpad

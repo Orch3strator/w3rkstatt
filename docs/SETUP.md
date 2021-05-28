@@ -35,6 +35,11 @@ python -m pip install git+https://github.com/dcompane/controlm_py.git
 - [ ] **Donwload Basic Libraries**
 - [ ] **Donwload Cryptodome**
 - [ ] **Donwload Control-M**
+- [ ] **Donwload jsonpath-rw-1.4.0.tar.gz**
+- [ ] **Donwload json2html-1.3.0.tar.gz**
+- [ ] **Extract *.tar.gz files**
+- [ ] **Install with python .\setup.py install**
+
 
 Find python package dependencies with: python -m pip show <package-name>
 
@@ -75,5 +80,9 @@ python -m pip install certifi-2020.12.5-py2.py3-none-any.whl
 python -m pip install idna-2.10-py2.py3-none-any.whl
 python -m pip install requests-2.25.1-py2.py3-none-any.whl
 python -m pip install pycryptodome-3.10.1-cp35-abi3-win_amd64.whl
+python -m pip install decorator-5.0.9-py3-none-any.whl
+python -m pip install ply-3.11-py2.py3-none-any.whl
+python -m pip install pbr-5.6.0-py2.py3-none-any.whl
+python -m pip install jsonpath_ng-1.5.2-py3-none-any.whl
 python -m pip install controlm_py-main.zip
 ```
