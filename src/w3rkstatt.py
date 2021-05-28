@@ -403,6 +403,22 @@ def getJsonValue(path,data):
     
     return value
 
+def getJsonValues(path,data):
+    '''
+    Extract data from json content using jsonPath
+
+    :param str path: jsonPath expression
+    :param dict data: json content
+    :return: content
+    :rtype: dict
+    :raises ValueError: N/A
+    :raises TypeError: N/A    
+    '''       
+
+    jpexp = parse(path)
+    values = [match.value for match in jpexp.find(data)]
+    return values
+
 def jsonTranslateValues(data):
     '''
     Replace predefined str in json content

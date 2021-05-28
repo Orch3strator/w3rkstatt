@@ -183,6 +183,13 @@
         "itsm": {
             "enabled": false
         },
+        "alerts": {
+            "ids": "",
+            "comment": "",
+            "urgency": "",
+            "status": "",
+            "demo": false
+        },
         "ctmag": {
             "windows": "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\ctmag",
             "nix": "",

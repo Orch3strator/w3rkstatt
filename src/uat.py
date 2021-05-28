@@ -280,10 +280,12 @@ def demoCTM():
             # logger.info('CTM Alert: %s', ctmAlerts)
 
         if ctm_demo_agt:
-            ctm_server = w3rkstatt.getJsonValue(path="$.CTM.datacenter[0].name",data=jCfgData)
-            ctmAgents = ctm.getCtmAgents(ctmApiClient=ctmApiClient,ctmServer=ctm_server)
-            logger.info('CTM Agents: %s', ctmAgents)
-        
+            ctm_servers = w3rkstatt.getJsonValues(path="$.CTM.datacenter[*].name",data=jCfgData)
+            for server in ctm_servers:
+                ctmAgents = ctm.getCtmAgents(ctmApiClient=ctmApiClient,ctmServer=server)
+                logger.info('CTM Server: %s', server)
+                logger.info('CTM Agents: %s', ctmAgents)
+    
         if ctm_demo_jobs:
             ctm_job_oderid  = w3rkstatt.getJsonValue(path="$.CTM.jobs.oderid",data=jCfgData)
             ctm_job_srv     = w3rkstatt.getJsonValue(path="$.CTM.jobs.server",data=jCfgData)
