@@ -15,9 +15,9 @@ WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEM
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-https://opensource.org/licenses/MIT
-# SPDX-License-Identifier: MIT
-For information on SDPX, https://spdx.org/licenses/MIT.html
+https://opensource.org/licenses/GPL-3.0
+# SPDX-License-Identifier: GPL-3.0-or-later
+For information on SDPX, https://spdx.org/licenses/GPL-3.0-or-later.html
 
 BMC Software Python Core Tools 
 Provide core functions for BMC Software related python scripts
