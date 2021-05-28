@@ -41,6 +41,7 @@ Find python package dependencies with: python -m pip show <package-name>
 
 ## Latest Packages
 Some library dependencies require specific versions. Pay attention to version and architecture.
+Find, install and publish Python packages with the [Python Package Index](https://pypi.org).
 The following list was tested on Windows. Linux is in progress.
 
 ```bash

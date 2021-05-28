@@ -16,20 +16,17 @@ Basic Python modules for Werkstatt projects
 - [ ] **Cryptodome**
 
 
-Install dependencies
+Install dependencies, see [Setup documentation](docs/SETUP.md) for more details.
 ```bash
 Linux
-python3 -m pip install pyCryptodome
-python3 -m pip install pandas
-python3 -m pip install wheel requests urllib3
-python3 -m pip install json2html jsonpath-ng jsonpath_rw_ext
+python3 -m pip install wheel requests urllib3 pyCryptodome pandas json2html jsonpath-ng jsonpath_rw_ext
+python3 -m pip install git+https://github.com/dcompane/controlm_py.git
 ```
+
 ```bash
 Windows
-python -m pip install pyCryptodome
-python -m pip install pandas
-python -m pip install wheel requests urllib3
-python -m pip install json2html jsonpath-ng jsonpath_rw_ext 
+python -m pip install wheel requests urllib3 pyCryptodome pandas json2html jsonpath-ng jsonpath_rw_ext
+python -m pip install git+https://github.com/dcompane/controlm_py.git
 ```
 
 ## Solutions leveraging the base tools
