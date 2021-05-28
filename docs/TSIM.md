@@ -58,19 +58,18 @@ Event Management Python module for Werkstatt projects
 **TrueSight Operations Manager Application**:
 Module | Method | Description
 ------------ | ------------- | -------------
-*core_tsim* | [**tsimGetEventID**]| Extract TSIM Event mc_ueid
-*core_tsim* | [**tsimCreateCI**] | Create TSIM CI
-*core_tsim* | [**tsimComputeCI**] | Compute TSIM CI Details
-*core_tsim* | [**tsimSearchCI**] | Search for TSIM CI
-*core_tsim* | [**tsimSearchCiAdvanced**]| Search for TSIM CI Advanced
+*core_tsim* | [**getEventID**]| Extract TSIM Event mc_ueid
+*core_tsim* | [**createCI**] | Create TSIM CI
+*core_tsim* | [**searchCI**] | Search for TSIM CI
+*core_tsim* | [**searchCIAdvanced**] | Search for TSIM CI Advanced
 
 **TrueSight Operations Manager Core**:
 Module | Method | Description
 ------------ | ------------- | -------------
-*core_tsim* | [**tsimAuthenticate**]| Login to TrueSight Presentation Server
-*core_tsim* | [**tsimCreateEvent**] | Create TSIM Event
-*core_tsim* | [**tsimUpdateEvent**] | Update TSIM Event
-*core_tsim* | [**tsimSearchEvent**] | Search for TSIM Event
+*core_tsim* | [**authenticate**]| Login to TrueSight Presentation Server
+*core_tsim* | [**createEvent**] | Create TSIM Event
+*core_tsim* | [**updateEvent**] | Update TSIM Event
+*core_tsim* | [**searchEvent**] | Search for TSIM Event
 
 
 ## TrueSight Operations Manager HTTP Body

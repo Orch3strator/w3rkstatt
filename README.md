@@ -81,24 +81,38 @@ Module | Method | Description
 **Helix ITSM Core**:
 Module | Method | Description
 ------------ | ------------- | -------------
-*core_itsm* | [**itsmAuthenticate**](docs/ITSM.md) | Login to Helix ITSM
-*core_itsm* | [**itsmLogout**](docs/ITSM.md) | Logout of Helix ITSM
+*core_itsm* | [**authenticate**](docs/ITSM.md) | Login to Helix ITSM
+*core_itsm* | [**logout**](docs/ITSM.md) | Logout of Helix ITSM
 *core_itsm* | [**itsmFormGet**](docs/ITSM.md) | HTTP Get from Helix ITSM Form
 *core_itsm* | [**itsmFormPost**](docs/ITSM.md) | HTTP Post to Helix ITSM Form
 
 **TrueSight Operations Manager Application**:
 Module | Method | Description
 ------------ | ------------- | -------------
-*core_tsim* | [**tsimGetEventID**](docs/TSIM.md)| Extract TSIM Event mc_ueid
-*core_tsim* | [**tsimCreateCI**](docs/TSIM.md) | Create TSIM CI
-*core_tsim* | [**tsimComputeCI**](docs/TSIM.md) | Compute TSIM CI Details
-*core_tsim* | [**tsimSearchCI**](docs/TSIM.md) | Search for TSIM CI
-*core_tsim* | [**tsimSearchCiAdvanced**](docs/TSIM.md)| Search for TSIM CI Advanced
+*core_tsim* | [**getEventID**](docs/TSIM.md)| Extract TSIM Event mc_ueid
+*core_tsim* | [**createCI**](docs/TSIM.md) | Create TSIM CI
+*core_tsim* | [**searchCI**](docs/TSIM.md) | Search for TSIM CI
+*core_tsim* | [**searchCIAdvanced**](docs/TSIM.md) | Search for TSIM CI Advanced
 
 **TrueSight Operations Manager Core**:
 Module | Method | Description
 ------------ | ------------- | -------------
-*core_tsim* | [**tsimAuthenticate**](docs/TSIM.md)| Login to TrueSight Presentation Server
-*core_tsim* | [**tsimCreateEvent**](docs/TSIM.md) | Create TSIM Event
-*core_tsim* | [**tsimUpdateEvent**](docs/TSIM.md) | Update TSIM Event
-*core_tsim* | [**tsimSearchEvent**](docs/TSIM.md) | Search for TSIM Event
+*core_tsim* | [**authenticate**](docs/TSIM.md)| Login to TrueSight Presentation Server
+*core_tsim* | [**createEvent**](docs/TSIM.md) | Create TSIM Event
+*core_tsim* | [**updateEvent**](docs/TSIM.md) | Update TSIM Event
+*core_tsim* | [**searchEvent**](docs/TSIM.md) | Search for TSIM Event
+
+**TrueSight Orchestrator Application**:
+Module | Method | Description
+------------ | ------------- | -------------
+*core_tso* | [**getTsoModules**](docs/TSO.md) | Get TrueSight Orchestrator Modules
+*core_tso* | [**getTsoAdapters**](docs/TSO.md) | Get TrueSight Orchestrator Adapters
+*core_tso* | [**executeTsoProcess**](docs/TSO.md) | Execute TrueSight Orchestrator
+
+**TrueSight Orchestrator Core**:
+Module | Method | Description
+------------ | ------------- | -------------
+*core_tso* | [**authenticate**](docs/TSO.md) | Login to TrueSight Orchestrator
+*core_tso* | [**logout**](docs/TSO.md) | Logout of TrueSight Orchestrator
+*core_tso* | [**apiGet**](docs/TSO.md) | HTTP Get from TrueSight Orchestrator 
+*core_tso* | [**apiPost**](docs/TSO.md) | HTTP Post to TrueSight Orchestrator 

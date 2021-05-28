@@ -73,10 +73,10 @@ Module | Method | Description
 **Helix ITSM Core**:
 Module | Method | Description
 ------------ | ------------- | -------------
-*core_itsm* | [**itsmAuthenticate**]| Login to Helix ITSM
-*core_itsm* | [**itsmLogout**] | Logout of Helix ITSM
-*core_itsm* | [**itsmFormGet**]| HTTP Get from Helix ITSM Form
-*core_itsm* | [**itsmFormPost**]| HTTP Post to Helix ITSM Form
+*core_itsm* | [**authenticate**]| Login to Helix ITSM
+*core_itsm* | [**logout**] | Logout of Helix ITSM
+*core_itsm* | [**formGet**]| HTTP Get from Helix ITSM Form
+*core_itsm* | [**formPost**]| HTTP Post to Helix ITSM Form
 
 
 ## Helix ITSM HTTP Body
