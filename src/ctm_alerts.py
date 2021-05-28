@@ -29,15 +29,23 @@ Date (YMD)    Name                  What
 
 """
 
-# fix import issues for modules
-sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-
-from src import w3rkstatt as w3rkstatt
-from src import core_ctm as ctm
-from src import core_itsm as itsm
-from src import core_tsim as tsim
-from src import core_tso as tso
-from src import core_smtp as smtp
+# handle dev environment vs. production 
+try:
+    import w3rkstatt as w3rkstatt
+    import core_ctm as ctm
+    import core_itsm as itsm
+    import core_tsim as tsim
+    import core_tso as tso
+    import core_smtp as smtp
+except:
+    # fix import issues for modules
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+    from src import w3rkstatt as w3rkstatt
+    from src import core_ctm as ctm
+    from src import core_itsm as itsm
+    from src import core_tsim as tsim
+    from src import core_tso as tso
+    from src import core_smtp as smtp
 
 
 import time, logging

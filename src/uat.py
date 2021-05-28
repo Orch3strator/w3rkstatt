@@ -35,9 +35,6 @@ import sys
 import os, json, logging
 import time, datetime
 
-# fix import issues for modules
-sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-
 # handle dev environment vs. production 
 try:
     import w3rkstatt as w3rkstatt
@@ -47,6 +44,8 @@ try:
     import core_tso as tso
     import core_smtp as smtp
 except:
+    # fix import issues for modules
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
     from src import w3rkstatt as w3rkstatt
     from src import core_ctm as ctm
     from src import core_itsm as itsm
