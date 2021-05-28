@@ -181,7 +181,7 @@ def createEvent(token,event_data):
       logger.debug('HTTP Response Text: %s', rst)  
     if w3rkstatt.jsonValidator(rst):
       tsim_data = rst 
-      tsim_event_id = tsimGetEventID(tsim_data)
+      tsim_event_id = getEventID(tsim_data)
       if _localDebug:
         logger.info('TSIM: event created: %s', tsim_event_id)
   else:

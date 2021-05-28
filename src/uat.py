@@ -329,17 +329,17 @@ def demoITSM():
 
 
 
-    itsm.itsmLogout(token=authToken)
+    itsm.logout(token=authToken)
 
 # Demo TrueSight Operations Manager Integration
 def demoTSIM():
-  tsim.tsimAuthenticate()
+  authToken = tsim.authenticate()
   # data = "Helix Expert"
   # ci_json = tsimComputeCI(data=data)
   # tsim_data = tsimCreateCI(data=ci_json)
 
   tsim_data     = tsimDefineEvent()
-  tsim_event_id = tsim.tsimCreateEvent(event_data=tsim_data)
+  tsim_event_id = tsim.createEvent(token=authToken,event_data=tsim_data)
   logger.debug('TSIM: event id: %s', tsim_event_id)
   return tsim_event_id
 
