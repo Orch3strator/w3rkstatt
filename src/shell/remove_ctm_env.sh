@@ -65,13 +65,12 @@ function help() {
 function updateCtm() {
         printf '%s\n' " Updating ctm environment"
         printf '%s\n' '{' >ctmenv.deleted.json
+        printf '%s\n' '{' >ctmenv.current.json
+        ctm env show >>ctmenv.current.json
+        sed -i -e 2,3d ctmenv.current.json
+        [ -e ctmenv.current.json-e ] && rm ctmenv.current.json-e
         if [ "$pattern" != "" ]; then
                 todelete=$pattern
-                printf '%s\n' '{' >ctmenv.current.json
-                ctm env show >>ctmenv.current.json
-                sed -i -e 2,3d ctmenv.current.json
-                [ -e ctmenv.current.json-e ] && rm ctmenv.current.json-e
-
                 # Check if there is a ctm envirnoment at all
                 num=$(cat ctmenv.current.json | wc -l)
                 if [ $num -eq 1 ]; then
@@ -139,6 +138,12 @@ function updateCtm() {
         return 0
 }
 
+if [ $# -eq 0 ]; then
+        ctmLogo
+        updateCtm " "
+        exit
+fi
+
 POSITIONAL=()
 while [[ $# -gt 0 ]]; do
         key="$1"
@@ -169,6 +174,7 @@ while [[ $# -gt 0 ]]; do
                 ;;
         *)
                 ctmLogo
+                updateCtm " "
                 exit
                 ;;
 
