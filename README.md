@@ -38,6 +38,7 @@ python -m pip install git+https://github.com/dcompane/controlm_py.git
 | BMC TrueSight             | 🔶            | ✅    | 
 | ServiceNOW                | 🔶            | 🚧    | 
 | E-Mail                    | 🔶            | ✅    | 
+| Shell Scripts             | ⬜            | ⬜    | 
 
 
 
@@ -113,3 +114,7 @@ Module | Method | Description
 *core_tso* | [**logout**](docs/TSO.md) | Logout of TrueSight Orchestrator
 *core_tso* | [**apiGet**](docs/TSO.md) | HTTP Get from TrueSight Orchestrator 
 *core_tso* | [**apiPost**](docs/TSO.md) | HTTP Post to TrueSight Orchestrator 
+
+
+**Shell Scripts**:
+*ctm* | [**remove_ctm_env.sh**](docs/SHELL.md) | Remove Control-M environments matching a pattern for ctm aapi
