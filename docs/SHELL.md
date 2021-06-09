@@ -13,7 +13,9 @@ Install Bash and dependent libraries
 Shell Scripts
 ```bash
 Linux
-remove_ctm_env.sh [patten]
+remove_ctm_env.sh
+remove_ctm_env.sh -h
+remove_ctm_env.sh -p [patten]
 ```
 
 **Shell Scripts**:
