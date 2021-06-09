@@ -26,7 +26,7 @@ function license() {
         printf '%s\n' " along with this program.  If not, see <https://www.gnu.org/licenses/>."
 }
 
-function ctm() {
+function ctmLogo() {
         printf '%s\n' ""
         printf '%s\n' "  @@@@@@@   @@@@@@   @@@  @@@  @@@@@@@  @@@@@@@    @@@@@@   @@@                  @@@@@@@@@@   "
         printf '%s\n' " @@@@@@@@  @@@@@@@@  @@@@ @@@  @@@@@@@  @@@@@@@@  @@@@@@@@  @@@                  @@@@@@@@@@@  "
@@ -55,15 +55,19 @@ function help() {
         printf '%s\n' "h     Print this Help."
         printf '%s\n' "p     control-m aapi environment name search pattern."
         printf '%s\n' "v     script version."
+        printf '%s\n' "output:"
+        printf '%s\n' "     script version."
+        printf '%s\n' "     script version."
+        printf '%s\n' "     script version."
         exit 0
 }
 
 function updateCtm() {
         printf '%s\n' " Updating ctm environment"
-        echo '{' >ctmenv.deleted.json
+        printf '%s\n' '{' >ctmenv.deleted.json
         if [ "$pattern" != "" ]; then
                 todelete=$pattern
-                echo '{' >ctmenv.current.json
+                printf '%s\n' '{' >ctmenv.current.json
                 ctm env show >>ctmenv.current.json
                 sed -i -e 2,3d ctmenv.current.json
                 [ -e ctmenv.current.json-e ] && rm ctmenv.current.json-e
@@ -72,12 +76,12 @@ function updateCtm() {
                 num=$(cat ctmenv.current.json | wc -l)
                 if [ $num -eq 1 ]; then
                         printf '%s\n' " Currently no ctm environment configured"
-                        echo "    \"counter\": 0," >>ctmenv.deleted.json
-                        echo "    \"status\":\"no environment defined\"," >>ctmenv.deleted.json
-                        echo "    \"pattern\":\"$pattern\"," >>ctmenv.deleted.json
-                        echo "    \"exit\": 1" >>ctmenv.deleted.json
-                        echo '}' >>ctmenv.deleted.json
-                        echo '}' >>ctmenv.current.json
+                        printf '%s\n' "    \"counter\": 0," >>ctmenv.deleted.json
+                        printf '%s\n' "    \"status\":\"no environment defined\"," >>ctmenv.deleted.json
+                        printf '%s\n' "    \"pattern\":\"$pattern\"," >>ctmenv.deleted.json
+                        printf '%s\n' "    \"exit\": 1" >>ctmenv.deleted.json
+                        printf '%s\n' '}' >>ctmenv.deleted.json
+                        printf '%s\n' '}' >>ctmenv.current.json
                         return 1
                 fi
 
@@ -86,10 +90,10 @@ function updateCtm() {
                 if [ ${#arr[@]} -eq 0 ]; then
                         printf '%s\n' " No ctm environment matching the pattern found"
                         printf '%s\n' "  - Search pattern: $pattern"
-                        echo "    \"counter\": 0," >>ctmenv.deleted.json
-                        echo "    \"status\":\"no matching pattern\"," >>ctmenv.deleted.json
-                        echo "    \"exit\": 2" >>ctmenv.deleted.json
-                        echo '}' >>ctmenv.deleted.json
+                        printf '%s\n' "    \"counter\": 0," >>ctmenv.deleted.json
+                        printf '%s\n' "    \"status\":\"no matching pattern\"," >>ctmenv.deleted.json
+                        printf '%s\n' "    \"exit\": 2" >>ctmenv.deleted.json
+                        printf '%s\n' '}' >>ctmenv.deleted.json
                         return 2
                 else
                         counter=0
@@ -103,21 +107,21 @@ function updateCtm() {
                                 status=$(ctm env delete $item)
                         done
                         printf "\"\"]" >>ctmenv.deleted.json
-                        echo "," >>ctmenv.deleted.json
-                        echo "    \"counter\":\"$counter\"," >>ctmenv.deleted.json
+                        printf '%s\n' "," >>ctmenv.deleted.json
+                        printf '%s\n' "    \"counter\":\"$counter\"," >>ctmenv.deleted.json
                         if [ $counter -eq 0 ]; then
-                                echo "    \"status\":\"nothing to do\"," >>ctmenv.deleted.json
+                                printf '%s\n' "    \"status\":\"nothing to do\"," >>ctmenv.deleted.json
                         else
-                                echo "    \"status\":\"deleted environments\"," >>ctmenv.deleted.json
+                                printf '%s\n' "    \"status\":\"deleted environments\"," >>ctmenv.deleted.json
                         fi
-                        echo "    \"pattern\":\"$pattern\"," >>ctmenv.deleted.json
-                        echo "    \"exit\": 0" >>ctmenv.deleted.json
-                        echo '}' >>ctmenv.deleted.json
+                        printf '%s\n' "    \"pattern\":\"$pattern\"," >>ctmenv.deleted.json
+                        printf '%s\n' "    \"exit\": 0" >>ctmenv.deleted.json
+                        printf '%s\n' '}' >>ctmenv.deleted.json
                 fi
 
                 # update json files
                 mv ctmenv.current.json ctmenv.old.json
-                echo '{' >ctmenv.final.json
+                printf '%s\n' '{' >ctmenv.final.json
                 ctm env show >>ctmenv.final.json
                 sed -i -e 2,3d ctmenv.final.json
                 [ -e ctmenv.final.json-e ] && rm ctmenv.final.json-e
@@ -125,11 +129,11 @@ function updateCtm() {
         else
                 # no parameter provided
                 printf '%s\n' " No pattern provided"
-                echo "    \"counter\": 0," >>ctmenv.deleted.json
-                echo "    \"status\":\"no parameter provided\"," >>ctmenv.deleted.json
-                echo "    \"pattern\":\"\"," >>ctmenv.deleted.json
-                echo "    \"exit\": 3" >>ctmenv.deleted.json
-                echo '}' >>ctmenv.deleted.json
+                printf '%s\n' "    \"counter\": 0," >>ctmenv.deleted.json
+                printf '%s\n' "    \"status\":\"no parameter provided\"," >>ctmenv.deleted.json
+                printf '%s\n' "    \"pattern\":\"\"," >>ctmenv.deleted.json
+                printf '%s\n' "    \"exit\": 3" >>ctmenv.deleted.json
+                printf '%s\n' '}' >>ctmenv.deleted.json
                 return 3
         fi
         return 0
@@ -144,31 +148,33 @@ while [[ $# -gt 0 ]]; do
                 pattern="$2"
                 shift # past argument
                 shift # past value
-                ctm
+                ctmLogo
                 updateCtm $pattern
-
+                exit
                 ;;
         -h | --help)
-                ctm
+                ctmLogo
                 help
+                exit
                 ;;
         -v | --version)
-                ctm
+                ctmLogo
                 echo "Version: ${version}"
                 exit
                 ;;
         -l | --license)
-                ctm
+                ctmLogo
                 license
                 exit
                 ;;
         *)
-                ctm
+                ctmLogo
                 exit
                 ;;
 
         esac
 done
-ctm
+# ctm
 set -- "${POSITIONAL[@]}" # restore positional parameters
+ctmLogo
 exit 99
