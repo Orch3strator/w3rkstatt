@@ -16,6 +16,12 @@ Linux
 remove_ctm_env.sh [patten]
 ```
 
+**Shell Scripts**:
+Solution | Script | Description
+------------ | ------------- | -------------
+*ctm* | [**remove_ctm_env.sh**](blob/main/src/shell/remove_ctm_env.sh) | Remove Control-M environments matching a pattern for ctm aapi
+
+
 ## Control-M
 During developement you might create a lot of environment. The provided script allow the deletion of ctm environments matching the search pattern.
 
