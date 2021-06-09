@@ -117,4 +117,6 @@ Module | Method | Description
 
 
 **Shell Scripts**:
+Solution | Script | Description
+------------ | ------------- | -------------
 *ctm* | [**remove_ctm_env.sh**](docs/SHELL.md) | Remove Control-M environments matching a pattern for ctm aapi
