@@ -19,7 +19,7 @@ remove_ctm_env.sh [patten]
 **Shell Scripts**:
 Solution | Script | Description
 ------------ | ------------- | -------------
-*ctm* | [**remove_ctm_env.sh**](blob/main/src/shell/remove_ctm_env.sh) | Remove Control-M environments matching a pattern for ctm aapi
+*ctm* | [**remove_ctm_env.sh**](../src/shell/remove_ctm_env.sh) | Remove Control-M environments matching a pattern for ctm aapi
 
 
 ## Control-M
