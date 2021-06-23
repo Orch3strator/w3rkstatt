@@ -89,4 +89,4 @@ XalertsSendSnmp: 2
 - [Control-M SNMP Trap](https://documents.bmc.com/supportu/9.0.20/help/Main_help/en-US/index.htm#45731.htm)
 - [Sending alerts and xAlerts to an event management system](https://documents.bmc.com/supportu/9.0.20/help/Main_help/en-US/index.htm#45709.htm)
 - [Sending Alerts and xAlerts to a script](https://documents.bmc.com/supportu/9.0.20/help/Main_help/en-US/index.htm#45710.htm)
-
+- [Downloading and installing or upgrading the Control-M REST API](https://docs.bmc.com/docs/automation-api/monthly/installation-1007966461.html#Installation-download)
