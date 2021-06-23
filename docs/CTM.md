@@ -78,14 +78,20 @@ Control-M Python module for Werkstatt projects
 
 **Alert Configuration**
 ```bash
-SendAlarmToScript: D:\Programs\BMCS\Integration\ctm_alerts.bat
+SendAlarmToScript: D:\Programs\BMCS\Integrations\ctm_alerts.bat
 SendSNMP: 1
 SendAlertNotesSnmp: 1
 SNMPSendActive: 1
 XAlertsEnableSending: 1
-XAlertsSend2Script: D:\Programs\BMCS\Integration\ctm_alerts.bat
+XAlertsSend2Script: D:\Programs\BMCS\Integrations\ctm_alerts.bat
 XalertsSendSnmp: 2
 ```
+
+**Alert Configuration Script**
+Update ctm_alerts.bat or ctm_alerts.sh top point to the right script. 
+
+**Alert Log Files**
+Check the CTM EM gateway log file for details on script call and the .w3rkstatt\logs\[hostname].log for script execution information
 
 ## Additonal Information
 - [Control-M SNMP Trap](https://documents.bmc.com/supportu/9.0.20/help/Main_help/en-US/index.htm#45731.htm)
