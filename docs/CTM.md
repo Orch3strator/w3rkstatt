@@ -56,7 +56,9 @@ Control-M Python module for Werkstatt projects
 - File: [hostname].json - custome config file
 
 ## Control-M Alert Configuration
-Do not enable SNMP if you are not going to use it.
+:one: &nbsp;Do not enable SNMP if you are not going to use it. 
+:two: &nbsp;If any of the SNMP related parameters were changed in the CCM, make sure to cycle the Gateway(s) to make these changes take effect.
+:three: &nbsp;Check the Gateway log files ($HOME/ctm_em/log/gtw_log*)
 
 - :arrow_right: &nbsp;SNMPHost: Define the hostname of the SNMP server where the alerts are sent.
 - :arrow_right: &nbsp;SNMPSendActive: Change the value to 1 to generate SNMP messages for Active Alerts.
@@ -90,3 +92,4 @@ XalertsSendSnmp: 2
 - [Sending alerts and xAlerts to an event management system](https://documents.bmc.com/supportu/9.0.20/help/Main_help/en-US/index.htm#45709.htm)
 - [Sending Alerts and xAlerts to a script](https://documents.bmc.com/supportu/9.0.20/help/Main_help/en-US/index.htm#45710.htm)
 - [Downloading and installing or upgrading the Control-M REST API](https://docs.bmc.com/docs/automation-api/monthly/installation-1007966461.html#Installation-download)
+- [How to send alerts from Control-M/Enterprise Manager to a script?](https://community.bmc.com/s/article/How-to-send-alerts-from-Control-M-Enterprise-Manager-to-a-script)
