@@ -82,7 +82,7 @@ ctm_job_detail_level        = w3rkstatt.getJsonValue(path="$.CTM.jobs.detail_lev
 _localDebug = False
 _localDebugAdv = False
 _localInfo = False
-_localQA = True
+_localQA = False
 _localQAlert = False
 _localDebugITSM = False
 _modVer = "3.0"
@@ -677,6 +677,7 @@ if __name__ == "__main__":
                 logger.info('CTM QA Job ID: %s', ctmOrderId)
                 logger.info('CTM QA Run Counter: %s', ctmRunCounter)
                 logger.info('CTM QA Alert Call: "%s"', ctmAlertCallType)
+                logger.info('CTM QA ITSM Integration: "%s"', integration_itsm_enabled)
 
             # xAlert ID
             if not ctmAlertId:
@@ -698,13 +699,15 @@ if __name__ == "__main__":
                 fileStatus   = writeAlertFile(data=ctmCoreData,alert=ctmAlertId,type="infra")
                 # Update CTM Alert staus if file is written
                 if _ctmActiveApi and fileStatus:
-                    ctmAlertsStatus = ctm.updateCtmAlertStatus(ctmApiClient=ctmApiClient,ctmAlertIDs=ctmAlertId, ctmAlertStatus="Reviewed")  
+                    ctmAlertsStatus = ctm.updateCtmAlertStatus(ctmApiClient=ctmApiClient,ctmAlertIDs=ctmAlertId, ctmAlertStatus="Reviewed")
+                    logger.debug('CTM Alert Update Status: "%s"', ctmAlertsStatus) 
             elif ctmAlertCat == "job":
                 ctmJobData  = analyzeAlert4Job(ctmApiClient=ctmApiClient, raw=jCtmAlertRaw, data=jCtmAlert)
                 if ctmOrderId == "00000" and ctmRunCounter == 0:
                     # do not create file
                     fileStatus = True
                     ctmAlertsStatus = ctm.updateCtmAlertStatus(ctmApiClient=ctmApiClient,ctmAlertIDs=ctmAlertId, ctmAlertStatus="Reviewed")
+                    logger.debug('CTM Alert Update Status: "%s"', ctmAlertsStatus) 
                 else:
                     # Update CTM Alert staus if file is written
                     fileStatus  = writeAlertFile(data=ctmJobData,alert=ctmAlertId,type="job")
@@ -716,37 +719,53 @@ if __name__ == "__main__":
                 fileStatus   = writeAlertFile(data=ctmCoreData,alert=ctmAlertId,type="core")
                 # Update CTM Alert staus if file is written
                 if _ctmActiveApi and fileStatus:
-                    ctmAlertsStatus = ctm.updateCtmAlertStatus(ctmApiClient=ctmApiClient,ctmAlertIDs=ctmAlertId, ctmAlertStatus="Reviewed")      
+                    ctmAlertsStatus = ctm.updateCtmAlertStatus(ctmApiClient=ctmApiClient,ctmAlertIDs=ctmAlertId, ctmAlertStatus="Reviewed")
+                    logger.debug('CTM Alert Update Status: "%s"', ctmAlertsStatus) 
 
             
             if integration_itsm_enabled:
+                logger.debug('CTM ITSM Integration: "%s"', "Start") 
                 # Create Incident only once
                 # Catch Cyclic Jobs
                 if ctmRunCounter == 1 and sCtmJobCyclic:
+                    if _localDebug: 
+                        logger.debug('CTM ITSM Integration Cyclic Job Run: "%s"', ctmRunCounter) 
                     incident = createITSM(data=ctmJobData)
                     sSysOutMsg = "Processed New Alert: " + str(ctmAlertId) + " Incident: " + str(incident)
                     sAlertNotes = "Processed Alert created Incident: " + incident
                     ctmAlertSev = "Normal"
                 elif ctmRunCounter >= 1 and sCtmJobCyclic:
+                    if _localDebug: 
+                        logger.debug('CTM ITSM Integration Cyclic Job Run: "%s"', ctmRunCounter) 
                     # Update Incident Worklog only
                     pass
                 elif ctmRunCounter >= 1 and not sCtmJobCyclic:
+                    if _localDebug: 
+                        logger.debug('CTM ITSM Integration Normal Job Run: "%s"', ctmRunCounter) 
                     incident = createITSM(data=ctmJobData)
                     sSysOutMsg = "Processed New Alert: " + str(ctmAlertId) + " Incident: " + str(incident)
                     sAlertNotes = "Processed Alert created Incident: " + incident
                     ctmAlertSev = "Normal"
                     ctmAlertsStatus = ctm.updateCtmAlertStatus(ctmApiClient=ctmApiClient,ctmAlertIDs=ctmAlertId, ctmAlertStatus="Closed")
                 elif ctmRunCounter == 0 and not sCtmJobCyclic:
+                    if _localDebug: 
+                        logger.debug('CTM ITSM Integration Skipped Job Run: "%s"', ctmRunCounter) 
                     SysOutMsg = "Processed New Alert: " + str(ctmAlertId) + " Incident: None"
                     sAlertNotes = "Processed Alert without Incident"
                     ctmAlertSev = "Normal"
                 else:
+                    if _localDebug: 
+                        logger.debug('CTM ITSM Integration Skipped Job Run: "%s"', ctmRunCounter) 
                     SysOutMsg = "Processed New Alert: " + str(ctmAlertId)
                     sAlertNotes = "Processed Alert"
                     ctmAlertSev = "Normal"
                 # Update CTM Alert
+                if _localDebug: 
+                        logger.debug('CTM ITSM Integration: "%s"', "Not Specified") 
                 ctmAlertsStatus = ctm.updateCtmAlertCore(ctmApiClient=ctmApiClient,ctmAlertIDs=ctmAlertId, ctmAlertComment=sAlertNotes, ctmAlertUrgency=ctmAlertSev)
                 logger.debug('CTM Alert Update Status: "%s"', ctmAlertsStatus)
+                logger.debug('CTM ITSM Integration: "%s"', "End") 
+                
                 
                 
             # Close cTM AAPI connection
