@@ -1,5 +1,5 @@
 # Werkstatt Tools
-E-Mail Python module for Werkstatt projects
+ITSM Python module for Werkstatt projects
 
 ## Core functions for integrating with solutions using Python
 - Create objects in Helix ITSM / ServiceNOW
@@ -46,7 +46,7 @@ E-Mail Python module for Werkstatt projects
 - Update ITSM Server settings
 
 **Helix ITSM**:
-- Create Helux ITSM account with proper permissions
+- Create Helix ITSM account with proper permissions
 - Add application credentials to [hostname].json
 
 **ServiceNOW**:
