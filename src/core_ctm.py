@@ -85,7 +85,7 @@ ctm_agent  = ctm_server
 # Assign module defaults
 _modVer = "20.21.05.00"
 _timeFormat = '%d %b %Y %H:%M:%S,%f'
-_localDebug = False
+_localDebug = True
 _localDebugAdv = False
 _localQA = False
 
@@ -813,13 +813,15 @@ def trasnformtCtmAlert(data):
     sDataCenterStatus = None
     ctmUpdateDate = None
     sAlertCat = None
-    sSystemStatus = None
-    
-    
+    sSystemStatus = None        
 
     jCtmAlert = data
+    logger.debug('CTM Alert Transform Raw: %s', jCtmAlert)
+    
     ctmDataCenter = w3rkstatt.getJsonValue(path="$.data_center",data=jCtmAlert)
     for (key, value) in jCtmAlert.items():
+        if _localDebug:
+            logger.debug('CTM Alert: %s=%s', key,value)
         
         if key == "call_type":
             value = translateCtmAlertUpdateType(data=value)
