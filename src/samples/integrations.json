@@ -1,5 +1,6 @@
 {
     "DEFAULT": {
+        "demo": false,
         "version": 2.0,
         "loglevel": "debug",
         "env_name": "lab",
@@ -11,9 +12,9 @@
         "log_folder": "",
         "data_folder": "",
         "template_folder": "",
-        "demo": true
     },
     "MAIL": {
+        "demo": false,
         "host": "",
         "port": "465",
         "ssl": true,
@@ -24,6 +25,7 @@
         "template": "email.html"
     },
     "TSIM": {
+        "demo": false,
         "host": "",
         "port": "",
         "ssl": true,
@@ -35,6 +37,7 @@
         "tenant": "*"
     },
     "TSPS": {
+        "demo": false,
         "host": "",
         "port": "",
         "ssl": true,
@@ -45,6 +48,7 @@
         "api_docs": "https://docs.bmc.com/docs/tsps113/consolidated-list-of-truesight-apis-793938298.html"
     },
     "ITSM": {
+        "demo": false,
         "host": "",
         "port": "443",
         "ssl": true,
@@ -59,6 +63,7 @@
         "api_docs_04": "https://bmcsites.force.com/casemgmt/sc_KnowledgeArticle?sfdcid=kA33n000000XqnpCAC&type=ProductDescription",
         "mappings_file": "helix_itsm_mappings.json",
         "change": {
+            "demo": false,
             "form_name": "CHG:ChangeInterface_Create",
             "impact": "3000",
             "urgency": "3000",
@@ -68,10 +73,10 @@
             "template_name": "",
             "template_id": "",
             "template_name_auto": "",
-            "template_id_auto": "",
-            "demo": false
+            "template_id_auto": ""
         },
         "incident": {
+            "demo": false,
             "form_name": "HPD:IncidentInterface_Create",
             "form_search": "HPD:IncidentInterface",
             "template_id": "",
@@ -80,13 +85,14 @@
             "urgency": "3-Medium",
             "status": "New",
             "reported-source": "Direct Input",
-            "service-type": "User Service Request",
-            "demo": true
+            "service-type": "User Service Request"
         },
         "worklog": {
+            "demo": false,
             "form_name": "HPD:WorkLog"
         },
         "cmdb": {
+            "demo": false,
             "form_name": ""
         },
         "defaults": {
@@ -112,12 +118,14 @@
         }
     },
     "SMARTIT": {
+        "demo": false,
         "host": "",
         "port": "443",
         "ssl": false,
         "ssl_verification": false
     },
     "TSO": {
+        "demo": false,
         "host": "",
         "port": "443",
         "ssl": true,
@@ -134,6 +142,7 @@
         }
     },
     "TSSA": {
+        "demo": false,
         "host": "",
         "port": "",
         "ssl": true,
@@ -147,6 +156,7 @@
         "tssa_pwd_secure": ""
     },
     "DISCO": {
+        "demo": false,
         "host": "",
         "fqdn": "",
         "port": "443",
@@ -160,6 +170,7 @@
         "token": ""
     },
     "CTM": {
+        "demo": false,
         "host": "",
         "port": "8443",
         "ssl": true,
@@ -184,22 +195,22 @@
             "enabled": false
         },
         "alerts": {
+            "demo": false,
             "ids": "",
-            "comment": "",
-            "urgency": "",
-            "status": "",
-            "demo": false
+            "comment": "UAT",
+            "urgency": "Critical",
+            "status": "Reviewed"
         },
         "ctmag": {
+            "demo": false,
             "windows": "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\ctmag",
             "nix": "",
-            "demo": false
         },
         "jobs": {
+            "demo": false,
             "log_level": "",
             "oderid": "",
-            "server": "",
-            "demo": false
+            "server": ""
         },
         "datacenter": [{
                 "name": "abc",
@@ -212,6 +223,7 @@
         ]
     },
     "CTM_BRIDGE": {
+        "demo": false,
         "host": "0.0.0.0",
         "port": "8888",
         "ssl": false,
@@ -223,6 +235,7 @@
         "tso_process": ""
     },
     "SNOW": {
+        "demo": false,
         "host": "",
         "port": "443",
         "ssl": true,
@@ -239,6 +252,7 @@
         }
     },
     "TWILIO": {
+        "demo": false,
         "host": "www.twilio.com",
         "port": "443",
         "ssl": true,
@@ -256,6 +270,7 @@
         "api_search_limit": 100
     },
     "SLACK": {
+        "demo": false,
         "host": "",
         "port": "1443",
         "ssl": false,
@@ -266,6 +281,7 @@
         "db": "ADE"
     },
     "KAFKA": {
+        "demo": false,
         "host": "",
         "port": "9092",
         "topic": "",
@@ -273,10 +289,12 @@
         "partitions": 1
     },
     "ZOOKEEPER": {
+        "demo": false,
         "host": "",
         "port": "2181"
     },
     "ETL": {
+        "demo": false,
         "host": "",
         "port": "1443",
         "ssl": false,
