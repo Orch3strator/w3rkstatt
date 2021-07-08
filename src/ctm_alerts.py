@@ -446,20 +446,23 @@ def getCtmFolder(ctmApiClient, data):
         sJobLogStatus = False
         
     i = 0
-    if "." in value:
-        xTemp = value.split(".")
-        for xLine in xTemp:
-            zValue = xLine.strip()
-            # construct json string
-            if i == 0:
-                sEntry = '"entry-' + str(i).zfill(4) + '":"' +  zValue + '"'
-            else:
-                sEntry = sEntry + ',"entry-' + str(i).zfill(4) + '":"' +  zValue + '"'
-            i += 1
-    else:
-        sEntry = '"entry-0000": "' + value + '"'
+    # if "." in value:
+    #     xTemp = value.split(".")
+    #     for xLine in xTemp:
+    #         zValue = xLine.strip()
+    #         # construct json string
+    #         if i == 0:
+    #             sEntry = '"entry-' + str(i).zfill(4) + '":"' +  zValue + '"'
+    #         else:
+    #             sEntry = sEntry + ',"entry-' + str(i).zfill(4) + '":"' +  zValue + '"'
+    #         i += 1
+    # else:
+    #     sEntry = '"entry-0000": "' + value + '"'
 
-    jData = '{"count":' + str(i) + ',"status":' + str(sJobLogStatus) + ',"entries":[{' + str(sEntry) + '}]}'
+    # jData = '{"count":' + str(i) + ',"status":' + str(sJobLogStatus) + ',"entries":[{' + str(sEntry) + '}]}'
+
+    i = 1
+    jData = '{"count":' + str(i) + ',"status":' + str(sJobLogStatus) + ',"entries":[' + str(value) + ']}'
     sData = w3rkstatt.dTranslate4Json(data=jData)
 
     return sData
@@ -635,7 +638,7 @@ if __name__ == "__main__":
      # Test integration with sample data
     if not len(ctmAlertId) > 0:
         if _localQAlert: 
-            jCtmAlert = {'call_type': 'I', 'alert_id': '408', 'data_center': 'ctm-em', 'memname': None, 'order_id': '000sg', 'severity': 'V', 'status': 'Not_Noticed', 'send_time': '20210625173808', 'last_user': None, 'last_time': None, 'message': 'Ended not OK', 'run_as': 'ctmexpert', 'sub_application': 'vs-i2t-ctm_monitoring_demo', 'application': 'vs-i2t-ctm_monitoring', 'job_name': 'vs-i2t-ctm_icmp', 'host_id': 'ctm-em', 'alert_type': 'R', 'closed_from_em': None, 'ticket_number': None, 'run_counter': '00027', 'notes': None}
+            jCtmAlert = {"call_type": "I", "alert_id": "412", "data_center": "ctm-em", "memname": None, "order_id": "000su", "severity": "V", "status": "Not_Noticed", "send_time": "20210625185521", "last_user": None, "last_time": None, "message": "Ended not OK", "run_as": "ctmexpert", "sub_application": "vs-i2t-ctm_monitoring_demo", "application": "vs-i2t-ctm_monitoring", "job_name": "vs-i2t-ctm_icmp", "host_id": "ctm-em", "alert_type": "R", "closed_from_em": None, "ticket_number": None, "run_counter": "00001", "notes": None}
 
 
 
