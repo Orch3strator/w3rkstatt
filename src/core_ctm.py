@@ -198,7 +198,40 @@ def getCtmAgents(ctmApiClient,ctmServer):
     # Call CTM AAPI
     try:
         logger.debug('CTM: API Function: %s', "get_agents")
-        results = ctmCfgAapi.get_agents(server=ctmServer, _return_http_data_only=True )
+        results = ctmCfgAapi.get_agents(server=ctmServer, _return_http_data_only=True )      
+        results = str(results).replace("\n",'')
+        results = str(results).replace("'",'"')
+        results = str(results).replace("None",'"None"')
+        results = str(results).replace('"                                 "','')
+
+        # logger.debug('CTM: API Result:\n%s', results)
+        results = json.loads(results)
+    except ctm.rest.ApiException as exp:
+        logger.error('CTM: API Error: %s', exp)
+    return results
+
+def getCtmServers(ctmApiClient):
+    """get all the Servers name and hostname in the system  # noqa: E501
+
+    Get the names and hostnames of all Servers in the system.  # noqa: E501
+    This method makes a synchronous HTTP request by default. To make an
+    asynchronous HTTP request, please pass async_req=True
+
+    :param async_req bool
+    :return: CtmDetailsList
+                If the method is called asynchronously,
+                returns the request thread.
+    """
+
+    # Instantiate the AAPI object
+    ctmCfgAapi = ctm.api.config_api.ConfigApi(api_client=ctmApiClient)
+    logger.debug('CTM: API object: %s', ctmCfgAapi)
+    results = ""
+
+    # Call CTM AAPI
+    try:
+        logger.debug('CTM: API Function: %s', "get_servers")
+        results = ctmCfgAapi.get_servers(_return_http_data_only=True )
         results = str(results).replace("'",'"')
         results = str(results).replace("None",'"None"')
 
@@ -207,6 +240,39 @@ def getCtmAgents(ctmApiClient,ctmServer):
     except ctm.rest.ApiException as exp:
         logger.error('CTM: API Error: %s', exp)
     return results
+
+def getCtmServerParams(ctmApiClient,ctmServer):
+    """get Server parameters  # noqa: E501
+
+    Get all the parameters of the specified Server.  # noqa: E501
+    This method makes a synchronous HTTP request by default. To make an
+    asynchronous HTTP request, please pass async_req=True
+
+    :param async_req bool
+    :param str server: The Server to query. (required)
+    :return: KeyValueListResult
+                If the method is called asynchronously,
+                returns the request thread.
+    """
+
+    # Instantiate the AAPI object
+    ctmCfgAapi = ctm.api.config_api.ConfigApi(api_client=ctmApiClient)
+    logger.debug('CTM: API object: %s', ctmCfgAapi)
+    results = ""
+
+    # Call CTM AAPI
+    try:
+        logger.debug('CTM: API Function: %s', "get_server_parameters")
+        results = ctmCfgAapi.get_server_parameters(server=ctmServer, _return_http_data_only=True )
+        results = str(results).replace("'",'"')
+        results = str(results).replace("None",'"None"')
+
+        logger.debug('CTM: API Result:\n%s', results)
+        results = json.loads(results)
+    except ctm.rest.ApiException as exp:
+        logger.error('CTM: API Error: %s', exp)
+    return results
+
 
 def getCtmJobOutput(ctmApiClient,ctmJobID, ctmJobRunId):
     """
