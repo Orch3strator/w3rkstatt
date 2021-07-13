@@ -308,7 +308,7 @@ def getCtmAgentConnectionProfile(ctmApiClient,ctmServer,ctmAgent,ctmAppType):
         pass
     return results
 
-def getDeployedAiJobtypes(ctmApiClient):
+def getDeployedAiJobtypes(ctmApiClient, ctmAiJobDeployStatus="ready to deploy"):
     """Get Application Integrator job types  # noqa: E501
 
     Get deployed Application Integrator job types that match the requested search criteria.  # noqa: E501
@@ -328,24 +328,50 @@ def getDeployedAiJobtypes(ctmApiClient):
     ctmDeployAapi = ctm.api.deploy_api.DeployApi(api_client=ctmApiClient)
     # logger.debug('CTM: API object: %s', ctmDeployAapi)
     results = ""
+    jJobTypes = ""
 
     # Call CTM AAPI
     try:
         # logger.debug('CTM: API Function: %s', "get_deployed_connection_profiles")
         results = ctmDeployAapi.get_deployed_ai_jobtypes(_return_http_data_only=True )
+        items = results.jobtypes
+        jJobTypes = ""
+        jJobType  = ""
+        for item in items:
+            sTemp = str(item)
+            xTemp = str(sTemp).split("\n")
+            for yTemp in xTemp:
+                xLen = len(xTemp)
+                if xLen == 4:
+                    key = str(yTemp).split("'")[1]
+                    val = str(yTemp).split("'")[3]
 
-        for result in results:
-            sDecription = result["name"]
+                    if "job_type_id" in key:
+                        job_type_id = val
+                    elif "job_type_name" in key:
+                        job_type_name = val
+                    elif "status" in key:
+                        job_status = val
+                    elif "description" in key:
+                        job_description = val      
 
+            if ctmAiJobDeployStatus in job_status:
+                jJobType = '{"job_type_id":"' + job_type_id + '","job_type_name":"' + job_type_name + '","status":"' + job_status +'"}'
+                jJobTypes = jJobType + "," + jJobTypes
+            if _localDebug:
+                logger.debug('CTM: AI Job Type: %s', jJobType)
+    
 
-        results = str(results).replace("\n",'')
-        results = str(results).replace("'",'"')
-        results = str(results).replace("None",'"None"')
-        results = str(results).replace('"                              "','')        
-        # results = w3rkstatt.dTranslate4Json(data=results)
+        jJobTypes = jJobTypes[:-1]
+        jResult = '{"jobtypes":[' + jJobTypes + ']}'
 
-        # logger.debug('CTM: API Result:\n%s', results)
-        results = json.loads(results)
+        if _localDebug:
+            logger.debug('CTM: AI Job Types: %s', jResult)
+
+        # Format for function
+        sResult = str(jResult)
+        results = json.loads(sResult)
+
     except ctm.rest.ApiException as exp:
         logger.error('CTM: API Error: %s', exp)
         pass

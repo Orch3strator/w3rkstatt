@@ -156,7 +156,7 @@ def writeInfoFile(file,content):
     fileJsonStatus = w3rkstatt.jsonValidator(data=content)
 
     if fileJsonStatus:
-        fileName    = file + ".json"
+        fileName    = file
         filePath    = w3rkstatt.concatPath(path=data_folder,folder=fileName)
         fileRsp     = w3rkstatt.writeJsonFile(file=filePath,content=fileContent)  
         fileStatus  = w3rkstatt.getFileStatus(path=filePath)
@@ -167,16 +167,24 @@ def writeInfoFile(file,content):
     return fileStatus
 
 def writeAgentInfoFile(ctmAgent,data):
+    filename   = "ctm.agent." + ctmAgent + ".json"
     fileStatus = writeInfoFile(file=ctmAgent,content=data) 
     return fileStatus    
 
 def writeServerInfoFile(ctmServer,data):
-    fileStatus = writeInfoFile(file=ctmServer,content=data) 
+    filename   = "ctm.server." + ctmServer + ".json"
+    fileStatus = writeInfoFile(file=filename,content=data) 
     return fileStatus  
 
 def writeInventoryInfoFile(data):
-    file = "inventory" + str(epoch).replace(".","")
-    fileStatus = writeInfoFile(file=file,content=data) 
+    filename = "ctm.inventory." + str(epoch).replace(".","") + ".json"
+    fileStatus = writeInfoFile(file=filename,content=data) 
+    return fileStatus 
+    
+def writeJobTypesInfoFile(data):
+    filename = "ctm.job.ai.types.json"
+    data = w3rkstatt.dTranslate4Json(data=data)        
+    fileStatus = writeInfoFile(file=filename,content=data) 
     return fileStatus 
 
 def discoCtm():
@@ -197,18 +205,22 @@ def discoCtm():
         yCtmAgentList = ""
         iCtmServers = int(len(jCtmServers))
 
-        # Get CTM AI Job Types
-        jCtmAiJobTypes = ctm.getDeployedAiJobtypes(ctmApiClient=ctmApiClient)
+        # Get CTM AI Job Types and
+        jCtmAiJobTypes = ctm.getDeployedAiJobtypes(ctmApiClient=ctmApiClient,ctmAiJobDeployStatus="ready to deploy")
+
+        # Write Control-M AI JobTypes File
+        fileStatus    = writeJobTypesInfoFile(data=jCtmAiJobTypes)
 
         for xCtmServer in jCtmServers:
             sCtmServerName = xCtmServer["name"]
             sCtmServerFQDN = xCtmServer["host"]
-            logger.debug('CTM Server: %s', sCtmServerName)
-
-            
+            logger.debug('CTM Server: %s', sCtmServerName)          
 
             jCtmAgents = getCtmAgents(ctmApiClient=ctmApiClient,ctmServer=sCtmServerName)
             xCtmAgents = w3rkstatt.getJsonValue(path="$.agents",data=jCtmAgents)
+
+            # Sample Debug data
+            # xCtmAgents = [{'hostgroups': 'None', 'nodeid': 'vw-aus-ctm-wk01.adprod.bmc.com', 'operating_system': 'Microsoft Windows Server 2016  (Build 14393)', 'status': 'Available', 'version': '9.0.20.000'}]
             xCtmAgentsInfo = ""
             if "None" in xCtmAgents:
                 iCtmAgents = 0
@@ -216,7 +228,7 @@ def discoCtm():
             else:
                 iCtmAgents = len(xCtmAgents)
 
-            if iCtmAgents > 1:
+            if iCtmAgents > 0:
                 iCtmAgent = 1
                 for xAgent in xCtmAgents:
                     
@@ -249,22 +261,51 @@ def discoCtm():
                         jAgentInfo = jAgentInfo + '"parameters":' + dCtmAgentParams + ','
 
                         # Get CTM Agent Connection Profiles
-                        jConnProfiles = ""
-                        jAgentConnProfiles = '{"connection":[{'
+                        jConnProfilesAi = ""
+                        jAgentConnProfilesAi = '{"ApplicationIntegrator":[{'
+
+                        # Application Integratot Job Type based connection profile
+                        appTypes = jCtmAiJobTypes["jobtypes"]
+                        for appType in appTypes:
+                            job_type_name = appType["job_type_name"]
+                            job_type_id = appType["job_type_id"]
+                            appTypeAi = "ApplicationIntegrator:" + job_type_name
+                            if _localDebug: 
+                                logger.debug(' - Action: %s : %s',"Get Connection Profile",appTypeAi)
+                            jProfiles = ctm.getCtmAgentConnectionProfile(ctmApiClient=ctmApiClient,ctmServer=sCtmServerName,ctmAgent=sAgentName,ctmAppType=appTypeAi)
+                            jProfilesLen = len(jProfiles)
+                            if jProfilesLen > 0:
+                                logger.debug(' - Action: %s : %s',"Found Connection Profile",job_type_id)
+                                jProfile = '"' + job_type_id + '":'
+                                jProfile = jProfile + str(jProfiles)
+                                jConnProfilesAi = jProfile + "," + jConnProfilesAi
+                            # else:
+                            #     jProfile = '"' + job_type_id + '":None'
+                            #     jConnProfilesAi = jProfile + "," + jConnProfilesAi    
+                                                 
+                        jAgentConnProfilesAi = "{"                                
+                        jConnProfilesAi = jConnProfilesAi[:-1]
+                        jAgentConnProfilesAi = jAgentConnProfilesAi +  jConnProfilesAi + '}'
+                        sConnProfileAi = w3rkstatt.dTranslate4Json(data=jAgentConnProfilesAi)  
+
+                        # Base Applications
                         sCtmAppTypes = ["Hadoop","Database","FileTransfer","Informatica","SAP","AWS","Azure"]
+                        jConnProfiles = ""
+                        jAgentConnProfiles = '{"connection":[{'                        
 
                         for appType in sCtmAppTypes:
-                            logger.debug(' - Action: %s : %s',"Get Connection Profile",appType)
+                            if _localDebug: 
+                                logger.debug(' - Action: %s : %s',"Get Connection Profile",appType)
                             jProfiles = ctm.getCtmAgentConnectionProfile(ctmApiClient=ctmApiClient,ctmServer=sCtmServerName,ctmAgent=sAgentName,ctmAppType=appType)
                             jProfilesLen = len(jProfiles)
                             if jProfilesLen > 0:
+                                logger.debug(' - Action: %s : %s',"Found Connection Profile",appType)
                                 jProfile = '"' + appType + '":'
                                 jProfile = jProfile + str(jProfiles)
                                 jConnProfiles = jProfile + "," + jConnProfiles
-                            else:
-                                jProfile = '"' + appType + '":None'
-                                jConnProfiles = jProfile + "," + jConnProfiles
-
+                            # else:
+                            #     jProfile = '"' + appType + '":None'
+                            #     jConnProfiles = jProfile + "," + jConnProfiles
 
                         jAgentConnProfiles = "{"                                
                         jConnProfiles = jConnProfiles[:-1]
@@ -272,7 +313,7 @@ def discoCtm():
                         sConnProfile = w3rkstatt.dTranslate4Json(data=jAgentConnProfiles)    
                         
                         # Add Connection Profile Info
-                        jAgentInfo = jAgentInfo + '"connections":' + sConnProfile + '}'
+                        jAgentInfo = jAgentInfo + '"connections_base":' + sConnProfile + ',"connections_ai":' + sConnProfileAi + '}'
                         jAgentInfo = w3rkstatt.dTranslate4Json(data=jAgentInfo)                         
                     else:
                         jAgentInfo = '{"name":"' + sAgentName + '",'
@@ -280,14 +321,16 @@ def discoCtm():
                         jAgentInfo = jAgentInfo + '"status":"' + sAgentStatus + '",'
                         jAgentInfo = jAgentInfo + '"hostgroups":"' + sAgentHostGroups + '",'
                         jAgentInfo = jAgentInfo + '"version":"' + sAgentVersion + '",'
-                        jAgentInfo = jAgentInfo + '"operating_system":"' + sAgentOS + '"}'  
+                        jAgentInfo = jAgentInfo + '"operating_system":"' + sAgentOS + '",'  
+                        jAgentInfo = jAgentInfo + '"server_name":"' + sCtmServerName + '",'   
+                        jAgentInfo = jAgentInfo + '"server_fqdn":"' + sCtmServerFQDN + '"}'  
                     if _localDebug: 
                         logger.debug('CTM Agent Info: %s', jAgentInfo)
 
                     if iCtmAgents == 1:
-                        xCtmAgentsInfo = jAgentInfo 
+                        xCtmAgentsInfo = str(jAgentInfo).rstrip(',')
                     else:
-                        xCtmAgentsInfo = jAgentInfo + ',' +xCtmAgentsInfo
+                        xCtmAgentsInfo = str(jAgentInfo + ',' +xCtmAgentsInfo).rstrip(',')
                     # Internal Agent Counter
                     iCtmAgent = iCtmAgent + 1
 
@@ -299,10 +342,13 @@ def discoCtm():
             fileStatus = writeServerInfoFile(ctmServer=sCtmServerName,data=xCtmAgentList)
             
             if iCtmServers > 1:                
-                yCtmAgentList = xCtmAgentList + ',' + yCtmAgentList
+                yCtmAgentList = str(xCtmAgentList + ',' + yCtmAgentList).rstrip(',')
             else:
-                yCtmAgentList = xCtmAgentList
-        yCtmAgentList = yCtmAgentList[:-1]
+                yCtmAgentList = str(xCtmAgentList).rstrip(',')
+
+        
+
+        yCtmAgentList = yCtmAgentList
         zCtmAgentList = '{"inventory":{'+ '"servers":[' + yCtmAgentList + ']}}'
         jCtmAgentList = w3rkstatt.dTranslate4Json(data=zCtmAgentList)
 
@@ -311,7 +357,7 @@ def discoCtm():
 
         if _localDebug:  
             logger.debug('CTM Servers: %s', jCtmServers)
-        logger.debug('CTM Agents: %s', jCtmAgentList)
+            logger.debug('CTM Agents: %s', jCtmAgentList)
 
 
     # Close CTM AAPI connection
