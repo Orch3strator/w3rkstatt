@@ -182,10 +182,129 @@ def writeInventoryInfoFile(data):
     return fileStatus 
     
 def writeJobTypesInfoFile(data):
-    filename = "ctm.job.ai.types.json"
+    filename = "ctm.job.ai.types.r2d.json"
     data = w3rkstatt.dTranslate4Json(data=data)        
     fileStatus = writeInfoFile(file=filename,content=data) 
     return fileStatus 
+
+def writeJobTypesDraftInfoFile(data):
+    filename = "ctm.job.ai.types.draft.json"
+    data = w3rkstatt.dTranslate4Json(data=data)        
+    fileStatus = writeInfoFile(file=filename,content=data) 
+    return fileStatus 
+
+def writeSharedConnectionProfilesInfoFile(data):
+    filename = "ctm.connection.profiles.shared.json"
+    data = w3rkstatt.dTranslate4Json(data=data)        
+    fileStatus = writeInfoFile(file=filename,content=data) 
+    return fileStatus 
+
+def getCentralConnectionProfiles(ctmApiClient,jobTypes):
+    # Base Applications    
+    sCtmAppTypes = jobTypes      
+    jConnProfiles = ""         
+
+    for appType in sCtmAppTypes:
+        if _localDebug: 
+            logger.debug(' - Action: %s : %s',"Get Connection Profile",appType)
+        jProfiles = ctm.getCtmCentralConnectionProfile(ctmApiClient=ctmApiClient,ctmAppType=appType)
+        jProfilesLen = len(jProfiles)
+        if jProfilesLen > 0:
+            logger.debug(' - Action: %s : %s',"Found Connection Profile",appType)
+            jProfile = '"' + appType + '":'
+            jProfile = jProfile + str(jProfiles)
+            jConnProfiles = jProfile + "," + jConnProfiles
+        else:
+            if _localDebug: 
+                jProfile = '"' + appType + '":None'
+                jConnProfiles = jProfile + "," + jConnProfiles
+
+                            
+    jConnProfiles = str(jConnProfiles).rstrip(',')
+    jConnProfilsWrapper = '{"apps":{' +  jConnProfiles + '}}'
+    sConnProfile = w3rkstatt.dTranslate4Json(data=jConnProfilsWrapper)      
+   
+    return sConnProfile
+
+def getLocalConnectionProfiles(ctmApiClient,ctmServer,ctmAgent,ctmAppType):
+    # Base Applications    
+    sCtmAppTypes = ctmAppType      
+    jConnProfiles = ""                    
+
+    for appType in sCtmAppTypes:
+        if _localDebug: 
+            logger.debug(' - Action: %s : %s',"Get Connection Profile",appType)
+        jProfiles = ctm.getCtmAgentConnectionProfile(ctmApiClient=ctmApiClient,ctmServer=ctmServer,ctmAgent=ctmAgent,ctmAppType=appType)
+        jProfilesLen = len(jProfiles)
+        if jProfilesLen > 0:
+            logger.debug(' - Action: %s : %s',"Found Connection Profile",appType)
+            jProfile = '"' + appType + '":'
+            jProfile = jProfile + str(jProfiles)
+            jConnProfiles = jProfile + "," + jConnProfiles
+        else:
+            if _localDebug: 
+                jProfile = '"' + appType + '":None'
+                jConnProfiles = jProfile + "," + jConnProfiles
+
+    jConnProfiles = str(jConnProfiles).rstrip(',')
+    jConnProfilsWrapper = '{"apps":{' +  jConnProfiles + '}}'
+    sConnProfile = w3rkstatt.dTranslate4Json(data=jConnProfilsWrapper)       
+   
+    return sConnProfile
+
+def getCentralConnectionProfilesAi(ctmApiClient,jobTypes):
+    appTypes = jobTypes["jobtypes"]
+    jConnProfiles = ""
+    for appType in appTypes:
+        job_type_name = appType["job_type_name"]
+        job_type_id = appType["job_type_id"]
+        appTypeAi = "ApplicationIntegrator:" + job_type_name
+        if _localDebug: 
+            logger.debug(' - Action: %s : %s',"Get Connection Profile",appTypeAi)
+        jProfiles = ctm.getCtmCentralConnectionProfile(ctmApiClient=ctmApiClient,ctmAppType=appTypeAi)
+        jProfilesLen = len(jProfiles)
+        if jProfilesLen > 0:
+            logger.debug(' - Action: %s : %s',"Found Connection Profile",job_type_id)
+            jProfile = '"' + job_type_id + '":'
+            jProfile = jProfile + str(jProfiles)
+            jConnProfiles = jProfile + "," + jConnProfiles
+        else:
+            if _localDebug: 
+                jProfile = '"' + job_type_id + '":None'
+                jConnProfiles = jProfile + "," + jConnProfiles    
+                                                            
+    jConnProfiles = str(jConnProfiles).rstrip(',')
+    jConnProfilsWrapper = '{"ai":{' +  jConnProfiles + '}}'
+    sConnProfile = w3rkstatt.dTranslate4Json(data=jConnProfilsWrapper)      
+   
+    return sConnProfile
+
+def getLocalConnectionProfilesAi(ctmApiClient,ctmServer,ctmAgent,ctmAppType):
+    appTypes = ctmAppType["jobtypes"]
+    jConnProfiles = ""
+    for appType in appTypes:
+        job_type_name = appType["job_type_name"]
+        job_type_id = appType["job_type_id"]
+        appTypeAi = "ApplicationIntegrator:" + job_type_name
+        if _localDebug: 
+            logger.debug(' - Action: %s : %s',"Get Connection Profile",appTypeAi)
+        jProfiles = ctm.getCtmAgentConnectionProfile(ctmApiClient=ctmApiClient,ctmServer=ctmServer,ctmAgent=ctmAgent,ctmAppType=appTypeAi)
+        jProfilesLen = len(jProfiles)
+        if jProfilesLen > 0:
+            logger.debug(' - Action: %s : %s',"Found Connection Profile",job_type_id)
+            jProfile = '"' + job_type_id + '":'
+            jProfile = jProfile + str(jProfiles)
+            jConnProfiles = jProfile + "," + jConnProfiles
+        else:
+            if _localDebug: 
+                jProfile = '"' + job_type_id + '":None'
+                jConnProfiles = jProfile + "," + jConnProfiles    
+                                                            
+    jConnProfiles = str(jConnProfiles).rstrip(',')
+    jConnProfilsWrapper = '{"ai":{' +  jConnProfiles + '}}'
+    sConnProfile = w3rkstatt.dTranslate4Json(data=jConnProfilsWrapper)      
+   
+    return sConnProfile
 
 def discoCtm():
     # CTM Login
@@ -205,11 +324,25 @@ def discoCtm():
         yCtmAgentList = ""
         iCtmServers = int(len(jCtmServers))
 
-        # Get CTM AI Job Types and
-        jCtmAiJobTypes = ctm.getDeployedAiJobtypes(ctmApiClient=ctmApiClient,ctmAiJobDeployStatus="ready to deploy")
+        # Get CTM Job Types and
+        jCtmAiJobTypes      = ctm.getDeployedAiJobtypes(ctmApiClient=ctmApiClient,ctmAiJobDeployStatus="ready to deploy")
+        jCtmAiJobTypesDraft = ctm.getDeployedAiJobtypes(ctmApiClient=ctmApiClient,ctmAiJobDeployStatus="draft")
+        sCtmAppTypes        = ["Hadoop","Database","FileTransfer","Informatica","SAP","AWS","Azure"]
+
+        # Get CTM Shared Connection Profiles
+        jCtmCentralConnectionProfilesBase     = getCentralConnectionProfiles(ctmApiClient=ctmApiClient,jobTypes=sCtmAppTypes)
+        jCtmCentralConnectionProfilesAi       = getCentralConnectionProfilesAi(ctmApiClient=ctmApiClient,jobTypes=jCtmAiJobTypes)
+
+        jCtmCentralConnectionProfilesBaseTemp = str(jCtmCentralConnectionProfilesBase).lstrip('{')[:-1]
+        jCtmCentralConnectionProfilesAiTemp   = str(jCtmCentralConnectionProfilesAi).lstrip('{')[:-1]
+
+        jCtmCentralConnectionProfiles = '{"shared":{'  + jCtmCentralConnectionProfilesBaseTemp + ',' +  jCtmCentralConnectionProfilesAiTemp + '}}'
+
 
         # Write Control-M AI JobTypes File
         fileStatus    = writeJobTypesInfoFile(data=jCtmAiJobTypes)
+        fileStatus    = writeJobTypesDraftInfoFile(data=jCtmAiJobTypesDraft)        
+        fileStatus    = writeSharedConnectionProfilesInfoFile(data=jCtmCentralConnectionProfiles)
 
         for xCtmServer in jCtmServers:
             sCtmServerName = xCtmServer["name"]
@@ -261,60 +394,77 @@ def discoCtm():
                         jAgentInfo = jAgentInfo + '"parameters":' + dCtmAgentParams + ','
 
                         # Get CTM Agent Connection Profiles
-                        jConnProfilesAi = ""
-                        jAgentConnProfilesAi = '{"ApplicationIntegrator":[{'
+                        # jConnProfilesAi = ""
 
-                        # Application Integratot Job Type based connection profile
-                        appTypes = jCtmAiJobTypes["jobtypes"]
-                        for appType in appTypes:
-                            job_type_name = appType["job_type_name"]
-                            job_type_id = appType["job_type_id"]
-                            appTypeAi = "ApplicationIntegrator:" + job_type_name
-                            if _localDebug: 
-                                logger.debug(' - Action: %s : %s',"Get Connection Profile",appTypeAi)
-                            jProfiles = ctm.getCtmAgentConnectionProfile(ctmApiClient=ctmApiClient,ctmServer=sCtmServerName,ctmAgent=sAgentName,ctmAppType=appTypeAi)
-                            jProfilesLen = len(jProfiles)
-                            if jProfilesLen > 0:
-                                logger.debug(' - Action: %s : %s',"Found Connection Profile",job_type_id)
-                                jProfile = '"' + job_type_id + '":'
-                                jProfile = jProfile + str(jProfiles)
-                                jConnProfilesAi = jProfile + "," + jConnProfilesAi
-                            # else:
-                            #     jProfile = '"' + job_type_id + '":None'
-                            #     jConnProfilesAi = jProfile + "," + jConnProfilesAi    
+                        # Base Application and Application Integrator Job Type based connection profile
+                        jCtmLocalConnectionProfilesAi   = getLocalConnectionProfilesAi(ctmApiClient,ctmServer=sCtmServerName,ctmAgent=sAgentName,ctmAppType=jCtmAiJobTypes)
+                        jCtmLocalConnectionProfilesBase = getLocalConnectionProfiles(ctmApiClient=ctmApiClient,ctmServer=sCtmServerName,ctmAgent=sAgentName,ctmAppType=sCtmAppTypes)
+                        jCtmLocalConnectionProfilesBaseTemp = str(jCtmLocalConnectionProfilesBase).lstrip('{')[:-1]
+                        jCtmLocalConnectionProfilesAiTemp   = str(jCtmLocalConnectionProfilesAi).lstrip('{')[:-1]
+                        jCtmLocalConnectionProfiles = '"profiles":{'  + jCtmLocalConnectionProfilesBaseTemp + ',' +  jCtmLocalConnectionProfilesAiTemp + '}'            
+
+                        # Add to local CTM agent info
+                        jAgentInfo = jAgentInfo + jCtmLocalConnectionProfiles + '}'
+                        jAgentInfo = w3rkstatt.dTranslate4Json(data=jAgentInfo)              
+                        
+                        # appTypes = jCtmAiJobTypes["jobtypes"]
+                        # for appType in appTypes:
+                        #     job_type_name = appType["job_type_name"]
+                        #     job_type_id = appType["job_type_id"]
+                        #     appTypeAi = "ApplicationIntegrator:" + job_type_name
+                        #     if _localDebug: 
+                        #         logger.debug(' - Action: %s : %s',"Get Connection Profile",appTypeAi)
+                        #     jProfiles = ctm.getCtmAgentConnectionProfile(ctmApiClient=ctmApiClient,ctmServer=sCtmServerName,ctmAgent=sAgentName,ctmAppType=appTypeAi)
+                        #     jProfilesLen = len(jProfiles)
+                        #     if jProfilesLen > 0:
+                        #         logger.debug(' - Action: %s : %s',"Found Connection Profile",job_type_id)
+                        #         jProfile = '"' + job_type_id + '":'
+                        #         jProfile = jProfile + str(jProfiles)
+                        #         jConnProfilesAi = jProfile + "," + jConnProfilesAi
+                        #     # else:
+                        #     #     jProfile = '"' + job_type_id + '":None'
+                        #     #     jConnProfilesAi = jProfile + "," + jConnProfilesAi    
                                                  
-                        jAgentConnProfilesAi = "{"                                
-                        jConnProfilesAi = jConnProfilesAi[:-1]
-                        jAgentConnProfilesAi = jAgentConnProfilesAi +  jConnProfilesAi + '}'
-                        sConnProfileAi = w3rkstatt.dTranslate4Json(data=jAgentConnProfilesAi)  
+                        # jAgentConnProfilesAi = "{"                                
+                        # jConnProfilesAi = jConnProfilesAi[:-1]
+                        # jAgentConnProfilesAi = jAgentConnProfilesAi +  jConnProfilesAi + '}'
+                        # sConnProfileAi = w3rkstatt.dTranslate4Json(data=jAgentConnProfilesAi)  
 
                         # Base Applications
-                        sCtmAppTypes = ["Hadoop","Database","FileTransfer","Informatica","SAP","AWS","Azure"]
-                        jConnProfiles = ""
-                        jAgentConnProfiles = '{"connection":[{'                        
+                        # jConnProfiles = ""                    
 
-                        for appType in sCtmAppTypes:
-                            if _localDebug: 
-                                logger.debug(' - Action: %s : %s',"Get Connection Profile",appType)
-                            jProfiles = ctm.getCtmAgentConnectionProfile(ctmApiClient=ctmApiClient,ctmServer=sCtmServerName,ctmAgent=sAgentName,ctmAppType=appType)
-                            jProfilesLen = len(jProfiles)
-                            if jProfilesLen > 0:
-                                logger.debug(' - Action: %s : %s',"Found Connection Profile",appType)
-                                jProfile = '"' + appType + '":'
-                                jProfile = jProfile + str(jProfiles)
-                                jConnProfiles = jProfile + "," + jConnProfiles
-                            # else:
-                            #     jProfile = '"' + appType + '":None'
-                            #     jConnProfiles = jProfile + "," + jConnProfiles
+                        # for appType in sCtmAppTypes:
+                        #     if _localDebug: 
+                        #         logger.debug(' - Action: %s : %s',"Get Connection Profile",appType)
+                        #     jProfiles = ctm.getCtmAgentConnectionProfile(ctmApiClient=ctmApiClient,ctmServer=sCtmServerName,ctmAgent=sAgentName,ctmAppType=appType)
+                        #     jProfilesLen = len(jProfiles)
+                        #     if jProfilesLen > 0:
+                        #         logger.debug(' - Action: %s : %s',"Found Connection Profile",appType)
+                        #         jProfile = '"' + appType + '":'
+                        #         jProfile = jProfile + str(jProfiles)
+                        #         jConnProfiles = jProfile + "," + jConnProfiles
+                        #     # else:
+                        #     #     jProfile = '"' + appType + '":None'
+                        #     #     jConnProfiles = jProfile + "," + jConnProfiles
 
-                        jAgentConnProfiles = "{"                                
-                        jConnProfiles = jConnProfiles[:-1]
-                        jAgentConnProfiles = jAgentConnProfiles +  jConnProfiles + '}'
-                        sConnProfile = w3rkstatt.dTranslate4Json(data=jAgentConnProfiles)    
-                        
+                        # jAgentConnProfiles = "{"                                
+                        # jConnProfiles = jConnProfiles[:-1]
+                        # jAgentConnProfiles = jAgentConnProfiles +  jConnProfiles + '}'
+                        # sConnProfile = w3rkstatt.dTranslate4Json(data=jAgentConnProfiles)    
+
+
+                        # jCtmLocalConnectionProfilesBaseTemp = str(jCtmLocalConnectionProfilesBase).lstrip('{')[:-1]
+                        # jCtmLocalConnectionProfilesAiTemp   = str(sConnProfileAi).lstrip('{')[:-1]
+
+
+                        # jCtmLocalConnectionProfilesBaseTemp = str(sConnProfile).lstrip('{')[:-1]
+                        # jCtmLocalConnectionProfilesAiTemp   = str(sConnProfileAi).lstrip('{')[:-1]
+
+                        # jCtmLocalConnectionProfiles = '"shared":{'  + jCtmCentralConnectionProfilesBaseTemp + ',' +  jCtmCentralConnectionProfilesAiTemp + '}'
+
                         # Add Connection Profile Info
-                        jAgentInfo = jAgentInfo + '"connections_base":' + sConnProfile + ',"connections_ai":' + sConnProfileAi + '}'
-                        jAgentInfo = w3rkstatt.dTranslate4Json(data=jAgentInfo)                         
+                        # jAgentInfo = jAgentInfo + '"connections_base":' + sConnProfile + ',"connections_ai":' + sConnProfileAi + '}'
+                       
                     else:
                         jAgentInfo = '{"name":"' + sAgentName + '",'
                         jAgentInfo = jAgentInfo + '"nodeid":"' + sAgentName + '",'
@@ -349,7 +499,7 @@ def discoCtm():
         
 
         yCtmAgentList = yCtmAgentList
-        zCtmAgentList = '{"inventory":{'+ '"servers":[' + yCtmAgentList + ']}}'
+        zCtmAgentList = '{"inventory":{'+ '"servers":[' + yCtmAgentList + '],"profiles":' + jCtmCentralConnectionProfiles + '}}'
         jCtmAgentList = w3rkstatt.dTranslate4Json(data=zCtmAgentList)
 
         # Write Inventory File

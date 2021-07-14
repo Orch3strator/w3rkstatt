@@ -308,6 +308,39 @@ def getCtmAgentConnectionProfile(ctmApiClient,ctmServer,ctmAgent,ctmAppType):
         pass
     return results
 
+def getCtmCentralConnectionProfile(ctmApiClient,ctmAppType):
+    """Get centralized deployed connection profile  # noqa: E501
+
+    Get currently centralized deployed connection profiles according to the search query as JSON.  # noqa: E501
+    This method makes a synchronous HTTP request by default. To make an
+    asynchronous HTTP request, please pass async_req=True
+
+    :param async_req bool
+    :param str type: The type of connection profile such as Database, FileTransfer, Hadoop, Informatica, SAP. Use * to get all types (required)
+    :param str name: The name of centralized connection profile. Supports for *, ?, and comma. By default is *
+    :return: str
+                If the method is called asynchronously,
+                returns the request thread.
+    """
+
+    # Instantiate the AAPI object
+    ctmDeployAapi = ctm.api.deploy_api.DeployApi(api_client=ctmApiClient)
+    # logger.debug('CTM: API object: %s', ctmDeployAapi)
+    results = ""
+
+    # Call CTM AAPI
+    try:
+        # logger.debug('CTM: API Function: %s', "get_deployed_connection_profiles")
+        results = ctmDeployAapi.get_shared_connection_profiles(type=ctmAppType, _return_http_data_only=True )
+        results = w3rkstatt.dTranslate4Json(data=results)
+
+        # logger.debug('CTM: API Result:\n%s', results)
+        results = json.loads(results)
+    except ctm.rest.ApiException as exp:
+        logger.error('CTM: API Error: %s', exp)
+        pass
+    return results
+
 def getDeployedAiJobtypes(ctmApiClient, ctmAiJobDeployStatus="ready to deploy"):
     """Get Application Integrator job types  # noqa: E501
 
