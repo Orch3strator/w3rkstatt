@@ -172,7 +172,7 @@ def writeInfoFile(file,content):
     return fileStatus
 
 def writeAgentInfoFile(ctmAgent,data):
-    filename   = "ctm.agent" + ctmAgent + ".json"
+    filename   = "ctm.agent." + ctmAgent + ".json"
     fileStatus = writeInfoFile(file=filename,content=data) 
     return fileStatus    
 
@@ -422,6 +422,48 @@ def getCtmRemoteHosts(ctmApiClient,ctmServer):
 
     return jRemoteHostFinal
 
+def getAgentRemoteHosts(ctmRemoteHosts,ctmAgent="*"):
+    jRemoteHostList = ctmRemoteHosts 
+    # Load Control-M Hostgroup into panda dataframe
+    df = pd.json_normalize(jRemoteHostList,record_path=['remote'])
+
+    if df.empty:
+        logger.error('Empty dataframe, no remote hosts records')  
+        jCtmAgents = {}
+    else:
+        dfCtmAgents = df.groupby('agent')['host'].apply(list).reset_index(name='host')
+        jCtmAgents = dfCtmAgents.to_json(orient ='records')
+
+        # Get matching agent via panda dataframe
+        if ctmAgent != "*":
+            xCtmAgentGroups = df.loc[df['agent'] == ctmAgent]
+            yCtmAgentGroups = xCtmAgentGroups.groupby('agent')['host'].apply(list).reset_index(name='hosts')
+            zCtmAgentGroups = yCtmAgentGroups.to_json(orient ='records')
+            jCtmAgents = zCtmAgentGroups
+
+    logger.debug('CTM Panda records:\n %s', jCtmAgents)  
+    return jCtmAgents
+
+def getServerRemoteHosts(ctmRemoteHosts,ctmServer):
+    jRemoteHostList = ctmRemoteHosts 
+    # Load Control-M Hostgroup into panda dataframe
+    df = pd.json_normalize(jRemoteHostList,record_path=['remote'])
+
+    if df.empty:
+        logger.error('Empty dataframe, no remote hosts records')  
+        jCtmAgents = {}
+    else:
+        dfCtmAgents = df.groupby('server')['host'].apply(list).reset_index(name='hosts')
+        jCtmAgents = dfCtmAgents.to_json(orient ='records')
+
+        xCtmAgentGroups = df.loc[df['server'] == ctmServer]
+        yCtmAgentGroups = xCtmAgentGroups.groupby('server')['host'].apply(list).reset_index(name='hosts')
+        zCtmAgentGroups = yCtmAgentGroups.to_json(orient ='records')
+        jCtmAgents = zCtmAgentGroups
+
+    logger.debug('CTM Panda records:\n %s', jCtmAgents)  
+    return jCtmAgents
+
 
 def discoCtm():
     # CTM Login
@@ -478,6 +520,16 @@ def discoCtm():
             jCtmRemoteHosts = getCtmRemoteHosts(ctmApiClient=ctmApiClient,ctmServer=sCtmServerName)
             sCtmRemoteHosts = w3rkstatt.dTranslate4Json(data=jCtmRemoteHosts)   
             fileStatus      = writeRemoteHostsInfoFile(ctmServer=sCtmServerName,data=sCtmRemoteHosts)
+
+            jCtmServerRemoteHosts = getServerRemoteHosts(ctmRemoteHosts=jCtmRemoteHosts,ctmServer=sCtmServerName)
+            iCtmServerRemoteHosts = len(jCtmServerRemoteHosts)
+            if iCtmServerRemoteHosts == 1:
+                lServerRemoteHosts = iCtmServerRemoteHosts[0]
+                sServerRemoteHosts = str(w3rkstatt.getJsonValue(path="$.hosts",data=lServerRemoteHosts))
+                sServerRemoteHosts = w3rkstatt.dTranslate4Json(data=sServerRemoteHosts) 
+            else:
+                sServerRemoteHosts = "[]"            
+            
             
             # Get Control-M Agents
             jCtmAgents = getCtmAgents(ctmApiClient=ctmApiClient,ctmServer=sCtmServerName)
@@ -513,6 +565,16 @@ def discoCtm():
                     sConnProfile     = ""
                     logger.debug('CTM Agent "%s/%s" Status: %s = %s', iCtmAgent, iCtmAgents, sAgentName, sAgentStatus)
 
+                    # Get CTM Agent Remote Hosts
+                    jAgentRemoteHosts = json.loads(getAgentRemoteHosts(jCtmRemoteHosts,ctmAgent=sAgentName))
+                    iAgentRemoteHosts = len(jAgentRemoteHosts)
+                    if iAgentRemoteHosts == 1:
+                        lAgentRemoteHosts = jAgentRemoteHosts[0]
+                        sAgentRemoteHosts = str(w3rkstatt.getJsonValue(path="$.hosts",data=lAgentRemoteHosts))
+                        sAgentRemoteHosts = w3rkstatt.dTranslate4Json(data=sAgentRemoteHosts) 
+                    else:
+                        sAgentRemoteHosts = "[]"
+
                     # Get CTM Agent Hostgroup Membership
                     jAgentHostGroupsMembership = json.loads(getAgentHostGroupsMembership(ctmHostGroups=jCtmHostGroups,ctmAgent=sAgentName))
                     iAgentHostGroupsMembership = len(jAgentHostGroupsMembership)
@@ -521,7 +583,7 @@ def discoCtm():
                         sAgentHostGroupsMembership = str(w3rkstatt.getJsonValue(path="$.groups",data=lAgentHostGroupsMembership))
                         sAgentHostGroupsMembership = w3rkstatt.dTranslate4Json(data=sAgentHostGroupsMembership)             
                     else:
-                        sAgentHostGroupsMembership = "[]"     
+                        sAgentHostGroupsMembership = "[]"    
 
                     # Get Control-M agent info of active agent               
                     if sAgentStatus == "Available":     
@@ -534,6 +596,7 @@ def discoCtm():
                         jAgentInfo = jAgentInfo + '"nodeid":"' + sAgentName + '",'
                         jAgentInfo = jAgentInfo + '"status":"' + sAgentStatus + '",'
                         jAgentInfo = jAgentInfo + '"hostgroups":' + sAgentHostGroupsMembership + ','
+                        jAgentInfo = jAgentInfo + '"remote":' + sAgentRemoteHosts + ','
                         jAgentInfo = jAgentInfo + '"version":"' + sAgentVersion + '",'
                         jAgentInfo = jAgentInfo + '"operating_system":"' + sAgentOS + '",'   
                         jAgentInfo = jAgentInfo + '"server_name":"' + sCtmServerName + '",'   
@@ -558,6 +621,7 @@ def discoCtm():
                         jAgentInfo = jAgentInfo + '"nodeid":"' + sAgentName + '",'
                         jAgentInfo = jAgentInfo + '"status":"' + sAgentStatus + '",'
                         jAgentInfo = jAgentInfo + '"hostgroups":' + sAgentHostGroupsMembership + ','
+                        jAgentInfo = jAgentInfo + '"remote":' + sAgentRemoteHosts + ','
                         jAgentInfo = jAgentInfo + '"version":"' + sAgentVersion + '",'
                         jAgentInfo = jAgentInfo + '"operating_system":"' + sAgentOS + '",'  
                         jAgentInfo = jAgentInfo + '"server_name":"' + sCtmServerName + '",'   
@@ -576,7 +640,7 @@ def discoCtm():
                     jAgentInfo = w3rkstatt.dTranslate4Json(data=jAgentInfo)   
                     fileStatus = writeAgentInfoFile(ctmAgent=sAgentName,data=jAgentInfo)
                 
-            xCtmAgentList = '{"server":"'  + sCtmServerName  + '","host":"'  + sCtmServerFQDN  +'","parameters":' + sCtmServerParameters +',"runners":'  + str(iCtmAgents)  + ',"agents":[' + str(xCtmAgentsInfo) + ']}'
+            xCtmAgentList = '{"server":"'  + sCtmServerName  + '","host":"'  + sCtmServerFQDN  +'","parameters":' + sCtmServerParameters + ',"runners":'  + str(iCtmAgents) + ',"remote":'  + str(sServerRemoteHosts)  + ',"agents":[' + str(xCtmAgentsInfo) + ']}'
             # Write Server Status File
             fileStatus = writeServerInfoFile(ctmServer=sCtmServerName,data=xCtmAgentList)
             
