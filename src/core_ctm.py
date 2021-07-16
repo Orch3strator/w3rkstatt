@@ -776,24 +776,135 @@ def getCtmReportData(ctmReportUrl):
       # exit()
 
 def getCtmHostGroupMembers(ctmApiClient,ctmServer,ctmHostGroup):
-    """
-    Simple function that uses the get_agents service to get all the agents of the specified Control-M Server.
+    """get hostgroup agents  # noqa: E501
 
-    :param api_client: property from CTMConnection object
-    :return: list of named tuple: [{'key': 'value'}] access as list[0].key
+    Get the agents that compose the specified hostgroup  # noqa: E501
+    This method makes a synchronous HTTP request by default. To make an
+    asynchronous HTTP request, please pass async_req=True
+
+    :param async_req bool
+    :param str server: The Server the hostgroup belongs to. (required)
+    :param str hostgroup: The hostgroup name (required)
+    :return: AgentsInGroupListResult
+                If the method is called asynchronously,
+                returns the request thread.
     """
 
     # Instantiate the AAPI object
     ctmCfgAapi = ctm.api.config_api.ConfigApi(api_client=ctmApiClient)
-    logger.debug('CTM: API object: %s', ctmCfgAapi)
+    if _localDebug: 
+        logger.debug('CTM: API object: %s', ctmCfgAapi)
     results = ""
 
     # Call CTM AAPI
     try:
-        logger.debug('CTM: API Function: %s', "get_hosts_in_group")
+        if _localDebug: 
+            logger.debug('CTM: API Function: %s', "get_hosts_in_group")
         results = ctmCfgAapi.get_hosts_in_group(server=ctmServer, hostgroup=ctmHostGroup , _return_http_data_only=True )
         results = str(results).replace("'",'"')
-        logger.debug('CTM: API Result: %s', results)
+        if _localDebug: 
+            logger.debug('CTM: API Result: %s', results)
+        results = json.loads(results)
+    except ctm.rest.ApiException as exp:
+        logger.error('CTM: API Error: %s', exp)
+    return results
+
+def getCtmHostGroups(ctmApiClient,ctmServer):
+    """get Server hostgroups  # noqa: E501
+
+    Get all the hostgroups of the specified Server.  # noqa: E501
+    This method makes a synchronous HTTP request by default. To make an
+    asynchronous HTTP request, please pass async_req=True
+
+    :param async_req bool
+    :param str server: The Server the hostgroups belong to. (required)
+    :return: StringListResult
+                If the method is called asynchronously,
+                returns the request thread.
+    """
+
+    # Instantiate the AAPI object
+    ctmCfgAapi = ctm.api.config_api.ConfigApi(api_client=ctmApiClient)
+    if _localDebug: 
+        logger.debug('CTM: API object: %s', ctmCfgAapi)
+    results = ""
+
+    # Call CTM AAPI
+    try:
+        if _localDebug: 
+            logger.debug('CTM: API Function: %s', "get_hosts_in_group")
+        results = ctmCfgAapi.get_hostgroups(server=ctmServer, _return_http_data_only=True )
+        results = str(results).replace("'",'"')
+        if _localDebug: 
+            logger.debug('CTM: API Result: %s', results)
+        results = json.loads(results)
+    except ctm.rest.ApiException as exp:
+        logger.error('CTM: API Error: %s', exp)
+    return results
+
+def getCtmRemoteHosts(ctmApiClient,ctmServer):
+    """get Server remote hosts  # noqa: E501
+
+    Get all the remote hosts of the specified Server.  # noqa: E501
+    This method makes a synchronous HTTP request by default. To make an
+    asynchronous HTTP request, please pass async_req=True
+
+    :param async_req bool
+    :param str server: The Server to query. (required)
+    :return: StringListResult
+                If the method is called asynchronously,
+                returns the request thread.
+    """
+
+    # Instantiate the AAPI object
+    ctmCfgAapi = ctm.api.config_api.ConfigApi(api_client=ctmApiClient)
+    if _localDebug: 
+        logger.debug('CTM: API object: %s', ctmCfgAapi)
+    results = ""
+
+    # Call CTM AAPI
+    try:
+        if _localDebug: 
+            logger.debug('CTM: API Function: %s', "get_remote_hosts")
+        results = ctmCfgAapi.get_remote_hosts(server=ctmServer, _return_http_data_only=True )
+        results = str(results).replace("'",'"')
+        if _localDebug: 
+            logger.debug('CTM: API Result: %s', results)
+        results = json.loads(results)
+    except ctm.rest.ApiException as exp:
+        logger.error('CTM: API Error: %s', exp)
+    return results
+
+def getRemoteHostProperties(ctmApiClient,ctmServer,ctmRemoteHost):
+    """get a remote host configuration from Server  # noqa: E501
+
+    Get the remote host configuration properties from the Server  # noqa: E501
+    This method makes a synchronous HTTP request by default. To make an
+    asynchronous HTTP request, please pass async_req=True
+
+    :param async_req bool
+    :param str server: The Server the remote host  is connected to. (required)
+    :param str remotehost: The name of the remote host. (required)
+    :return: AddRemoteHostParams
+                If the method is called asynchronously,
+                returns the request thread.
+    """
+
+    # Instantiate the AAPI object
+    ctmCfgAapi = ctm.api.config_api.ConfigApi(api_client=ctmApiClient)
+    if _localDebug: 
+        logger.debug('CTM: API object: %s', ctmCfgAapi)
+    results = ""
+
+    # Call CTM AAPI
+    try:
+        if _localDebug: 
+            logger.debug('CTM: API Function: %s', "get_remote_host_properties")
+        results = ctmCfgAapi.get_remote_host_properties(server=ctmServer,remotehost=ctmRemoteHost, _return_http_data_only=True )
+        results = w3rkstatt.dTranslate4Json(data=results)   
+
+        if _localDebug: 
+            logger.debug('CTM: API Result: %s', results)
         results = json.loads(results)
     except ctm.rest.ApiException as exp:
         logger.error('CTM: API Error: %s', exp)

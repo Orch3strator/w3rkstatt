@@ -41,7 +41,6 @@ import json
 from jsonpath_ng import jsonpath
 from jsonpath_ng.ext import parse
 from os.path import expanduser
-from demjson import decode
 
 from io import StringIO
 from pathlib import Path
@@ -540,27 +539,6 @@ def dTranslate4Json(data):
     xData = xData.replace("'",'"')
 
     return xData
-
-def jsonFixStructure(data):
-    '''
-    Fix invalid JSON structure content
-
-    :param str data: json string
-    :return: content
-    :rtype: json
-    :raises ValueError: N/A
-    :raises TypeError: N/A    
-    '''   
-    xTemp = ""
-    lines = data
-    for line in lines:
-        line = str(line)
-        line = line.replace('\n',"" )
-        if line[-1] == "'":
-            line = line + (",\n'd2':")    
-        xTemp = xTemp + line
-    jFix = decode(xTemp)
-    return jFix
 
 def extract(data, arr, key):
     '''
