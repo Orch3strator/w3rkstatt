@@ -441,28 +441,25 @@ def getAgentRemoteHosts(ctmRemoteHosts,ctmAgent="*"):
             zCtmAgentGroups = yCtmAgentGroups.to_json(orient ='records')
             jCtmAgents = zCtmAgentGroups
 
-    logger.debug('CTM Panda records:\n %s', jCtmAgents)  
+    # logger.debug('CTM Panda records:\n %s', jCtmAgents)  
     return jCtmAgents
 
 def getServerRemoteHosts(ctmRemoteHosts,ctmServer):
-    jRemoteHostList = ctmRemoteHosts 
     # Load Control-M Hostgroup into panda dataframe
-    df = pd.json_normalize(jRemoteHostList,record_path=['remote'])
+    jData = ctmRemoteHosts
+    df = pd.json_normalize(jData,record_path=['remote'])
 
     if df.empty:
         logger.error('Empty dataframe, no remote hosts records')  
-        jCtmAgents = {}
-    else:
-        dfCtmAgents = df.groupby('server')['host'].apply(list).reset_index(name='hosts')
-        jCtmAgents = dfCtmAgents.to_json(orient ='records')
+        dfList = []
+    else:        
+        dfEntries = df['host'].unique()
+        dfList = dfEntries.tolist()
+        # logger.debug('CTM Panda records:\n %s', dfList) 
 
-        xCtmAgentGroups = df.loc[df['server'] == ctmServer]
-        yCtmAgentGroups = xCtmAgentGroups.groupby('server')['host'].apply(list).reset_index(name='hosts')
-        zCtmAgentGroups = yCtmAgentGroups.to_json(orient ='records')
-        jCtmAgents = zCtmAgentGroups
-
-    logger.debug('CTM Panda records:\n %s', jCtmAgents)  
-    return jCtmAgents
+    values = json.dumps(dfList)
+    # logger.debug('CTM Panda records:\n %s', values)  
+    return values
 
 
 def discoCtm():
@@ -521,11 +518,10 @@ def discoCtm():
             sCtmRemoteHosts = w3rkstatt.dTranslate4Json(data=jCtmRemoteHosts)   
             fileStatus      = writeRemoteHostsInfoFile(ctmServer=sCtmServerName,data=sCtmRemoteHosts)
 
-            jCtmServerRemoteHosts = getServerRemoteHosts(ctmRemoteHosts=jCtmRemoteHosts,ctmServer=sCtmServerName)
+            jCtmServerRemoteHosts = json.loads(getServerRemoteHosts(ctmRemoteHosts=jCtmRemoteHosts,ctmServer=sCtmServerName))
             iCtmServerRemoteHosts = len(jCtmServerRemoteHosts)
-            if iCtmServerRemoteHosts == 1:
-                lServerRemoteHosts = iCtmServerRemoteHosts[0]
-                sServerRemoteHosts = str(w3rkstatt.getJsonValue(path="$.hosts",data=lServerRemoteHosts))
+            if iCtmServerRemoteHosts > 1:
+                sServerRemoteHosts = str(jCtmServerRemoteHosts)
                 sServerRemoteHosts = w3rkstatt.dTranslate4Json(data=sServerRemoteHosts) 
             else:
                 sServerRemoteHosts = "[]"            
