@@ -165,54 +165,56 @@ def writeInfoFile(file,content):
         filePath    = w3rkstatt.concatPath(path=data_folder,folder=fileName)
         fileRsp     = w3rkstatt.writeJsonFile(file=filePath,content=fileContent)  
         fileStatus  = w3rkstatt.getFileStatus(path=filePath)
+    else:
+        filePath = ""
 
         if _localQA: 
             logger.info('Info File: "%s" ', filePath)
 
-    return fileStatus
+    return filePath
 
 def writeAgentInfoFile(ctmAgent,data):
     filename   = "ctm.agent." + ctmAgent + ".json"
-    fileStatus = writeInfoFile(file=filename,content=data) 
-    return fileStatus    
+    filePath = writeInfoFile(file=filename,content=data) 
+    return filePath    
 
 def writeRemoteHostsInfoFile(ctmServer,data):
     filename   = "ctm.server.agents.remote." + ctmServer + ".json"
-    fileStatus = writeInfoFile(file=filename,content=data) 
-    return fileStatus 
+    filePath = writeInfoFile(file=filename,content=data) 
+    return filePath 
 
 def writeServerInfoFile(ctmServer,data):
     filename   = "ctm.server." + ctmServer + ".json"
-    fileStatus = writeInfoFile(file=filename,content=data) 
-    return fileStatus  
+    filePath = writeInfoFile(file=filename,content=data) 
+    return filePath  
 
 def writeHostGroupsInfoFile(ctmServer,data):
     filename   = "ctm.hostgroups." + ctmServer + ".json"
-    fileStatus = writeInfoFile(file=filename,content=data) 
-    return fileStatus  
+    filePath = writeInfoFile(file=filename,content=data) 
+    return filePath  
 
 def writeInventoryInfoFile(data):
     filename = "ctm.inventory." + str(epoch).replace(".","") + ".json"
-    fileStatus = writeInfoFile(file=filename,content=data) 
-    return fileStatus 
+    filePath = writeInfoFile(file=filename,content=data) 
+    return filePath 
     
 def writeJobTypesInfoFile(data):
     filename = "ctm.job.ai.types.r2d.json"
     data = w3rkstatt.dTranslate4Json(data=data)        
-    fileStatus = writeInfoFile(file=filename,content=data) 
-    return fileStatus 
+    filePath = writeInfoFile(file=filename,content=data) 
+    return filePath 
 
 def writeJobTypesDraftInfoFile(data):
     filename = "ctm.job.ai.types.draft.json"
     data = w3rkstatt.dTranslate4Json(data=data)        
-    fileStatus = writeInfoFile(file=filename,content=data) 
-    return fileStatus 
+    filePath = writeInfoFile(file=filename,content=data) 
+    return filePath 
 
 def writeSharedConnectionProfilesInfoFile(data):
     filename = "ctm.connection.profiles.shared.json"
     data = w3rkstatt.dTranslate4Json(data=data)        
-    fileStatus = writeInfoFile(file=filename,content=data) 
-    return fileStatus 
+    filePath = writeInfoFile(file=filename,content=data) 
+    return filePath 
 
 def getCentralConnectionProfiles(ctmApiClient,jobTypes):
     # Base Applications    
@@ -248,7 +250,8 @@ def getLocalConnectionProfiles(ctmApiClient,ctmServer,ctmAgent,ctmAppType):
 
     for appType in sCtmAppTypes:
         if _localDebug: 
-            logger.debug(' - Action: %s : %s',"Get Connection Profile",appType)
+            pass
+        logger.debug(' - Action: %s : %s',"Get Connection Profile",appType)
         jProfiles = ctm.getCtmAgentConnectionProfile(ctmApiClient=ctmApiClient,ctmServer=ctmServer,ctmAgent=ctmAgent,ctmAppType=appType)
         jProfilesLen = len(jProfiles)
         if jProfilesLen > 0:
@@ -302,7 +305,8 @@ def getLocalConnectionProfilesAi(ctmApiClient,ctmServer,ctmAgent,ctmAppType):
         job_type_id = appType["job_type_id"]
         appTypeAi = "ApplicationIntegrator:" + job_type_name
         if _localDebug: 
-            logger.debug(' - Action: %s : %s',"Get Connection Profile",appTypeAi)
+            pass
+        logger.debug(' - Action: %s : %s',"Get Connection Profile",appTypeAi)
         jProfiles = ctm.getCtmAgentConnectionProfile(ctmApiClient=ctmApiClient,ctmServer=ctmServer,ctmAgent=ctmAgent,ctmAppType=appTypeAi)
         jProfilesLen = len(jProfiles)
         if jProfilesLen > 0:
@@ -374,8 +378,8 @@ def getAgentHostGroupsMembership(ctmHostGroups,ctmAgent="*"):
             yCtmAgentGroups = xCtmAgentGroups.groupby('agent')['group'].apply(list).reset_index(name='groups')
             zCtmAgentGroups = yCtmAgentGroups.to_json(orient ='records')
             jCtmAgents = zCtmAgentGroups
-
-    logger.debug('CTM Panda records:\n %s', jCtmAgents)  
+    if _localDebug: 
+        logger.debug('CTM Panda records:\n %s', jCtmAgents)  
     return jCtmAgents
 
 def getCtmRemoteHosts(ctmApiClient,ctmServer):
@@ -461,7 +465,7 @@ def getServerRemoteHosts(ctmRemoteHosts,ctmServer):
     values = json.dumps(dfList)
     if _localDebug:  
         logger.debug('CTM Panda records:\n %s', values)  
-        
+
     return values
 
 
@@ -488,6 +492,12 @@ def discoCtm():
         jCtmAiJobTypesDraft = ctm.getDeployedAiJobtypes(ctmApiClient=ctmApiClient,ctmAiJobDeployStatus="draft")
         sCtmAppTypes        = ["Hadoop","Database","FileTransfer","Informatica","SAP","AWS","Azure"]
 
+        # Count CTM AI job types
+        iCtmAiJobTypes      = len(jCtmAiJobTypes['jobtypes'])
+        iCtmAiJobTypesDraft = len(jCtmAiJobTypesDraft['jobtypes'])
+        iCtmAppTypes        = len(sCtmAppTypes)
+        sCtmAiJobTypes      = '{"r2d":"' + str(iCtmAiJobTypes) + '","draft":"' + str(iCtmAiJobTypesDraft) + '","apps":"' + str(iCtmAppTypes)  + '"}'
+
         # Get CTM Shared Connection Profiles
         jCtmCentralConnectionProfilesBase     = getCentralConnectionProfiles(ctmApiClient=ctmApiClient,jobTypes=sCtmAppTypes)
         jCtmCentralConnectionProfilesAi       = getCentralConnectionProfilesAi(ctmApiClient=ctmApiClient,jobTypes=jCtmAiJobTypes)
@@ -497,9 +507,9 @@ def discoCtm():
 
 
         # Write Control-M AI JobTypes File
-        fileStatus    = writeJobTypesInfoFile(data=jCtmAiJobTypes)
-        fileStatus    = writeJobTypesDraftInfoFile(data=jCtmAiJobTypesDraft)        
-        fileStatus    = writeSharedConnectionProfilesInfoFile(data=jCtmCentralConnectionProfiles)
+        filePath    = writeJobTypesInfoFile(data=jCtmAiJobTypes)
+        filePath    = writeJobTypesDraftInfoFile(data=jCtmAiJobTypesDraft)        
+        filePath    = writeSharedConnectionProfilesInfoFile(data=jCtmCentralConnectionProfiles)
         
 
         for xCtmServer in jCtmServers:
@@ -519,7 +529,7 @@ def discoCtm():
             # Get Remote Hosts
             jCtmRemoteHosts = getCtmRemoteHosts(ctmApiClient=ctmApiClient,ctmServer=sCtmServerName)
             sCtmRemoteHosts = w3rkstatt.dTranslate4Json(data=jCtmRemoteHosts)   
-            fileStatus      = writeRemoteHostsInfoFile(ctmServer=sCtmServerName,data=sCtmRemoteHosts)
+            filePath      = writeRemoteHostsInfoFile(ctmServer=sCtmServerName,data=sCtmRemoteHosts)
 
             jCtmServerRemoteHosts = json.loads(getServerRemoteHosts(ctmRemoteHosts=jCtmRemoteHosts,ctmServer=sCtmServerName))
             iCtmServerRemoteHosts = len(jCtmServerRemoteHosts)
@@ -537,7 +547,7 @@ def discoCtm():
             # Get Control-M Hostgroups
             jCtmHostGroups = getHostGroups(ctmApiClient=ctmApiClient,ctmServer=sCtmServerName)
             sCtmHostGroups = w3rkstatt.dTranslate4Json(data=jCtmHostGroups)   
-            fileStatus     = writeHostGroupsInfoFile(ctmServer=sCtmServerName,data=sCtmHostGroups)
+            filePath     = writeHostGroupsInfoFile(ctmServer=sCtmServerName,data=sCtmHostGroups)
             
             # Sample Debug data
             # xCtmAgents = [{'hostgroups': 'None', 'nodeid': 'vw-aus-ctm-wk01.adprod.bmc.com', 'operating_system': 'Microsoft Windows Server 2016  (Build 14393)', 'status': 'Available', 'version': '9.0.20.000'}]
@@ -637,11 +647,11 @@ def discoCtm():
 
                     # Write Status File for Agent
                     jAgentInfo = w3rkstatt.dTranslate4Json(data=jAgentInfo)   
-                    fileStatus = writeAgentInfoFile(ctmAgent=sAgentName,data=jAgentInfo)
+                    filePath = writeAgentInfoFile(ctmAgent=sAgentName,data=jAgentInfo)
                 
             xCtmAgentList = '{"server":"'  + sCtmServerName  + '","host":"'  + sCtmServerFQDN  +'","parameters":' + sCtmServerParameters + ',"runners":'  + str(iCtmAgents) + ',"remote":'  + str(sServerRemoteHosts)  + ',"agents":[' + str(xCtmAgentsInfo) + ']}'
             # Write Server Status File
-            fileStatus = writeServerInfoFile(ctmServer=sCtmServerName,data=xCtmAgentList)
+            filePath = writeServerInfoFile(ctmServer=sCtmServerName,data=xCtmAgentList)
             
             if iCtmServers > 1:                
                 yCtmAgentList = str(xCtmAgentList + ',' + yCtmAgentList).rstrip(',')
@@ -651,11 +661,11 @@ def discoCtm():
         
 
         yCtmAgentList = yCtmAgentList
-        zCtmAgentList = '{"inventory":{'+ '"servers":[' + yCtmAgentList + '],"profiles":' + jCtmCentralConnectionProfiles + '}}'
+        zCtmAgentList = '{"inventory":{'+ '"servers":[' + yCtmAgentList + '],"profiles":' + jCtmCentralConnectionProfiles + ',"jobtypes":' + sCtmAiJobTypes + '}}'
         jCtmAgentList = w3rkstatt.dTranslate4Json(data=zCtmAgentList)
 
         # Write Inventory File
-        fileStatus    = writeInventoryInfoFile(data=jCtmAgentList)
+        filePath    = writeInventoryInfoFile(data=jCtmAgentList)
 
         if _localDebug:  
             logger.debug('CTM Servers: %s', jCtmServers)
