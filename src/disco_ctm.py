@@ -440,8 +440,8 @@ def getAgentRemoteHosts(ctmRemoteHosts,ctmAgent="*"):
             yCtmAgentGroups = xCtmAgentGroups.groupby('agent')['host'].apply(list).reset_index(name='hosts')
             zCtmAgentGroups = yCtmAgentGroups.to_json(orient ='records')
             jCtmAgents = zCtmAgentGroups
-
-    # logger.debug('CTM Panda records:\n %s', jCtmAgents)  
+    if _localDebug:  
+        logger.debug('CTM Panda records:\n %s', jCtmAgents)  
     return jCtmAgents
 
 def getServerRemoteHosts(ctmRemoteHosts,ctmServer):
@@ -455,10 +455,13 @@ def getServerRemoteHosts(ctmRemoteHosts,ctmServer):
     else:        
         dfEntries = df['host'].unique()
         dfList = dfEntries.tolist()
-        # logger.debug('CTM Panda records:\n %s', dfList) 
+        if _localDebug:  
+            logger.debug('CTM Panda records:\n %s', dfList) 
 
     values = json.dumps(dfList)
-    # logger.debug('CTM Panda records:\n %s', values)  
+    if _localDebug:  
+        logger.debug('CTM Panda records:\n %s', values)  
+        
     return values
 
 
