@@ -198,11 +198,247 @@ def getCtmAgents(ctmApiClient,ctmServer):
     # Call CTM AAPI
     try:
         logger.debug('CTM: API Function: %s', "get_agents")
-        results = ctmCfgAapi.get_agents(server=ctmServer, _return_http_data_only=True )
+        results = ctmCfgAapi.get_agents(server=ctmServer, _return_http_data_only=True )      
+        results = str(results).replace("\n",'')
+        results = str(results).replace("'",'"')
+        results = str(results).replace("None",'"None"')
+        results = str(results).replace('"                                 "','')
+
+        # logger.debug('CTM: API Result:\n%s', results)
+        results = json.loads(results)
+    except ctm.rest.ApiException as exp:
+        logger.error('CTM: API Error: %s', exp)
+    return results
+
+def getCtmServers(ctmApiClient):
+    """get all the Servers name and hostname in the system  # noqa: E501
+
+    Get the names and hostnames of all Servers in the system.  # noqa: E501
+    This method makes a synchronous HTTP request by default. To make an
+    asynchronous HTTP request, please pass async_req=True
+
+    :param async_req bool
+    :return: CtmDetailsList
+                If the method is called asynchronously,
+                returns the request thread.
+    """
+
+    # Instantiate the AAPI object
+    ctmCfgAapi = ctm.api.config_api.ConfigApi(api_client=ctmApiClient)
+    logger.debug('CTM: API object: %s', ctmCfgAapi)
+    results = ""
+
+    # Call CTM AAPI
+    try:
+        logger.debug('CTM: API Function: %s', "get_servers")
+        results = ctmCfgAapi.get_servers(_return_http_data_only=True )
         results = str(results).replace("'",'"')
         results = str(results).replace("None",'"None"')
 
         logger.debug('CTM: API Result:\n%s', results)
+        results = json.loads(results)
+    except ctm.rest.ApiException as exp:
+        logger.error('CTM: API Error: %s', exp)
+    return results
+
+def getCtmServerParams(ctmApiClient,ctmServer):
+    """get Server parameters  # noqa: E501
+
+    Get all the parameters of the specified Server.  # noqa: E501
+    This method makes a synchronous HTTP request by default. To make an
+    asynchronous HTTP request, please pass async_req=True
+
+    :param async_req bool
+    :param str server: The Server to query. (required)
+    :return: KeyValueListResult
+                If the method is called asynchronously,
+                returns the request thread.
+    """
+
+    # Instantiate the AAPI object
+    ctmCfgAapi = ctm.api.config_api.ConfigApi(api_client=ctmApiClient)
+    logger.debug('CTM: API object: %s', ctmCfgAapi)
+    results = ""
+
+    # Call CTM AAPI
+    try:
+        logger.debug('CTM: API Function: %s', "get_server_parameters")
+        results = ctmCfgAapi.get_server_parameters(server=ctmServer, _return_http_data_only=True )
+        results = str(results).replace("'",'"')
+        results = str(results).replace("None",'"None"')
+
+        logger.debug('CTM: API Result:\n%s', results)
+        results = json.loads(results)
+    except ctm.rest.ApiException as exp:
+        logger.error('CTM: API Error: %s', exp)
+    return results
+
+def getCtmAgentConnectionProfile(ctmApiClient,ctmServer,ctmAgent,ctmAppType):
+    """Get local deployed connection profiles  # noqa: E501
+
+    Get currently local deployed connection profiles according to the search query as JSON.  # noqa: E501
+    This method makes a synchronous HTTP request by default. To make an
+    asynchronous HTTP request, please pass async_req=True
+
+    :param async_req bool
+    :param str agent: The name of the agent the connection profile is deployed on (required)
+    :param str type: The type of connection profile such as Database, FileTransfer, Hadoop, Informatica, SAP. (required)
+    :param str ctm: The name of the Control-M in which the connection profile is deployed on
+    :param str server: The name of the Control-M in which the connection profile is deployed on
+    :return: str
+                If the method is called asynchronously,
+                returns the request thread.
+    """
+
+    # Instantiate the AAPI object
+    ctmDeployAapi = ctm.api.deploy_api.DeployApi(api_client=ctmApiClient)
+    # logger.debug('CTM: API object: %s', ctmDeployAapi)
+    results = ""
+
+    # Call CTM AAPI
+    try:
+        # logger.debug('CTM: API Function: %s', "get_deployed_connection_profiles")
+        results = ctmDeployAapi.get_deployed_connection_profiles(server=ctmServer,agent=ctmAgent,type=ctmAppType, _return_http_data_only=True )
+        results = w3rkstatt.dTranslate4Json(data=results)
+
+        # logger.debug('CTM: API Result:\n%s', results)
+        results = json.loads(results)
+    except ctm.rest.ApiException as exp:
+        # logger.error('CTM: API Error: %s', exp)
+        pass
+    return results
+
+def getCtmCentralConnectionProfile(ctmApiClient,ctmAppType):
+    """Get centralized deployed connection profile  # noqa: E501
+
+    Get currently centralized deployed connection profiles according to the search query as JSON.  # noqa: E501
+    This method makes a synchronous HTTP request by default. To make an
+    asynchronous HTTP request, please pass async_req=True
+
+    :param async_req bool
+    :param str type: The type of connection profile such as Database, FileTransfer, Hadoop, Informatica, SAP. Use * to get all types (required)
+    :param str name: The name of centralized connection profile. Supports for *, ?, and comma. By default is *
+    :return: str
+                If the method is called asynchronously,
+                returns the request thread.
+    """
+
+    # Instantiate the AAPI object
+    ctmDeployAapi = ctm.api.deploy_api.DeployApi(api_client=ctmApiClient)
+    # logger.debug('CTM: API object: %s', ctmDeployAapi)
+    results = ""
+
+    # Call CTM AAPI
+    try:
+        # logger.debug('CTM: API Function: %s', "get_deployed_connection_profiles")
+        results = ctmDeployAapi.get_shared_connection_profiles(type=ctmAppType, _return_http_data_only=True )
+        results = w3rkstatt.dTranslate4Json(data=results)
+
+        # logger.debug('CTM: API Result:\n%s', results)
+        results = json.loads(results)
+    except ctm.rest.ApiException as exp:
+        logger.error('CTM: API Error: %s', exp)
+        pass
+    return results
+
+def getDeployedAiJobtypes(ctmApiClient, ctmAiJobDeployStatus="ready to deploy"):
+    """Get Application Integrator job types  # noqa: E501
+
+    Get deployed Application Integrator job types that match the requested search criteria.  # noqa: E501
+    This method makes a synchronous HTTP request by default. To make an
+    asynchronous HTTP request, please pass async_req=True
+
+
+    :param async_req bool
+    :param str job_type_name: Job type display name ( or partial name ) for query. It accepts * as wildcard.
+    :param str job_type_id: Job type id ( or partial name ) for query. It accepts * as wildcard.
+    :return: AiJobtypeList
+                If the method is called asynchronously,
+                returns the request thread.
+    """
+
+    # Instantiate the AAPI object
+    ctmDeployAapi = ctm.api.deploy_api.DeployApi(api_client=ctmApiClient)
+    # logger.debug('CTM: API object: %s', ctmDeployAapi)
+    results = ""
+    jJobTypes = ""
+
+    # Call CTM AAPI
+    try:
+        # logger.debug('CTM: API Function: %s', "get_deployed_connection_profiles")
+        results = ctmDeployAapi.get_deployed_ai_jobtypes(_return_http_data_only=True )
+        items = results.jobtypes
+        jJobTypes = ""
+        jJobType  = ""
+        for item in items:
+            sTemp = str(item)
+            xTemp = str(sTemp).split("\n")
+            for yTemp in xTemp:
+                xLen = len(xTemp)
+                if xLen == 4:
+                    key = str(yTemp).split("'")[1]
+                    val = str(yTemp).split("'")[3]
+
+                    if "job_type_id" in key:
+                        job_type_id = val
+                    elif "job_type_name" in key:
+                        job_type_name = val
+                    elif "status" in key:
+                        job_status = val
+                    elif "description" in key:
+                        job_description = val      
+
+            if ctmAiJobDeployStatus in job_status:
+                jJobType = '{"job_type_id":"' + job_type_id + '","job_type_name":"' + job_type_name + '","status":"' + job_status +'"}'
+                jJobTypes = jJobType + "," + jJobTypes
+            if _localDebug:
+                logger.debug('CTM: AI Job Type: %s', jJobType)
+    
+
+        jJobTypes = jJobTypes[:-1]
+        jResult = '{"jobtypes":[' + jJobTypes + ']}'
+
+        if _localDebug:
+            logger.debug('CTM: AI Job Types: %s', jResult)
+
+        # Format for function
+        sResult = str(jResult)
+        results = json.loads(sResult)
+
+    except ctm.rest.ApiException as exp:
+        logger.error('CTM: API Error: %s', exp)
+        pass
+    return results
+
+def getCtmAgentParams(ctmApiClient,ctmServer, ctmAgent):
+    """get agent parameters  # noqa: E501
+
+    Get all the parameters of the specified Agent.  # noqa: E501
+    This method makes a synchronous HTTP request by default. To make an
+    asynchronous HTTP request, please pass async_req=True
+
+    :param async_req bool
+    :param str server: The Server the agent is connected to. (required)
+    :param str agent: The name of the agent to query. (required)
+    :param bool extended_data: True to return more agent parameters. HIDDEN
+    :return: KeyValueListResult
+                If the method is called asynchronously,
+                returns the request thread.
+    """
+
+    # Instantiate the AAPI object
+    ctmCfgAapi = ctm.api.config_api.ConfigApi(api_client=ctmApiClient)
+    # logger.debug('CTM: API object: %s', ctmCfgAapi)
+    results = ""
+
+    # Call CTM AAPI
+    try:
+        # logger.debug('CTM: API Function: %s', "get_agent_parameters")
+        results = ctmCfgAapi.get_agent_parameters(server=ctmServer, agent=ctmAgent, _return_http_data_only=True )
+        results = str(results).replace("'",'"')
+        results = str(results).replace("None",'"None"')
+
+        # logger.debug('CTM: API Result:\n%s', results)
         results = json.loads(results)
     except ctm.rest.ApiException as exp:
         logger.error('CTM: API Error: %s', exp)
@@ -540,24 +776,135 @@ def getCtmReportData(ctmReportUrl):
       # exit()
 
 def getCtmHostGroupMembers(ctmApiClient,ctmServer,ctmHostGroup):
-    """
-    Simple function that uses the get_agents service to get all the agents of the specified Control-M Server.
+    """get hostgroup agents  # noqa: E501
 
-    :param api_client: property from CTMConnection object
-    :return: list of named tuple: [{'key': 'value'}] access as list[0].key
+    Get the agents that compose the specified hostgroup  # noqa: E501
+    This method makes a synchronous HTTP request by default. To make an
+    asynchronous HTTP request, please pass async_req=True
+
+    :param async_req bool
+    :param str server: The Server the hostgroup belongs to. (required)
+    :param str hostgroup: The hostgroup name (required)
+    :return: AgentsInGroupListResult
+                If the method is called asynchronously,
+                returns the request thread.
     """
 
     # Instantiate the AAPI object
     ctmCfgAapi = ctm.api.config_api.ConfigApi(api_client=ctmApiClient)
-    logger.debug('CTM: API object: %s', ctmCfgAapi)
+    if _localDebug: 
+        logger.debug('CTM: API object: %s', ctmCfgAapi)
     results = ""
 
     # Call CTM AAPI
     try:
-        logger.debug('CTM: API Function: %s', "get_hosts_in_group")
+        if _localDebug: 
+            logger.debug('CTM: API Function: %s', "get_hosts_in_group")
         results = ctmCfgAapi.get_hosts_in_group(server=ctmServer, hostgroup=ctmHostGroup , _return_http_data_only=True )
         results = str(results).replace("'",'"')
-        logger.debug('CTM: API Result: %s', results)
+        if _localDebug: 
+            logger.debug('CTM: API Result: %s', results)
+        results = json.loads(results)
+    except ctm.rest.ApiException as exp:
+        logger.error('CTM: API Error: %s', exp)
+    return results
+
+def getCtmHostGroups(ctmApiClient,ctmServer):
+    """get Server hostgroups  # noqa: E501
+
+    Get all the hostgroups of the specified Server.  # noqa: E501
+    This method makes a synchronous HTTP request by default. To make an
+    asynchronous HTTP request, please pass async_req=True
+
+    :param async_req bool
+    :param str server: The Server the hostgroups belong to. (required)
+    :return: StringListResult
+                If the method is called asynchronously,
+                returns the request thread.
+    """
+
+    # Instantiate the AAPI object
+    ctmCfgAapi = ctm.api.config_api.ConfigApi(api_client=ctmApiClient)
+    if _localDebug: 
+        logger.debug('CTM: API object: %s', ctmCfgAapi)
+    results = ""
+
+    # Call CTM AAPI
+    try:
+        if _localDebug: 
+            logger.debug('CTM: API Function: %s', "get_hosts_in_group")
+        results = ctmCfgAapi.get_hostgroups(server=ctmServer, _return_http_data_only=True )
+        results = str(results).replace("'",'"')
+        if _localDebug: 
+            logger.debug('CTM: API Result: %s', results)
+        results = json.loads(results)
+    except ctm.rest.ApiException as exp:
+        logger.error('CTM: API Error: %s', exp)
+    return results
+
+def getCtmRemoteHosts(ctmApiClient,ctmServer):
+    """get Server remote hosts  # noqa: E501
+
+    Get all the remote hosts of the specified Server.  # noqa: E501
+    This method makes a synchronous HTTP request by default. To make an
+    asynchronous HTTP request, please pass async_req=True
+
+    :param async_req bool
+    :param str server: The Server to query. (required)
+    :return: StringListResult
+                If the method is called asynchronously,
+                returns the request thread.
+    """
+
+    # Instantiate the AAPI object
+    ctmCfgAapi = ctm.api.config_api.ConfigApi(api_client=ctmApiClient)
+    if _localDebug: 
+        logger.debug('CTM: API object: %s', ctmCfgAapi)
+    results = ""
+
+    # Call CTM AAPI
+    try:
+        if _localDebug: 
+            logger.debug('CTM: API Function: %s', "get_remote_hosts")
+        results = ctmCfgAapi.get_remote_hosts(server=ctmServer, _return_http_data_only=True )
+        results = str(results).replace("'",'"')
+        if _localDebug: 
+            logger.debug('CTM: API Result: %s', results)
+        results = json.loads(results)
+    except ctm.rest.ApiException as exp:
+        logger.error('CTM: API Error: %s', exp)
+    return results
+
+def getRemoteHostProperties(ctmApiClient,ctmServer,ctmRemoteHost):
+    """get a remote host configuration from Server  # noqa: E501
+
+    Get the remote host configuration properties from the Server  # noqa: E501
+    This method makes a synchronous HTTP request by default. To make an
+    asynchronous HTTP request, please pass async_req=True
+
+    :param async_req bool
+    :param str server: The Server the remote host  is connected to. (required)
+    :param str remotehost: The name of the remote host. (required)
+    :return: AddRemoteHostParams
+                If the method is called asynchronously,
+                returns the request thread.
+    """
+
+    # Instantiate the AAPI object
+    ctmCfgAapi = ctm.api.config_api.ConfigApi(api_client=ctmApiClient)
+    if _localDebug: 
+        logger.debug('CTM: API object: %s', ctmCfgAapi)
+    results = ""
+
+    # Call CTM AAPI
+    try:
+        if _localDebug: 
+            logger.debug('CTM: API Function: %s', "get_remote_host_properties")
+        results = ctmCfgAapi.get_remote_host_properties(server=ctmServer,remotehost=ctmRemoteHost, _return_http_data_only=True )
+        results = w3rkstatt.dTranslate4Json(data=results)   
+
+        if _localDebug: 
+            logger.debug('CTM: API Result: %s', results)
         results = json.loads(results)
     except ctm.rest.ApiException as exp:
         logger.error('CTM: API Error: %s', exp)
@@ -1337,8 +1684,29 @@ def updateCtmITSM(data):
 def extractFolderJobDetails(data):
     pass
 
+def simplifyCtmJson(data):
+    jParamEntries = ""
+    for key in data:
+                    
+        sParam = w3rkstatt.dTranslate4Json(data=key)
+        jParam = json.loads(sParam)
+        sParamName = w3rkstatt.getJsonValue(path="$.name",data=jParam).lower()
+        sParamVal  = w3rkstatt.getJsonValue(path="$.value",data=jParam)
+        if len(sParamVal) > 0:
+            jParamEntry = '"' + sParamName + '":"' + sParamVal + '"'
+        else:
+            jParamEntry = '"' + sParamName + '":None'
+        jParamEntries = jParamEntry + "," + jParamEntries
 
+    jParamEntries = jParamEntries[:-1]
+    jParameters = '{' + str(jParamEntries) + '}'
+    sParameters = w3rkstatt.dTranslate4Json(data=jParameters)
+    sParameters = sParameters.replace("\\",'\\\\')
 
+    jParameters = json.loads(sParameters)
+    dParameters = OrderedDict(sorted(jParameters.items()))
+    dParameters = json.dumps(dParameters)   
+    return dParameters
 
 
 if __name__ == "__main__":
