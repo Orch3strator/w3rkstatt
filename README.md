@@ -120,3 +120,8 @@ Module | Method | Description
 Solution | Script | Description
 ------------ | ------------- | -------------
 *ctm* | [**remove_ctm_env.sh**](docs/SHELL.md) | Remove Control-M environments matching a pattern for ctm aapi
+
+**Python Scripts**:
+Solution | Script | Description
+------------ | ------------- | -------------
+*ctm* | [**disco_ctm.py**](docs/DISCO.md) | Create inventory of Control-M environment and resources
