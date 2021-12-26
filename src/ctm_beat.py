@@ -59,7 +59,7 @@ logFolder  = w3rkstatt.getJsonValue(path="$.DEFAULT.log_folder",data=jCfgData)
 tmpFolder  = w3rkstatt.getJsonValue(path="$.DEFAULT.template_folder",data=jCfgData)
 cryptoFile = w3rkstatt.getJsonValue(path="$.DEFAULT.crypto_file",data=jCfgData)
 
-data_folder = logFolder
+data_folder = w3rkstatt.getJsonValue(path="$.DEFAULT.data_folder",data=jCfgData)
 ctm_host    = w3rkstatt.getJsonValue(path="$.CTM.host",data=jCfgData)
 ctm_port    = w3rkstatt.getJsonValue(path="$.CTM.port",data=jCfgData)
 
@@ -320,14 +320,14 @@ if __name__ == "__main__":
         sCtmAlert         = ctm.trasnformtCtmAlert(data=jCtmAlert)
         jCtmAlert         = json.loads(sCtmAlert)
         ctmEventType      = ctm.extractCtmAlertType(jCtmAlert)
-        ctmAlertId        = str(w3rkstatt.getJsonValue(path="$.alert_id",data=jCtmAlert)).strip()
-        ctmAlertCallType  = w3rkstatt.getJsonValue(path="$.call_type",data=jCtmAlert).strip()
-        ctmDataCenter     = w3rkstatt.getJsonValue(path="$.data_center",data=jCtmAlert).strip()
-        ctmOrderId        = w3rkstatt.getJsonValue(path="$.order_id",data=jCtmAlert).strip()
-        ctmRunCounter     = w3rkstatt.getJsonValue(path="$.run_counter",data=jCtmAlert).strip()
+        ctmAlertId        = str(w3rkstatt.getJsonValue(path="$.alert_id",data=jCtmAlert)) #.strip()
+        ctmAlertCallType  = w3rkstatt.getJsonValue(path="$.call_type",data=jCtmAlert) #.strip()
+        ctmDataCenter     = w3rkstatt.getJsonValue(path="$.data_center",data=jCtmAlert) #.strip()
+        ctmOrderId        = w3rkstatt.getJsonValue(path="$.order_id",data=jCtmAlert) #.strip()
+        ctmRunCounter     = w3rkstatt.getJsonValue(path="$.run_counter",data=jCtmAlert) #.strip()
         ctmAlertCat       = w3rkstatt.getJsonValue(path="$.system_category",data=jCtmAlert) #s.strip()
-        ctmAlertSev       = w3rkstatt.getJsonValue(path="$.severity",data=jCtmAlert).strip()
-        sCtmJobCyclic     = w3rkstatt.getJsonValue(path="$.jobInfo.[0].cyclic",data=jCtmAlert).strip()
+        ctmAlertSev       = w3rkstatt.getJsonValue(path="$.severity",data=jCtmAlert) #.strip()
+        sCtmJobCyclic     = w3rkstatt.getJsonValue(path="$.jobInfo.[0].cyclic",data=jCtmAlert) #.strip()
 
         # Process only 'new' alerts
         if "New" in ctmAlertCallType: 
