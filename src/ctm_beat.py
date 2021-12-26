@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#Filename: ctm_alerts.py
+#Filename: ctm_beat.py
 
 """
 (c) 2020 Volker Scheithauer
@@ -33,10 +33,12 @@ Date (YMD)    Name                  What
 # handle dev environment vs. production 
 try:
     import w3rkstatt as w3rkstatt
+    import core_ctm as ctm
 except:
     # fix import issues for modules
     sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
     from src import w3rkstatt as w3rkstatt
+    from src import core_ctm as ctm
 
 
 import time, logging
@@ -70,11 +72,11 @@ ctm_job_log_level           = w3rkstatt.getJsonValue(path="$.CTM.jobs.log_level"
 ctm_job_detail_level        = w3rkstatt.getJsonValue(path="$.CTM.jobs.detail_level",data=jCfgData)
 
 # Assign module defaults
-_localDebug = False
+_localDebug = True
 _localDebugAdv = False
 _localInfo = False
 _localQA = False
-_localQAlert = True
+_localQAlert = False
 _localDebugITSM = False
 _modVer = "3.0"
 _timeFormat = '%d %b %Y %H:%M:%S,%f'
@@ -111,11 +113,11 @@ def ctmAlert2Dict(list, start, end):
     sCustom = ""
 
     try:
-        if w3rkstatt.sPlatform == "Linux":
+        if ((w3rkstatt.sPlatform == "Linux" ) or w3rkstatt.sPlatform == "Darwin"):
             if _localDebug:
                 # logger.debug('Script Arguments for Linux ')
                 # logger.debug('Script Arguments #     = %s ', len(list))
-                # logger.debug('Script Arguments Start = %s ', start)
+                # logger.debug('Script Arguments Start = %s ', start)s
                 # logger.debug('Script Arguments End   = %s ', end)    
                 # logger.debug('Script Arguments List  = %s ', str(list))  
                 logger.debug('Script Arguments Str   = %s ', str(sAlert))           
@@ -169,7 +171,7 @@ def ctmAlert2Dict(list, start, end):
 
     return res_dct
 
-def analyzeAlert4Job(ctmApiClient, raw, data):
+def formatAlert4Job(raw, data):
     if _localInfo: 
         logger.info('CTM: Analyze Alert for Jobs - Start')
 
@@ -211,7 +213,7 @@ def analyzeAlert4Job(ctmApiClient, raw, data):
         logger.info('CTM: Analyze Alert for Jobs - End')    
     return ctmJobData
 
-def analyzeAlert4Core(ctmApiClient, raw, data):
+def formatAlert4Core(raw, data):
     if _localInfo: 
         logger.info('CTM: Analyze Alert for Core - Start')
 
@@ -234,7 +236,7 @@ def analyzeAlert4Core(ctmApiClient, raw, data):
         logger.info('CTM: Analyze Alert for Core - End')
     return ctmCoreData
 
-def analyzeAlert4Infra(ctmApiClient, raw, data):
+def formatAlert4Infra(raw, data):
     if _localInfo: 
         logger.info('CTM: Analyze Alert for Infra - Start')
 
@@ -274,7 +276,7 @@ def writeAlertFile(data,alert,type="job"):
         fileRsp     = w3rkstatt.writeJsonFile(file=filePath,content=fileContent)  
         fileStatus  = w3rkstatt.getFileStatus(path=filePath)
 
-        if _localQA: 
+        if _localDebug: 
             logger.info('CTM QA Alert File: "%s" ', filePath)
 
     return fileStatus
@@ -308,17 +310,7 @@ if __name__ == "__main__":
      # Test integration with sample data
     if not len(ctmAlertId) > 0:
         if _localQAlert: 
-            # jCtmAlert = {"alert_id": "166", "alert_type": "Regular", "application": None, "call_type": "New", "closed_from_em": None, "data_center": "bmcs-ctm-srv", "data_center_dns": "shytwr.net", "data_center_fqdn": "bmcs-ctm-srv.shytwr.net", "data_center_ip": "172.16.29.125", "host_id": None, "host_ip": "172.16.32.22", "host_ip_dns": "shytwr.net", "host_ip_fqdn": "bmcs-ctm-agt.shytwr.net", "job_name": None, "last_time": None, "last_user": None, "memname": None, "message": "STATUS OF AGENT PLATFORM bmcs-ctm-agt CHANGED TO AVAILABLE", "message_notes": "CTRL-M Agent on bmcs-ctm-agt.shytwr.net availabble. Managed by: bmcs-ctm-srv", "message_summary": "Agent on bmcs-ctm-agt availabble", "notes": None, "order_id": "00000", "run_as": None, "run_counter": "00000000000", "send_time": "2021-04-05 22:39:36", "severity": "OK", "status": "OPEN", "sub_application": None, "ticket_number": None}
-            # jCtmAlert = {"call_type": "I", "alert_id": "168", "data_center": "bmcs-ctm-srv", "memname": None, "order_id": "00000", "severity": "R", "status": "Not_Noticed", "send_time": "20210405232831", "last_user": None, "last_time": None, "message": "STATUS OF AGENT PLATFORM bmcs-ctm-agt CHANGED TO AVAILABLE", "run_as": None, "sub_application": None, "application": None, "job_name": None, "host_id": None, "alert_type": "R", "closed_from_em": None, "ticket_number": None, "run_counter": "00000000000", "notes": None}
-            # jCtmAlert = {"call_type": "I", "alert_id": "182", "data_center": "bmcs-ctm-srv", "memname": None, "order_id": None, "severity": "V", "status": "Not_Noticed", "send_time": "20210406092918", "last_user": None, "last_time": None, "message": "DATA CENTER bmcs-ctm-srv WAS DISCONNECTED", "run_as": "Gateway", "sub_application": None, "application": None, "job_name": None, "host_id": None, "alert_type": "R", "closed_from_em": None, "ticket_number": None, "run_counter": None, "notes": None}
-            # jCtmAlert = {"call_type": "I", "Serial": "46", "Component_type": "9", "Component_machine": "bmcs-ctm-em", "Component_name": "bmcs-ctm-em", "Message_id": "20004", "Xseverity": "3", "Message": "Failed to send e-mail notification to <undefined> from sender <undefined> via e-mail server <undefined> Error: : Empty mail server : Empty mail from : Empty destination mail address .", "Xtime": "20210406165204", "Xtime_of_last": "20210406165204", "Counter": "1", "Status": "1", "Note": None, "Key1": "<undefined>", "Key2": "<undefined>", "Key3": "<undefined>", "Key4": ": Empty mail server : Empty mail from : Empty destination mail address", "Key5": None}
-            # Mainframe Alert
-            jCtmAlert = {"call_type": "I", "alert_id": "209525", "data_center": "bmcbzos", "memname": "COBCOMP", "order_id": "0314Y", "severity": "V", "status": "Not_Noticed", "send_time": "20210416120024", "last_user": None, "last_time": None, "message": "Ended not OK", "run_as": "RDWDXC", "sub_application": "DCO_SORT", "application": "DCO", "job_name": "COBCOMP", "host_id": None, "alert_type": "R", "closed_from_em": None, "ticket_number": None, "run_counter": "00000", "notes": None}
-            jCtmAlert = {"call_type": "I", "alert_id": "210561", "data_center": "psctm", "memname": None, "order_id": "0c4ib", "severity": "V", "status": "Not_Noticed", "send_time": "20210419103327", "last_user": None, "last_time": None, "message": "Ended not OK", "run_as": "ctmagent", "sub_application": "VFS_Alert_Management", "application": "VFS_Integration", "job_name": "VFS_OS", "host_id": "vl-aus-ctm-em01.ctm.bmc.com", "alert_type": "R", "closed_from_em": None, "ticket_number": None, "run_counter": "00001", "notes": None}
-            jCtmAlert = {'call_type': 'I', 'alert_id': '212069', 'data_center': 'psctm', 'memname': None, 'order_id': '00000', 'severity': 'R', 'status': 'Not_Noticed', 'send_time': '20210420163225', 'last_user': None, 'last_time': None, 'message': 'Failed to order SAP Job CHILD_1 by template job y_SAP-Childjob in Table DCO_SAP_Basic_Jobs  please verify template job definition', 'run_as': None, 'sub_application': None, 'application': None, 'job_name': None, 'host_id': None, 'alert_type': 'R', 'closed_from_em': None, 'ticket_number': None, 'run_counter': '00000000000', 'notes': None}
-            jCtmAlert = {'call_type': 'I', 'alert_id': '212166', 'data_center': 'bmcbzos', 'memname': 'COBCOMP', 'order_id': '031BH', 'severity': 'V', 'status': 'Not_Noticed', 'send_time': '20210420181108', 'last_user': None, 'last_time': None, 'message': 'Ended not OK', 'run_as': 'RDWDXC', 'sub_application': 'DCO_SORT', 'application': 'DCO', 'job_name': 'COBCOMP', 'host_id': None, 'alert_type': 'R', 'closed_from_em': None, 'ticket_number': None, 'run_counter': '00002', 'notes': None}
             jCtmAlert = {"call_type": "I", "alert_id": "212721", "data_center": "psctm", "memname": None, "order_id": "00000", "severity": "R", "status": "Not_Noticed", "send_time": "20210421013938", "last_user": None, "last_time": None, "message": "Failed to order SAP Job CHILD_2 by template job y_SAP-Childjob in Table DCO_SAP_Basic_Jobs  please verify template job definition", "run_as": None, "sub_application": None, "application": None, "job_name": None, "host_id": None, "alert_type": "R", "closed_from_em": None, "ticket_number": None, "run_counter": "00000000000", "notes": None}
-            # jCtmAlert = {"call_type": "I", "alert_id": "212760", "data_center": "psctm", "memname": None, "order_id": "0c5w5", "severity": "V", "status": "Not_Noticed", "send_time": "20210421020203", "last_user": None, "last_time": None, "message": "Ended not OK", "run_as": "ctmagent", "sub_application": "VFS_Alert_Management", "application": "VFS_Integration", "job_name": "VFS_OS", "host_id": "vl-aus-ctm-em01.ctm.bmc.com", "alert_type": "R", "closed_from_em": None, "ticket_number": None, "run_counter": "00001", "notes": None}
 
 
     if len(jCtmAlert) > 0:
@@ -333,7 +325,7 @@ if __name__ == "__main__":
         ctmDataCenter     = w3rkstatt.getJsonValue(path="$.data_center",data=jCtmAlert).strip()
         ctmOrderId        = w3rkstatt.getJsonValue(path="$.order_id",data=jCtmAlert).strip()
         ctmRunCounter     = w3rkstatt.getJsonValue(path="$.run_counter",data=jCtmAlert).strip()
-        ctmAlertCat       = w3rkstatt.getJsonValue(path="$.system_category",data=jCtmAlert).strip()
+        ctmAlertCat       = w3rkstatt.getJsonValue(path="$.system_category",data=jCtmAlert) #s.strip()
         ctmAlertSev       = w3rkstatt.getJsonValue(path="$.severity",data=jCtmAlert).strip()
         sCtmJobCyclic     = w3rkstatt.getJsonValue(path="$.jobInfo.[0].cyclic",data=jCtmAlert).strip()
 
@@ -359,12 +351,12 @@ if __name__ == "__main__":
             if _localDebug: 
                 # sCtmAlert = w3rkstatt.jsonTranslateValues(data=jCtmAlert)
                 sCtmAlert = json.dumps(jCtmAlert)
-                logger.info('CMT QA Alert JSON Raw: %s', jCtmAlertRaw)
-                logger.info('')
-                logger.info('CMT QA Alert JSON Format 01: %s', jCtmAlert)
-                logger.info('')
-                logger.info('CMT QA Alert JSON Format 02: %s', sCtmAlert)
-                logger.info('')
+                # logger.info('CMT QA Alert JSON Raw: %s', jCtmAlertRaw)
+                # logger.info('')
+                # logger.info('CMT QA Alert JSON Format 01: %s', jCtmAlert)
+                # logger.info('')
+                # logger.info('CMT QA Alert JSON Format 02: %s', sCtmAlert)
+                # logger.info('')
                 logger.info('CTM QA Alert ID: %s', ctmAlertId)
                 logger.info('CTM QA Alert Type: "%s"', ctmEventType)
                 logger.info('CTM QA Alert Category: "%s"', ctmAlertCat)
@@ -379,10 +371,10 @@ if __name__ == "__main__":
                 ctmAlertId = str(w3rkstatt.getJsonValue(path="$.Serial",data=jCtmAlert)).strip()
                 
             if ctmAlertCat == "infrastructure":
-                ctmCoreData  = ""
+                ctmCoreData  = formatAlert4Infra(raw=jCtmAlertRaw, data=jCtmAlert)
                 fileStatus   = writeAlertFile(data=ctmCoreData,alert=ctmAlertId,type="infra")
             elif ctmAlertCat == "job":
-                ctmJobData  = ""
+                ctmJobData  = formatAlert4Job(raw=jCtmAlertRaw, data=jCtmAlert)
                 if ctmOrderId == "00000" and ctmRunCounter == 0:
                     # do not create file
                     fileStatus = True
@@ -390,7 +382,7 @@ if __name__ == "__main__":
                     # Update CTM Alert staus if file is written
                     fileStatus  = writeAlertFile(data=ctmJobData,alert=ctmAlertId,type="job") 
             else:
-                ctmCoreData  = ""
+                ctmCoreData  = formatAlert4Core(raw=jCtmAlertRaw, data=jCtmAlert)
                 fileStatus   = writeAlertFile(data=ctmCoreData,alert=ctmAlertId,type="core")
 
             

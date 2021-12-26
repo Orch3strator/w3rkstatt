@@ -1,0 +1,2 @@
+#!/bin/bash
+python3 ctm_beat.py call_type: I alert_id: 81  data_center: ctmcore  memname:   order_id: 00000 severity: R status: Not_Noticed  send_time: 20211225212718 last_user:   last_time:   message: STATUS OF AGENT PLATFORM ctmcore CHANGED TO AVAILABLE run_as:   sub_application:   application:   job_name:   host_id:   alert_type: R closed_from_em:   ticket_number:   run_counter: 00000000000 notes:
