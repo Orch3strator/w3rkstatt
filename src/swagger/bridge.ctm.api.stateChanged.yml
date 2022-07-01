@@ -1,0 +1,63 @@
+Control-M Workload Change Manager integration with a change management system
+---
+tags:
+  - stateChanged
+summary: "Control-M Workload Change Manager integration with a change management system"
+description: "REST Service API that is used to integrate Control-M Workload Change Manager with a change management system and validate the change requests approval state"
+operationId: "stateChanged"
+consumes:
+- "application/json"
+produces:
+- "application/json"  
+requestBody:
+  description: Optional description in *Markdown*
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+            ctmRequestID:
+              type: string
+              description: "ctm wcm request id"
+              example: "99"
+            changeID:
+              type: string
+              description: "itsm change id"
+              example: "CRQ9999"
+            name:
+              type: string
+              description: "workspace name"  
+              example: "Workspace_99"            
+            newState:
+              type: string
+              description: "new request state"
+              example: "Submitted"
+            oldState:
+              type: string
+              description: "old request state"
+              example: "RequesterWorks"
+            creationTime:
+              type: string
+              description: "request time"
+              example: "20200708040707750"
+            endUser:
+              type: string
+              description: "CTM User" 
+              example: "emuser" 
+responses:
+  500:
+    description: "WCM Error"
+  200:
+    description: "Successful Operation"
+    content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  changeID:
+                    type: string
+                    example: CRQ0001
+                  message:
+                    type: string
+                    example: "CRQ Approved"

@@ -31,10 +31,17 @@ Date (YMD)    Name                  What
 """
 
 
-
 import logging
-import os, json, socket, platform, shutil, errno, uuid, re
-import time, datetime
+import os
+import json
+import socket
+import platform
+import shutil
+import errno
+import uuid
+import re
+import time
+import datetime
 import pandas as pd
 import urllib
 import json
@@ -76,8 +83,9 @@ def getCurrentFolder():
     :raises ValueError: N/A
     :raises TypeError: N/A
     '''
-    path=str(os.path.dirname(os.path.abspath(__file__)))
+    path = str(os.path.dirname(os.path.abspath(__file__)))
     return path
+
 
 def getParentFolder(folder):
     '''
@@ -88,11 +96,12 @@ def getParentFolder(folder):
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''    
+    '''
     parentFolder = str(Path(folder).parent)
     return parentFolder
 
-def getFiles(path,pattern):
+
+def getFiles(path, pattern):
     '''
     Get the all files in a given folder matching search pattern
 
@@ -102,19 +111,20 @@ def getFiles(path,pattern):
     :rtype: array
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''      
+    '''
     files = []
-    with os.scandir(path) as listOfEntries:  
+    with os.scandir(path) as listOfEntries:
         for entry in listOfEntries:
-            if entry.is_file():                
+            if entry.is_file():
                 if entry.name.endswith(pattern):
                     if _localDebug:
-                        logger.debug('Core: File Name: %s', entry.name)                   
+                        logger.debug('Core: File Name: %s', entry.name)
                     file = os.path.join(path, entry.name)
-                    files.append(file)                                               
-    return files 
+                    files.append(file)
+    return files
 
-def concatPath(path,folder):
+
+def concatPath(path, folder):
     '''
     Concateneate path and folder
 
@@ -124,11 +134,12 @@ def concatPath(path,folder):
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''       
+    '''
     value = str(os.path.join(path, folder))
     return value
 
-def getFileStatus(path):   
+
+def getFileStatus(path):
     '''
     Check if file exists
 
@@ -137,10 +148,11 @@ def getFileStatus(path):
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''     
+    '''
     return os.path.isfile(path)
 
-def getFolderStatus(path):   
+
+def getFolderStatus(path):
     '''
     Check if folder exists
 
@@ -149,8 +161,9 @@ def getFolderStatus(path):
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''       
+    '''
     return os.path.exists(path)
+
 
 def createFolder(path):
     '''
@@ -161,7 +174,7 @@ def createFolder(path):
     :rtype: str
     :raises ValueError: OSError
     :raises TypeError: N/A    
-    '''       
+    '''
     sFolderStatus = getFolderStatus(path)
     if not sFolderStatus:
         try:
@@ -169,6 +182,7 @@ def createFolder(path):
         except OSError as e:
             if e.errno != errno.EEXIST:
                 raise
+
 
 def getFileName(path):
     '''
@@ -179,9 +193,10 @@ def getFileName(path):
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''       
+    '''
     fileName = str(os.path.basename(path))
     return fileName
+
 
 def getFileJson(file):
     '''
@@ -192,10 +207,11 @@ def getFileJson(file):
     :rtype: json
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''       
+    '''
     with open(file) as f:
         data = json.load(f)
-    return data    
+    return data
+
 
 def getFilePathLocal(file):
     '''
@@ -206,8 +222,9 @@ def getFilePathLocal(file):
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''        
-    return os.path.join(getCurrentFolder(),file)
+    '''
+    return os.path.join(getCurrentFolder(), file)
+
 
 def getFileDate(path):
     '''
@@ -218,15 +235,16 @@ def getFileDate(path):
     :rtype: datetime
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''     
+    '''
     try:
         fTime = os.path.getmtime(path)
     except OSError:
         fTime = 0
     fileTime = datetime.datetime.fromtimestamp(fTime)
-    return fileTime    
+    return fileTime
 
-def getEpoch(timeVal,timeFormat):
+
+def getEpoch(timeVal, timeFormat):
     '''
     Get epoch from provided time 
 
@@ -236,9 +254,10 @@ def getEpoch(timeVal,timeFormat):
     :rtype: int
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''      
+    '''
     epoch = int(time.mktime(time.strptime(timeVal, timeFormat)))
     return epoch
+
 
 def getTime():
     '''
@@ -248,9 +267,10 @@ def getTime():
     :rtype: int
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''   
+    '''
     ts = datetime.datetime.now().timestamp()
     return ts
+
 
 def getCurrentDate(timeFormat=""):
     '''
@@ -261,7 +281,7 @@ def getCurrentDate(timeFormat=""):
     :rtype: int
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''      
+    '''
     if len(timeFormat) < 1:
         tf = _timeFormat
     else:
@@ -271,7 +291,8 @@ def getCurrentDate(timeFormat=""):
     dt = ts.strftime(tf)
     return dt
 
-def addTimeDelta(date,delta,timeFormat=""):
+
+def addTimeDelta(date, delta, timeFormat=""):
     '''
     Add delta to given date  
 
@@ -282,24 +303,26 @@ def addTimeDelta(date,delta,timeFormat=""):
     :rtype: int
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    ''' 
+    '''
 
     if len(timeFormat) < 1:
         tf = _timeFormat
     else:
         tf = timeFormat
     #  '%Y-%m-%dT%H:%M:%S'
-    epoch = getEpoch(timeVal=date,timeFormat=timeFormat)
-    dtDY  = int(time.strftime('%Y', time.localtime(epoch)))
-    dtDM  = int(time.strftime('%m', time.localtime(epoch)))
-    dtDD  = int(time.strftime('%d', time.localtime(epoch)))
-    dtTH  = int(time.strftime('%H', time.localtime(epoch)))
-    dtTM  = int(time.strftime('%M', time.localtime(epoch)))
-    dtTS  = int(time.strftime('%S', time.localtime(epoch)))    
-    dltDt = datetime.datetime(dtDY,dtDM,dtDD,dtTH,dtTM,dtTS) + datetime.timedelta(days=delta)
+    epoch = getEpoch(timeVal=date, timeFormat=timeFormat)
+    dtDY = int(time.strftime('%Y', time.localtime(epoch)))
+    dtDM = int(time.strftime('%m', time.localtime(epoch)))
+    dtDD = int(time.strftime('%d', time.localtime(epoch)))
+    dtTH = int(time.strftime('%H', time.localtime(epoch)))
+    dtTM = int(time.strftime('%M', time.localtime(epoch)))
+    dtTS = int(time.strftime('%S', time.localtime(epoch)))
+    dltDt = datetime.datetime(dtDY, dtDM, dtDD, dtTH,
+                              dtTM, dtTS) + datetime.timedelta(days=delta)
     value = dltDt.strftime(tf)
 
     return value
+
 
 def jsonValidator(data):
     '''
@@ -310,13 +333,14 @@ def jsonValidator(data):
     :rtype: boolean
     :raises ValueError: see log file
     :raises TypeError: N/A    
-    '''       
+    '''
     try:
         json.loads(data)
         return True
     except ValueError as error:
         logger.error('Script: Invalid json: %s', error)
-        return False    
+        return False
+
 
 def readFile(file):
     '''
@@ -327,17 +351,18 @@ def readFile(file):
     :rtype: array
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''         
+    '''
     lines = []
     i = 0
     with open(file, encoding='windows-1252') as fp:
-            line = fp.readline()    
-            while line:
-                i +=1
-                lines.append(line)
-                line = fp.readline()
+        line = fp.readline()
+        while line:
+            i += 1
+            lines.append(line)
+            line = fp.readline()
     fp.close
     return lines
+
 
 def readHtmlFile(file):
     '''
@@ -348,19 +373,20 @@ def readHtmlFile(file):
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''         
+    '''
     lines = ""
     i = 0
     # with open(file, encoding='windows-1252') as fp:
-    #         lines = fp.readlines()    
+    #         lines = fp.readlines()
     # fp.close
 
     with open(file, 'r', encoding='UTF-8') as file:
-        lines = file.read().replace('\n', '')    
+        lines = file.read().replace('\n', '')
 
-    return lines    
+    return lines
 
-def writeJsonFile(file,content):
+
+def writeJsonFile(file, content):
     '''
     Write file content
 
@@ -370,7 +396,7 @@ def writeJsonFile(file,content):
     :rtype: boolean
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''   
+    '''
     status = True
     try:
         with open(file, 'w', encoding='utf-8') as f:
@@ -378,11 +404,11 @@ def writeJsonFile(file,content):
     except ValueError as error:
         status = False
         logger.error('Script: Invalid json: %s', error)
-   
-    
+
     return status
-    
-def getJsonValue(path,data):
+
+
+def getJsonValue(path, data):
     '''
     Extract data from json content using jsonPath
 
@@ -392,17 +418,18 @@ def getJsonValue(path,data):
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''       
+    '''
     jpexp = parse(path)
     match = jpexp.find(data)
     try:
         value = match[0].value
     except:
         value = ""
-    
+
     return value
 
-def getJsonValues(path,data):
+
+def getJsonValues(path, data):
     '''
     Extract data from json content using jsonPath
 
@@ -412,11 +439,12 @@ def getJsonValues(path,data):
     :rtype: dict
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''       
+    '''
 
     jpexp = parse(path)
     values = [match.value for match in jpexp.find(data)]
     return values
+
 
 def jsonTranslateValues(data):
     '''
@@ -427,10 +455,10 @@ def jsonTranslateValues(data):
     :rtype: json
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''      
+    '''
     sData = ""
     data = str(data)
-    sData = str(data).replace("'",'"')
+    sData = str(data).replace("'", '"')
 
     isJsonData = jsonValidator(data=sData)
     if isJsonData:
@@ -441,7 +469,7 @@ def jsonTranslateValues(data):
                 if jData[key] is False:
                     jData[key] = 'false'
                 if jData[key] is True:
-                    jData[key] = 'true'                    
+                    jData[key] = 'true'
                 if jData[key] is None:
                     jData[key] = 'null'
 
@@ -454,7 +482,7 @@ def jsonTranslateValues(data):
             #         value = "null"
             #     jData[key] = value
 
-        sData = str(jData).replace("'",'"')
+        sData = str(jData).replace("'", '"')
 
         # data = data.replace('False', 'false')
         # data = data.replace('True', 'true')
@@ -463,6 +491,7 @@ def jsonTranslateValues(data):
         # data = data.replace("\n",'')
     pass
     return sData
+
 
 def jsonTranslateValuesAdv(data):
     '''
@@ -473,17 +502,18 @@ def jsonTranslateValuesAdv(data):
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''     
+    '''
     data = str(data)
     data = data.replace('False', 'false')
     data = data.replace('True', 'true')
     data = data.replace('None', 'null')
-    data = data.replace("'",'"')
-    data = data.replace("\\n",'')
-    data = data.replace("\\t",'')
-    data = data.replace("\n",'')
-    data = data.replace("\\",'')
-    return data    
+    data = data.replace("'", '"')
+    data = data.replace("\\n", '')
+    data = data.replace("\\t", '')
+    data = data.replace("\n", '')
+    data = data.replace("\\", '')
+    return data
+
 
 def jsonTranslateValues4Panda(data):
     '''
@@ -494,14 +524,15 @@ def jsonTranslateValues4Panda(data):
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''     
+    '''
     data = str(data)
     data = data.replace('False', "'false'")
     data = data.replace('True', "'true'")
     data = data.replace('None', "'null'")
-    data = data.replace("'",'"')
-    data = data.replace("\n",'')
-    return data  
+    data = data.replace("'", '"')
+    data = data.replace("\n", '')
+    return data
+
 
 def sTranslate4Json(data):
     '''
@@ -512,14 +543,15 @@ def sTranslate4Json(data):
     :rtype: json
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''     
+    '''
     sData = str(data)
-    xData = sData.replace("None","null")
-    xData = xData.replace("True","true")
-    xData = xData.replace("False","false")
-    xData = xData.replace("True","true")
+    xData = sData.replace("None", "null")
+    xData = xData.replace("True", "true")
+    xData = xData.replace("False", "false")
+    xData = xData.replace("True", "true")
 
     return xData
+
 
 def dTranslate4Json(data):
     '''
@@ -530,15 +562,16 @@ def dTranslate4Json(data):
     :rtype: json
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''   
+    '''
 
     sData = str(data)
-    xData = sData.replace("None","null")
-    xData = xData.replace("True","true")
-    xData = xData.replace("False","false")
-    xData = xData.replace("'",'"')
+    xData = sData.replace("None", "null")
+    xData = xData.replace("True", "true")
+    xData = xData.replace("False", "false")
+    xData = xData.replace("'", '"')
 
     return xData
+
 
 def extract(data, arr, key):
     '''
@@ -551,7 +584,7 @@ def extract(data, arr, key):
     :rtype: array
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''     
+    '''
     if isinstance(data, dict):
         for k, v in data.items():
             if isinstance(v, (dict, list)):
@@ -563,6 +596,7 @@ def extract(data, arr, key):
             extract(item, arr, key)
     return arr
 
+
 def jsonExtractValues(data, key):
     '''
     Extract data from json content
@@ -573,10 +607,11 @@ def jsonExtractValues(data, key):
     :rtype: array
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''         
+    '''
     arr = []
     results = extract(data, arr, key)
     return results
+
 
 def jsonExtractSimpleValue(data, key):
     '''
@@ -588,8 +623,8 @@ def jsonExtractSimpleValue(data, key):
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''      
-    value =""
+    '''
+    value = ""
     try:
         data = json.loads(data)
         value = data[key]
@@ -600,6 +635,7 @@ def jsonExtractSimpleValue(data, key):
 
     return value
 
+
 def jsonMergeObjects(* argv):
     '''
     Merge json content
@@ -609,7 +645,7 @@ def jsonMergeObjects(* argv):
     :rtype: dict
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''      
+    '''
     data_list = []
     json_data = {}
     for arg in argv:
@@ -617,8 +653,9 @@ def jsonMergeObjects(* argv):
         data_list.append(json_data)
     json_data = json.dumps(data_list)
     if _localDebug:
-        logger.debug('Core: JSON Merge: %s', json_data) 
+        logger.debug('Core: JSON Merge: %s', json_data)
     return json_data
+
 
 def encodeUrl(data):
     '''
@@ -629,10 +666,11 @@ def encodeUrl(data):
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''          
+    '''
     data = str(data)
     data = urllib.parse.quote(data)
     return data
+
 
 def getHostIP(hostname):
     '''
@@ -643,26 +681,29 @@ def getHostIP(hostname):
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''          
+    '''
     if _localDebug:
         logger.debug('Script: Get IP of Host Name: %s', hostname)
-    
+
     try:
         ip = str(socket.gethostbyname(hostname))
         if _localDebug:
             logger.debug('Script: Host IP: %s', ip)
         return ip
 
-    except socket.gaierror as exp: 
+    except socket.gaierror as exp:
         # Issues on MAC OS System Platform
         logger.error('Script: Get Host IP Socket Error: %s', exp)
-        try: 
-            ip = socket.gethostbyname(hostname+ '.local')
+        try:
+            ip = socket.gethostbyname(hostname + '.local')
             if _localDebug:
                 logger.debug('Script: Host IP with .local: %s', ip)
             return ip
-        except: pass
-    except: pass
+        except:
+            pass
+    except:
+        pass
+
 
 def getHostName():
     '''
@@ -672,14 +713,15 @@ def getHostName():
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''      
+    '''
     try:
-        data = socket.gethostname() 
+        data = socket.gethostname()
         hostName = data
         return hostName
     except Exception as exp:
         logger.error('Script: Get Hostname Socket Error: %s', exp)
         return False
+
 
 def getHostFqdn(hostname):
     '''
@@ -690,10 +732,10 @@ def getHostFqdn(hostname):
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''      
+    '''
     if _localDebug:
         logger.debug('Script: Host Name / IP: %s', hostname)
-    
+
     try:
         data = str(socket.getfqdn(hostname))
         fqdn = data
@@ -704,6 +746,7 @@ def getHostFqdn(hostname):
         logger.error('Script: Get Host FQDN Socket Error: %s', exp)
         return False
 
+
 def getHostDomain(hostname):
     '''
     Extract domain name for given hostname
@@ -713,10 +756,11 @@ def getHostDomain(hostname):
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''      
+    '''
     fqdn = getHostFqdn(hostname)
-    domain  = ".".join(fqdn.split('.')[1:])
+    domain = ".".join(fqdn.split('.')[1:])
     return domain
+
 
 def getHostFromFQDN(fqdn):
     '''
@@ -727,9 +771,10 @@ def getHostFromFQDN(fqdn):
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''      
+    '''
     hostname = fqdn.split('.')[0]
-    return hostname    
+    return hostname
+
 
 def getHostByIP(hostIP):
     '''
@@ -740,7 +785,7 @@ def getHostByIP(hostIP):
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''     
+    '''
     if _localDebug:
         logger.debug('Script: Host IP: %s', hostIP)
     try:
@@ -753,7 +798,8 @@ def getHostByIP(hostIP):
         logger.error('Script: Socket Error: %s', exp)
         return False
 
-def getHostAddressInfo(hostname,port):
+
+def getHostAddressInfo(hostname, port):
     '''
     Extract hostname name for given full qualified hostname
 
@@ -763,10 +809,10 @@ def getHostAddressInfo(hostname,port):
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''     
+    '''
     if _localDebug:
-        logger.debug('Script: Host Name: %s Port: %s', hostname ,port)
-    
+        logger.debug('Script: Host Name: %s Port: %s', hostname, port)
+
     try:
         data = str(socket.getaddrinfo(hostname, port))
         fqdn = data
@@ -775,7 +821,8 @@ def getHostAddressInfo(hostname,port):
         return fqdn
     except Exception as exp:
         logger.error('Script: Socket Error: %s', exp)
-        return False        
+        return False
+
 
 def getCryptoKeyFile():
     '''
@@ -785,10 +832,11 @@ def getCryptoKeyFile():
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''     
+    '''
     sCryptoKeyFileName = checkCustomCryptoFile(folder=pFolder)
     return sCryptoKeyFileName
-    
+
+
 def encrypt(data, sKeyFileName=""):
     '''
     Symmetrically encrypt data 
@@ -799,9 +847,9 @@ def encrypt(data, sKeyFileName=""):
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''    
+    '''
 
-    sPwd = data    
+    sPwd = data
     if len(sKeyFileName) < 1:
         sCryptoKeyFile = getCryptoKeyFile()
     else:
@@ -810,10 +858,12 @@ def encrypt(data, sKeyFileName=""):
     key = getCryptoKey(sCryptoKeyFile)
     # cipher = AES.new(key.encode(), AES.MODE_CBC)
     cipher = AES.new(key, AES.MODE_CBC)
-    value = b64encode(cipher.iv).decode('utf-8') + b64encode(cipher.encrypt(pad(sPwd.encode(), AES.block_size))).decode('utf-8') + str(len(b64encode(cipher.iv).decode('utf-8')))
+    value = b64encode(cipher.iv).decode('utf-8') + b64encode(cipher.encrypt(pad(sPwd.encode(),
+                                                                                AES.block_size))).decode('utf-8') + str(len(b64encode(cipher.iv).decode('utf-8')))
     sPwd = "ENC[" + value + "]"
-    
+
     return sPwd
+
 
 def decrypt(data, sKeyFileName=""):
     '''
@@ -825,13 +875,12 @@ def decrypt(data, sKeyFileName=""):
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''      
-
+    '''
 
     if "ENC[" in data:
-         start = data.find('ENC[') + 4
-         end   = data.find(']', start)
-         sPwd  = data[start:end]
+        start = data.find('ENC[') + 4
+        end = data.find(']', start)
+        sPwd = data[start:end]
     else:
         sPwd = data
 
@@ -842,9 +891,11 @@ def decrypt(data, sKeyFileName=""):
 
     key = getCryptoKey(sCryptoKeyFile)
     cipher = AES.new(key, AES.MODE_CBC, b64decode(sPwd[0:int(sPwd[-2:]):1]))
-    value = unpad(cipher.decrypt(b64decode(sPwd[int(sPwd[-2:]) :len(sPwd):1])), AES.block_size).decode('utf-8')
+    value = unpad(cipher.decrypt(
+        b64decode(sPwd[int(sPwd[-2:]):len(sPwd):1])), AES.block_size).decode('utf-8')
 
     return value
+
 
 def getCryptoKey(sKeyFileName):
     '''
@@ -855,14 +906,14 @@ def getCryptoKey(sKeyFileName):
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''        
+    '''
     if len(sKeyFileName) < 1:
         sCryptoKeyFile = sCryptoKeyFileName
     else:
         sCryptoKeyFile = sKeyFileName
 
     try:
-        with open(sCryptoKeyFile, "rb" ) as keyfile:
+        with open(sCryptoKeyFile, "rb") as keyfile:
             keySecret = keyfile.read()
     except FileNotFoundError as err:
         logger.error('Script: Crypto File Error: %s', err)
@@ -877,7 +928,8 @@ def getCryptoKey(sKeyFileName):
         logger.debug('Script: Crypto Secret: %s', keySecret)
     return value
 
-def encryptPwd(data,sKeyFileName=""):
+
+def encryptPwd(data, sKeyFileName=""):
     '''
     Symmetrically encrypt password 
 
@@ -886,13 +938,14 @@ def encryptPwd(data,sKeyFileName=""):
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''     
-    value = encrypt(data=data,sKeyFileName=sKeyFileName)
+    '''
+    value = encrypt(data=data, sKeyFileName=sKeyFileName)
     if _localDebug:
         logger.debug('Script: Encrypt Data: %s', value)
     return value
 
-def decryptPwd(data,sKeyFileName=""):
+
+def decryptPwd(data, sKeyFileName=""):
     '''
     Symmetrically decrypt password 
 
@@ -901,13 +954,14 @@ def decryptPwd(data,sKeyFileName=""):
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''       
-    value = decrypt(data=data,sKeyFileName=sKeyFileName)
+    '''
+    value = decrypt(data=data, sKeyFileName=sKeyFileName)
     if _localDebug:
         logger.debug('Script: Encrypt Data: %s', value)
-    return value    
+    return value
 
-def convertCsv2Json(data,keepDuplicate=False,replaceEmpty=False):
+
+def convertCsv2Json(data, keepDuplicate=False, replaceEmpty=False):
     '''
     Convert panda with csv data to json 
 
@@ -918,14 +972,15 @@ def convertCsv2Json(data,keepDuplicate=False,replaceEmpty=False):
     :rtype: dict
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''       
-    df = convertCsv2Panda(data=data,keepDuplicate=keepDuplicate)
+    '''
+    df = convertCsv2Panda(data=data, keepDuplicate=keepDuplicate)
     if replaceEmpty:
-        df.fillna("Not Defined",inplace=True)
+        df.fillna("Not Defined", inplace=True)
     json_data = df.to_json(orient='records')
     return json_data
 
-def convertCsv2Panda(data,keepDuplicate=False):
+
+def convertCsv2Panda(data, keepDuplicate=False):
     '''
     Convert csv data to panda dataframe
 
@@ -934,12 +989,13 @@ def convertCsv2Panda(data,keepDuplicate=False):
     :rtype: panda dataframe
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''        
+    '''
     df = pd.read_csv(StringIO(data))
     df = df.drop_duplicates(keep=keepDuplicate)
     return df
 
-def convertJson2Panda(data,keepDuplicate=False):
+
+def convertJson2Panda(data, keepDuplicate=False):
     '''
     Convert JSON data to panda dataframe
 
@@ -948,17 +1004,19 @@ def convertJson2Panda(data,keepDuplicate=False):
     :rtype: panda dataframe
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''        
-    df = pd.read_json(StringIO(data),orient='records')
+    '''
+    df = pd.read_json(StringIO(data), orient='records')
     df = df.drop_duplicates(keep=keepDuplicate)
-    return df    
+    return df
+
 
 def convertJson2Csv(data):
     df = convertJson2Panda(data=data)
     csvData = df.to_csv(index=False)
     return csvData
-    
-def copyFile(srcFile,dstFile,override=False):
+
+
+def copyFile(srcFile, dstFile, override=False):
     '''
     Copy file from src to dst
 
@@ -968,29 +1026,30 @@ def copyFile(srcFile,dstFile,override=False):
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''     
+    '''
     srcFile = str(srcFile)
     dstFile = str(dstFile)
-    sFileStatusSource = getFileStatus(srcFile)    
-    sFileStatusDest = getFileStatus(dstFile)    
+    sFileStatusSource = getFileStatus(srcFile)
+    sFileStatusDest = getFileStatus(dstFile)
 
     if sFileStatusDest:
-        if override:        
+        if override:
             try:
                 if sFileStatusSource:
                     shutil.copy(srcFile, dstFile)
             except OSError as err:
-                logger.error('Script: File Copy Error: %s', err)              
+                logger.error('Script: File Copy Error: %s', err)
         else:
             logger.error('Script: File Exists: %s', dstFile)
     else:
         try:
             if sFileStatusSource:
-                shutil.copy(srcFile, dstFile)        
+                shutil.copy(srcFile, dstFile)
         except OSError as err:
             logger.error('Script: File Copy Error: %s', err)
 
-def copyFolder(srcFolker,dstFolder,override=False):
+
+def copyFolder(srcFolker, dstFolder, override=False):
     '''
     Copy folder from src to dst
 
@@ -1000,19 +1059,21 @@ def copyFolder(srcFolker,dstFolder,override=False):
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    ''' 
+    '''
     src = str(srcFolker)
     dst = str(dstFolder)
-    sFolderStatusSource = getFolderStatus(src)    
+    sFolderStatusSource = getFolderStatus(src)
     createFolder(path=dst)
     if sFolderStatusSource:
         files = os.listdir(src)
         for file in files:
             srcname = os.path.join(src, file)
             dstname = os.path.join(dst, file)
-            copyFile(srcname,dstname,override=override)
+            copyFile(srcname, dstname, override=override)
 
 # Project Core Folder
+
+
 def getProjectFolder():
     '''
     Get current project folder
@@ -1022,13 +1083,15 @@ def getProjectFolder():
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''  
+    '''
 
     projectFolder = getCurrentFolder()
 
     return projectFolder
 
 # User Home Folder
+
+
 def getHomeFolder():
     '''
     Get user home folder
@@ -1038,7 +1101,7 @@ def getHomeFolder():
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''  
+    '''
 
     if platform.system() == "Windows":
         userHomeFolder = getCurrentFolder()
@@ -1047,6 +1110,8 @@ def getHomeFolder():
     return userHomeFolder
 
 # Security functions
+
+
 def secureCredentials(data):
     '''
     Encrypt clear text passwords in config json file and update file
@@ -1056,16 +1121,18 @@ def secureCredentials(data):
     :rtype: json
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''  
-    jCfgData   = data
-    cfgFile    = getJsonValue(path="$.DEFAULT.config_file",data=jCfgData)
-    cryptoFile = getJsonValue(path="$.DEFAULT.crypto_file",data=jCfgData)
+    '''
+    jCfgData = data
+    cfgFile = getJsonValue(path="$.DEFAULT.config_file", data=jCfgData)
+    cryptoFile = getJsonValue(path="$.DEFAULT.crypto_file", data=jCfgData)
 
     # Crypto Support
-    sCfgData = encryptPwds(file=cfgFile,data=jCfgData,sKeyFileName=cryptoFile)
+    sCfgData = encryptPwds(file=cfgFile, data=jCfgData,
+                           sKeyFileName=cryptoFile)
     return sCfgData
 
-def encryptPwds(file,data,sKeyFileName=""):
+
+def encryptPwds(file, data, sKeyFileName=""):
     '''
     Encrypt clear text passwords in config json file and update file
 
@@ -1076,12 +1143,12 @@ def encryptPwds(file,data,sKeyFileName=""):
     :rtype: json
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''  
+    '''
     pItemList = data.keys()
-    sCfgData  = data
-    sCfgFile  = file
+    sCfgData = data
+    sCfgFile = file
     for pItem in pItemList:
-        if _localDebug: 
+        if _localDebug:
             logger.info('Crypto Process Credentials for: %s', pItem)
         securePwd = ""
         jSecPwd = ""
@@ -1090,53 +1157,54 @@ def encryptPwds(file,data,sKeyFileName=""):
         vPath = "$." + pItem + ".pwd"
         jPath = "$." + pItem + ".jks_pwd"
 
-        unSecPwd = getJsonValue(path=vPath,data=sCfgData)
-        ujSecPwd = getJsonValue(path=jPath,data=sCfgData)
+        unSecPwd = getJsonValue(path=vPath, data=sCfgData)
+        ujSecPwd = getJsonValue(path=jPath, data=sCfgData)
 
-        if len(unSecPwd) > 0: 
-                if "ENC[" in unSecPwd:
-                    start = unSecPwd.find('ENC[') + 4
-                    end   = unSecPwd.find(']', start)
-                    sPwd  = unSecPwd[start:end]
+        if len(unSecPwd) > 0:
+            if "ENC[" in unSecPwd:
+                start = unSecPwd.find('ENC[') + 4
+                end = unSecPwd.find(']', start)
+                sPwd = unSecPwd[start:end]
 
-                else:
-                    sPwd = unSecPwd
-                    securePwd = encryptPwd(data=sPwd,sKeyFileName=sKeyFileName)  
-                    logger.info('Crypto Encrypt Password for: "%s"', pItem)
+            else:
+                sPwd = unSecPwd
+                securePwd = encryptPwd(data=sPwd, sKeyFileName=sKeyFileName)
+                logger.info('Crypto Encrypt Password for: "%s"', pItem)
 
-                    if _localDebug: 
-                        print (f"Encrypted user password for {pItem}: {securePwd}")  
+                if _localDebug:
+                    print(f"Encrypted user password for {pItem}: {securePwd}")
 
-                    sCfgData[pItem]["pwd"]= securePwd
+                sCfgData[pItem]["pwd"] = securePwd
 
         # Java Keystore passwords
         if len(ujSecPwd) > 0:
-                if "ENC[" in unSecPwd:
-                    start = unSecPwd.find('ENC[') + 4
-                    end   = unSecPwd.find(']', start)
-                    sPwd  = unSecPwd[start:end]
+            if "ENC[" in unSecPwd:
+                start = unSecPwd.find('ENC[') + 4
+                end = unSecPwd.find(']', start)
+                sPwd = unSecPwd[start:end]
 
-                else:
-                    sPwd = unSecPwd
-                    securePwd = encryptPwd(data=sPwd,sKeyFileName=sKeyFileName)  
-                    logger.info('Crypto Encrypt JKS Password for: "%s"', pItem)
-                    if _localDebug: 
-                        print (f"Encrypted user JKS password for {pItem}: {securePwd}")  
+            else:
+                sPwd = unSecPwd
+                securePwd = encryptPwd(data=sPwd, sKeyFileName=sKeyFileName)
+                logger.info('Crypto Encrypt JKS Password for: "%s"', pItem)
+                if _localDebug:
+                    print(
+                        f"Encrypted user JKS password for {pItem}: {securePwd}")
 
-                    sCfgData[pItem]["pwd_secure"] = securePwd
-                    sCfgData[pItem]["pwd"]= securePwd
-
+                sCfgData[pItem]["pwd_secure"] = securePwd
+                sCfgData[pItem]["pwd"] = securePwd
 
         if _localDebug:
             logger.debug('Core: Security Function: "%s" ', "Encrypt")
             logger.debug('Core: Security Solution: "%s" ', pItem)
             logger.debug('Core: unSecure Pwd: "%s" ', unSecPwd)
             logger.debug('Core: Secure Pwd: "%s"\n', securePwd)
-    
+
     # update config json file
     logger.info('Crypto Update config file: "%s"', sCfgFile)
-    writeJsonFile(file=sCfgFile,content=sCfgData)
+    writeJsonFile(file=sCfgFile, content=sCfgData)
     return sCfgData
+
 
 def decryptPwds(data):
     '''
@@ -1147,23 +1215,24 @@ def decryptPwds(data):
     :rtype: 
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''  
+    '''
     pItemList = data.keys()
-    sCfgData  = data
+    sCfgData = data
     for pItem in pItemList:
         unSecPwd = ""
 
         # unSecPwd = werkstatt.jsonExtractValues(jCfgData,pItem)[0]
         vPath = "$." + pItem + ".pwd"
-        sPwd = getJsonValue(path=vPath,data=sCfgData)
+        sPwd = getJsonValue(path=vPath, data=sCfgData)
         if len(sPwd) > 0:
-            unSecPwd = decryptPwd(data=sPwd)            
-            print (f"Decrypted password for {pItem}: {unSecPwd}")
+            unSecPwd = decryptPwd(data=sPwd)
+            print(f"Decrypted password for {pItem}: {unSecPwd}")
         if _localDebug:
             logger.debug('Core: Security Function: "%s" ', "Decrypt")
             logger.debug('Core: Security Solution: "%s" ', pItem)
             logger.debug('Core: unSecure Pwd: "%s" ', unSecPwd)
             logger.debug('Core: Secure Pwd: "%s"\n', sPwd)
+
 
 def createProjectFolders(data):
     '''
@@ -1174,20 +1243,20 @@ def createProjectFolders(data):
     :rtype: dict
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''  
+    '''
     jLocalCfgData = data
     sHomeFolder = getHomeFolder()
-    coreProjectFolder          = os.path.join( sHomeFolder,".w3rkstatt")
-    coreProjecConfigFolder     = os.path.join( coreProjectFolder,"configs")
-    coreProjectLogFolder       = os.path.join( coreProjectFolder,"logs")
-    coreProjectDataFolder      = os.path.join( coreProjectFolder,"data")
-    coreProjectTemplatesFolder = os.path.join( coreProjectFolder,"templates")
+    coreProjectFolder = os.path.join(sHomeFolder, ".w3rkstatt")
+    coreProjecConfigFolder = os.path.join(coreProjectFolder, "configs")
+    coreProjectLogFolder = os.path.join(coreProjectFolder, "logs")
+    coreProjectDataFolder = os.path.join(coreProjectFolder, "data")
+    coreProjectTemplatesFolder = os.path.join(coreProjectFolder, "templates")
 
     lFolders = coreProjecConfigFolder, coreProjectLogFolder, coreProjectDataFolder, coreProjectTemplatesFolder
     # Create Folders
     for sFolder in lFolders:
         if not getFolderStatus(sFolder):
-            createFolder(sFolder) 
+            createFolder(sFolder)
 
     jLocalCfgData["DEFAULT"]["config_folder"] = coreProjecConfigFolder
     jLocalCfgData["DEFAULT"]["log_folder"] = coreProjectLogFolder
@@ -1195,6 +1264,7 @@ def createProjectFolders(data):
     jLocalCfgData["DEFAULT"]["template_folder"] = coreProjectTemplatesFolder
 
     return jLocalCfgData
+
 
 def createProjecConfig(data):
     '''
@@ -1205,53 +1275,56 @@ def createProjecConfig(data):
     :rtype: dict
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''  
+    '''
     jLocalCfgData = data
 
-    cfgFolder = getJsonValue(path="$.DEFAULT.config_folder",data=jLocalCfgData)
-    logFolder = getJsonValue(path="$.DEFAULT.log_folder",data=jLocalCfgData)
-    datFolder = getJsonValue(path="$.DEFAULT.data_folder",data=jLocalCfgData)
-    tmpFolder = getJsonValue(path="$.DEFAULT.template_folder",data=jLocalCfgData)
+    cfgFolder = getJsonValue(
+        path="$.DEFAULT.config_folder", data=jLocalCfgData)
+    logFolder = getJsonValue(path="$.DEFAULT.log_folder", data=jLocalCfgData)
+    datFolder = getJsonValue(path="$.DEFAULT.data_folder", data=jLocalCfgData)
+    tmpFolder = getJsonValue(
+        path="$.DEFAULT.template_folder", data=jLocalCfgData)
 
     # Custom Crypto File
-    sCryptoFileName =  sHostname + ".bin"
-    sProjectryptoFileName  = os.path.join(cfgFolder,sCryptoFileName)
+    sCryptoFileName = sHostname + ".bin"
+    sProjectryptoFileName = os.path.join(cfgFolder, sCryptoFileName)
     sCfgFilesCryptoFileStatus = getFileStatus(sProjectryptoFileName)
     jLocalCfgData["DEFAULT"]["crypto_file"] = sProjectryptoFileName
-    
+
     if not sCfgFilesCryptoFileStatus:
         keySecret = os.urandom(16)
         with open(sProjectryptoFileName, "wb") as keyfile:
-            keyfile.write(keySecret)    
+            keyfile.write(keySecret)
 
     # Custom Config File
-    sConfigFileName =  sHostname + ".json"
-    sProjectConfigFileName    = os.path.join(cfgFolder,sConfigFileName)
+    sConfigFileName = sHostname + ".json"
+    sProjectConfigFileName = os.path.join(cfgFolder, sConfigFileName)
     sCfgFilesConfigFileStatus = getFileStatus(sProjectConfigFileName)
     jLocalCfgData["DEFAULT"]["config_file"] = sProjectConfigFileName
 
     # Custom Log File
-    sLogFile =  sHostname + ".log"
-    sLogFileName = os.path.join(logFolder,sLogFile)
+    sLogFile = sHostname + ".log"
+    sLogFileName = os.path.join(logFolder, sLogFile)
     jLocalCfgData["DEFAULT"]["log_file"] = sLogFileName
 
     # Create custom config file
     if not sCfgFilesConfigFileStatus:
-        writeJsonFile(file=sProjectConfigFileName,content=jLocalCfgData)
+        writeJsonFile(file=sProjectConfigFileName, content=jLocalCfgData)
     else:
         jLocalCfgData = getFileJson(file=sProjectConfigFileName)
 
     # Copy all configs
     sLocalFolder = getCurrentFolder()
-    sLocalCfgFolder = os.path.join(sLocalFolder,"configs")  
-    copyFolder(srcFolker=sLocalCfgFolder,dstFolder=cfgFolder,override=False)
+    sLocalCfgFolder = os.path.join(sLocalFolder, "configs")
+    copyFolder(srcFolker=sLocalCfgFolder, dstFolder=cfgFolder, override=False)
 
     # Copy all templates
     sLocalFolder = getCurrentFolder()
-    sLocalCfgFolder = os.path.join(sLocalFolder,"templates")  
-    copyFolder(srcFolker=sLocalCfgFolder,dstFolder=tmpFolder,override=False)
+    sLocalCfgFolder = os.path.join(sLocalFolder, "templates")
+    copyFolder(srcFolker=sLocalCfgFolder, dstFolder=tmpFolder, override=False)
 
     return jLocalCfgData
+
 
 def getProjectDefaultConfigFileName():
     '''
@@ -1262,11 +1335,13 @@ def getProjectDefaultConfigFileName():
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''  
+    '''
 
     sLocalFolder = getCurrentFolder()
-    sLocalCfgFileNAme = os.path.join(sLocalFolder,"samples","integrations.json")  
+    sLocalCfgFileNAme = os.path.join(
+        sLocalFolder, "samples", "integrations.json")
     return sLocalCfgFileNAme
+
 
 def getProjectDefaultConfig(file):
     '''
@@ -1277,11 +1352,12 @@ def getProjectDefaultConfig(file):
     :rtype: json
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''  
+    '''
 
     jCfgFile = file
     sLocalCfgFileContent = getFileJson(jCfgFile)
     return sLocalCfgFileContent
+
 
 def getProjectConfig():
     '''
@@ -1292,15 +1368,16 @@ def getProjectConfig():
     :rtype: dict
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''  
+    '''
 
     sHomeFolder = getHomeFolder()
-    coreProjectFolder          = os.path.join( sHomeFolder,".w3rkstatt")
-    coreProjecConfigFolder     = os.path.join( coreProjectFolder,"configs")
+    coreProjectFolder = os.path.join(sHomeFolder, ".w3rkstatt")
+    coreProjecConfigFolder = os.path.join(coreProjectFolder, "configs")
 
     # Get Custom Config File & Content
-    sConfigFileName =  sHostname + ".json"
-    sProjectConfigFileName    = os.path.join(coreProjecConfigFolder,sConfigFileName)
+    sConfigFileName = sHostname + ".json"
+    sProjectConfigFileName = os.path.join(
+        coreProjecConfigFolder, sConfigFileName)
     sCfgFilesConfigFileStatus = getFileStatus(sProjectConfigFileName)
 
     if sCfgFilesConfigFileStatus:
@@ -1311,52 +1388,52 @@ def getProjectConfig():
     return sCfgFileContent
 
 
-
-
-
 # Create a custom logger
-pFolder   = getProjectFolder()
-hFolder   = getHomeFolder()
+pFolder = getProjectFolder()
+hFolder = getHomeFolder()
 sHostname = str(getHostName()).lower()
 sPlatform = platform.system()
-sUuid     = str(uuid.uuid4())
-logger    = logging.getLogger(__name__)
+sUuid = str(uuid.uuid4())
+logger = logging.getLogger(__name__)
 
 
 if __name__ == "__main__":
     # Setup log file
-    logFile = os.path.join(pFolder,"w3rkstatt.log")
-    logging.basicConfig(filename=logFile, filemode='w', level=logging.DEBUG, format='%(asctime)s - %(levelname)s # %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+    logFile = os.path.join(pFolder, "w3rkstatt.log")
+    logging.basicConfig(filename=logFile, filemode='w', level=logging.DEBUG,
+                        format='%(asctime)s - %(levelname)s # %(message)s', datefmt='%d-%b-%y %H:%M:%S')
     logger.info('Werkstatt Python Core Script "Start"')
     logger.info('Version: %s ', _modVer)
-    logger.info('System Platform: "%s" ', sPlatform)   
-    logger.info('System Name: "%s" ', sHostname)  
-    logger.info('Project Folder: "%s" ', pFolder) 
-
+    logger.info('System Platform: "%s" ', sPlatform)
+    logger.info('System Name: "%s" ', sHostname)
+    logger.info('Project Folder: "%s" ', pFolder)
 
     # Get Default Config
-    jCfgFile  = getProjectDefaultConfigFileName()
-    jCfgData  = getProjectDefaultConfig(file=jCfgFile)
+    jCfgFile = getProjectDefaultConfigFileName()
+    jCfgData = getProjectDefaultConfig(file=jCfgFile)
 
     # Setup Project
     jUpdatedCfgfolders = createProjectFolders(data=jCfgData)
     jUpdatedCfgData = createProjecConfig(data=jUpdatedCfgfolders)
-    
-    loglevel   = getJsonValue(path="$.DEFAULT.loglevel",data=jUpdatedCfgData)
-    cfgFolder  = getJsonValue(path="$.DEFAULT.config_folder",data=jUpdatedCfgData)
-    logFolder  = getJsonValue(path="$.DEFAULT.log_folder",data=jUpdatedCfgData)
-    datFolder  = getJsonValue(path="$.DEFAULT.data_folder",data=jUpdatedCfgData)
-    tmpFolder  = getJsonValue(path="$.DEFAULT.template_folder",data=jUpdatedCfgData)
-    cfgFile    = getJsonValue(path="$.DEFAULT.config_file",data=jUpdatedCfgData)
-    cryptoFile = getJsonValue(path="$.DEFAULT.crypto_file",data=jUpdatedCfgData)
 
+    loglevel = getJsonValue(path="$.DEFAULT.loglevel", data=jUpdatedCfgData)
+    cfgFolder = getJsonValue(
+        path="$.DEFAULT.config_folder", data=jUpdatedCfgData)
+    logFolder = getJsonValue(path="$.DEFAULT.log_folder", data=jUpdatedCfgData)
+    datFolder = getJsonValue(
+        path="$.DEFAULT.data_folder", data=jUpdatedCfgData)
+    tmpFolder = getJsonValue(
+        path="$.DEFAULT.template_folder", data=jUpdatedCfgData)
+    cfgFile = getJsonValue(path="$.DEFAULT.config_file", data=jUpdatedCfgData)
+    cryptoFile = getJsonValue(
+        path="$.DEFAULT.crypto_file", data=jUpdatedCfgData)
 
-    logger.info('System Config JSON File: "%s" ', jCfgFile)  
-    logger.info('Log Folder: "%s" ', logFolder) 
-    logger.info('Data Folder: "%s" ', datFolder) 
-    logger.info('Template Folder: "%s" ', tmpFolder) 
-    logger.info('Config File: "%s" ', cfgFile) 
-    logger.info('Crypto Key File: "%s" ', cryptoFile) 
+    logger.info('System Config JSON File: "%s" ', jCfgFile)
+    logger.info('Log Folder: "%s" ', logFolder)
+    logger.info('Data Folder: "%s" ', datFolder)
+    logger.info('Template Folder: "%s" ', tmpFolder)
+    logger.info('Config File: "%s" ', cfgFile)
+    logger.info('Crypto Key File: "%s" ', cryptoFile)
     # Central config folder
 
     jSecureCfgData = secureCredentials(data=jUpdatedCfgData)
@@ -1365,8 +1442,5 @@ if __name__ == "__main__":
 
     logger.info('Werkstatt Python Core Script "End"')
     logging.shutdown()
-    print (f"Version: {_modVer}")
-    print (f"Log File: {logFile}")
-
-
-
+    print(f"Version: {_modVer}")
+    print(f"Log File: {logFile}")
