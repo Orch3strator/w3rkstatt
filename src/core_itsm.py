@@ -30,10 +30,15 @@ Date (YMD)    Name                  What
 """
 
 
-import os, json, logging
-import time, datetime
-import sys, getopt
-import requests, urllib3
+import os
+import json
+import logging
+import time
+import datetime
+import sys
+import getopt
+import requests
+import urllib3
 import urllib3
 from urllib3 import disable_warnings
 from urllib3.exceptions import NewConnectionError, MaxRetryError, InsecureRequestWarning
@@ -41,78 +46,95 @@ from jsonpath_ng import jsonpath
 from jsonpath_ng.ext import parse
 import jsonpath_rw_ext as jp
 
-# handle dev environment vs. production 
+# handle dev environment vs. production
 try:
     import w3rkstatt as w3rkstatt
 except:
     # fix import issues for modules
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+    sys.path.append(os.path.dirname(
+        os.path.dirname(os.path.realpath(__file__))))
     from src import w3rkstatt as w3rkstat
 
 # Get configuration from bmcs_core.json
 # jCfgFile     = os.path.join( w3rkstatt.getCurrentFolder(), "bmcs_core.json")
 # jCfgData     = w3rkstatt.getFileJson(jCfgFile)
 
-# Get configuration from bmcs_core.json
-jCfgData   = w3rkstatt.getProjectConfig()
-cfgFolder  = w3rkstatt.getJsonValue(path="$.DEFAULT.config_folder",data=jCfgData)
-logFolder  = w3rkstatt.getJsonValue(path="$.DEFAULT.log_folder",data=jCfgData)
-tmpFolder  = w3rkstatt.getJsonValue(path="$.DEFAULT.template_folder",data=jCfgData)
-cryptoFile = w3rkstatt.getJsonValue(path="$.DEFAULT.crypto_file",data=jCfgData)
+# Get configuration from json
+jCfgData = w3rkstatt.getProjectConfig()
+cfgFolder = w3rkstatt.getJsonValue(
+    path="$.DEFAULT.config_folder", data=jCfgData)
+logFolder = w3rkstatt.getJsonValue(path="$.DEFAULT.log_folder", data=jCfgData)
+tmpFolder = w3rkstatt.getJsonValue(
+    path="$.DEFAULT.template_folder", data=jCfgData)
+cryptoFile = w3rkstatt.getJsonValue(
+    path="$.DEFAULT.crypto_file", data=jCfgData)
 
-itsm_host    = w3rkstatt.getJsonValue(path="$.ITSM.host",data=jCfgData)
-itsm_port    = w3rkstatt.getJsonValue(path="$.ITSM.port",data=jCfgData)
-itsm_ssl     = w3rkstatt.getJsonValue(path="$.ITSM.ssl",data=jCfgData)
-itsm_ssl_ver = w3rkstatt.getJsonValue(path="$.ITSM.ssl_verification",data=jCfgData)
-itsm_user    = w3rkstatt.getJsonValue(path="$.ITSM.user",data=jCfgData)
-itsm_pwd     = w3rkstatt.getJsonValue(path="$.ITSM.pwd",data=jCfgData)
-itsm_api_ns  = w3rkstatt.getJsonValue(path="$.ITSM.api_namespace",data=jCfgData)
-itsm_api_ver = w3rkstatt.getJsonValue(path="$.ITSM.api_version",data=jCfgData)
+itsm_host = w3rkstatt.getJsonValue(path="$.ITSM.host", data=jCfgData)
+itsm_port = w3rkstatt.getJsonValue(path="$.ITSM.port", data=jCfgData)
+itsm_ssl = w3rkstatt.getJsonValue(path="$.ITSM.ssl", data=jCfgData)
+itsm_ssl_ver = w3rkstatt.getJsonValue(
+    path="$.ITSM.ssl_verification", data=jCfgData)
+itsm_user = w3rkstatt.getJsonValue(path="$.ITSM.user", data=jCfgData)
+itsm_pwd = w3rkstatt.getJsonValue(path="$.ITSM.pwd", data=jCfgData)
+itsm_api_ns = w3rkstatt.getJsonValue(
+    path="$.ITSM.api_namespace", data=jCfgData)
+itsm_api_ver = w3rkstatt.getJsonValue(path="$.ITSM.api_version", data=jCfgData)
 
 # ITSM form names
-itsm_form_crq   = w3rkstatt.getJsonValue(path="$.ITSM.change.form_name",data=jCfgData)
-itsm_form_inc   = w3rkstatt.getJsonValue(path="$.ITSM.incident.form_name",data=jCfgData)
-itsm_form_wlog  = w3rkstatt.getJsonValue(path="$.ITSM.worklog.form_name",data=jCfgData)
-itsm_search_inc = w3rkstatt.getJsonValue(path="$.ITSM.incident.form_search",data=jCfgData)
-itsm_form_ci    = w3rkstatt.getJsonValue(path="$.ITSM.cmdb.form_name",data=jCfgData)
+itsm_form_crq = w3rkstatt.getJsonValue(
+    path="$.ITSM.change.form_name", data=jCfgData)
+itsm_form_inc = w3rkstatt.getJsonValue(
+    path="$.ITSM.incident.form_name", data=jCfgData)
+itsm_form_wlog = w3rkstatt.getJsonValue(
+    path="$.ITSM.worklog.form_name", data=jCfgData)
+itsm_search_inc = w3rkstatt.getJsonValue(
+    path="$.ITSM.incident.form_search", data=jCfgData)
+itsm_form_ci = w3rkstatt.getJsonValue(
+    path="$.ITSM.cmdb.form_name", data=jCfgData)
 
 # ITSM template IDs
-itsm_tmpl_crq = w3rkstatt.getJsonValue(path="$.ITSM.change.template_id",data=jCfgData)
-itsm_tmpl_inc = w3rkstatt.getJsonValue(path="$.ITSM.incident.template_id",data=jCfgData)
+itsm_tmpl_crq = w3rkstatt.getJsonValue(
+    path="$.ITSM.change.template_id", data=jCfgData)
+itsm_tmpl_inc = w3rkstatt.getJsonValue(
+    path="$.ITSM.incident.template_id", data=jCfgData)
 
 # ITSM field mappings
-itsm_map_file = w3rkstatt.getJsonValue(path="$.ITSM.mappings_file",data=jCfgData)
+itsm_map_file = w3rkstatt.getJsonValue(
+    path="$.ITSM.mappings_file", data=jCfgData)
 
 
 # ITSM REST API
-# https://<localhost>:<port>/api/{namespace}/{version} 
+# https://<localhost>:<port>/api/{namespace}/{version}
 if itsm_ssl:
     itsm_protocol = "https://"
 else:
     itsm_protocol = "http://"
 
-itsm_url     = itsm_protocol + itsm_host + ":" + itsm_port + "/api/" + itsm_api_ns + "/" + itsm_api_ver
-itsm_jwt     = itsm_protocol + itsm_host + ":" + itsm_port + "/api/jwt"
+itsm_url = itsm_protocol + itsm_host + ":" + \
+    itsm_port + "/api/" + itsm_api_ns + "/" + itsm_api_ver
+itsm_jwt = itsm_protocol + itsm_host + ":" + itsm_port + "/api/jwt"
 
 # ITSM Field mappings
-jCfgMapFile  = os.path.join(cfgFolder, itsm_map_file)
-jCfgMapData  = w3rkstatt.getFileJson(jCfgMapFile)
+jCfgMapFile = os.path.join(cfgFolder, itsm_map_file)
+jCfgMapData = w3rkstatt.getFileJson(jCfgMapFile)
 
 # Assign module defaults
-_modVer = "20.21.05.00"
-_timeFormat  = '%Y-%m-%dT%H:%M:%S'
-_localDebug  = False
+_modVer = "20.22.07.00"
+_timeFormat = '%Y-%m-%dT%H:%M:%S'
+_localDebug = False
 _localDbgAdv = False
-logger   = logging.getLogger(__name__) 
-logFile  = w3rkstatt.getJsonValue(path="$.DEFAULT.log_file",data=jCfgData)
-loglevel = w3rkstatt.getJsonValue(path="$.DEFAULT.loglevel",data=jCfgData)
-epoch    = time.time()
+logger = logging.getLogger(__name__)
+logFile = w3rkstatt.getJsonValue(path="$.DEFAULT.log_file", data=jCfgData)
+loglevel = w3rkstatt.getJsonValue(path="$.DEFAULT.loglevel", data=jCfgData)
+epoch = time.time()
 hostName = w3rkstatt.getHostName()
-hostIP   = w3rkstatt.getHostIP(hostName)
+hostIP = w3rkstatt.getHostIP(hostName)
+
 
 # Ignore HTTPS Insecure Request Warnings
 if itsm_ssl_ver == False:
-  urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 
 def authenticate():
     '''
@@ -122,11 +144,12 @@ def authenticate():
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''  
+    '''
 
     authToken = None
     url = itsm_jwt + '/login'
-    itsm_pwd_decrypted  = w3rkstatt.decryptPwd(data=itsm_pwd,sKeyFileName=cryptoFile)
+    itsm_pwd_decrypted = w3rkstatt.decryptPwd(
+        data=itsm_pwd, sKeyFileName=cryptoFile)
     response = ""
 
     # Create a dictionary for the request body
@@ -144,7 +167,7 @@ def authenticate():
     payload = request_body
     headers = {
         'content-type': "application/x-www-form-urlencoded",
-        'cache-control': "no-cache" ,
+        'cache-control': "no-cache",
     }
 
     if _localDebug:
@@ -154,7 +177,8 @@ def authenticate():
 
     # Execute the API call.
     try:
-        response = requests.post(url, data=payload, headers=headers, verify=False)
+        response = requests.post(
+            url, data=payload, headers=headers, verify=False)
     except requests.RequestException as e:
         logger.error('HTTP Response Error: %s', e)
 
@@ -172,6 +196,7 @@ def authenticate():
     else:
         logger.error('Authentication Failure Response Code: %s', response)
     return authToken
+
 
 def logout(token):
     url = itsm_jwt + '/logout'
@@ -198,7 +223,8 @@ def logout(token):
 
     # Execute the API call.
     try:
-        response = requests.post(url, data=payload, headers=headers, verify=False )
+        response = requests.post(
+            url, data=payload, headers=headers, verify=False)
     except requests.RequestException as e:
         logger.error('HTTP Response Error: %s', e)
 
@@ -222,10 +248,10 @@ def logout(token):
         # exit()
 
 
-# http://serverName:port/api/arsys/v1/entry/HPD:IncidentInterface_Create?fields=values(Incident Number)  
+# http://serverName:port/api/arsys/v1/entry/HPD:IncidentInterface_Create?fields=values(Incident Number)
 # https://docs.bmc.com/docs/ars2008/date-and-time-formats-929628201.html
 
-def apiGet(form,headers,entry=""):
+def apiGet(form, headers, entry=""):
     '''
     Execute an ITSM API GET
 
@@ -236,7 +262,7 @@ def apiGet(form,headers,entry=""):
     :rtype: dict
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''        
+    '''
 
     data = None
     if len(entry) > 1:
@@ -245,7 +271,7 @@ def apiGet(form,headers,entry=""):
         else:
             url = itsm_url + '/entry/' + form + '/' + entry
     else:
-        url = itsm_url + '/entry/' + form 
+        url = itsm_url + '/entry/' + form
 
     if _localDebug:
         logger.debug('HTTP API Url: %s', url)
@@ -264,28 +290,29 @@ def apiGet(form,headers,entry=""):
         logger.error('HTTP Response Status: %s', rsc)
     elif rsc == 401:
         rst = response.text
-        logger.error('ITSM: Error: %s', rst)     
-        data = {}   
+        logger.error('ITSM: Error: %s', rst)
+        data = {}
     elif rsc == 404:
         rst = response.text
         rsd = response.content
-        logger.error('ITSM: Error: %s', rst)     
-        data = {}          
+        logger.error('ITSM: Error: %s', rst)
+        data = {}
     elif rsc != 200:
-        logger.error('HTTP Response Status: %s', rsc)        
+        logger.error('HTTP Response Status: %s', rsc)
     elif rsc == 200:
         rst = response.text
         rsd = response.content
         data = rst
         if _localDbgAdv:
-            logger.debug('HTTP Response Text: %s', rst)  
-            logger.debug('HTTP Response Content: %s', rsd) 
+            logger.debug('HTTP Response Text: %s', rst)
+            logger.debug('HTTP Response Content: %s', rsd)
         return data
     else:
         logger.error('Authentication Failure Response Code: %s', response)
     return data
 
-def apiPost(form,headers,body="",fields=""):
+
+def apiPost(form, headers, body="", fields=""):
     '''
     Execute an ITSM API POST
 
@@ -297,13 +324,13 @@ def apiPost(form,headers,body="",fields=""):
     :rtype: dict
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''        
+    '''
 
     data = None
     if len(fields) > 1:
         url = itsm_url + '/entry/' + form + '/?' + fields
     else:
-        url = itsm_url + '/entry/' + form 
+        url = itsm_url + '/entry/' + form
 
     # '/?fields=values(Infrastructure Change Id)'
     # Create a dictionary for the request body
@@ -325,7 +352,8 @@ def apiPost(form,headers,body="",fields=""):
         if len(request_body) < 0:
             response = requests.get(url, headers=headers, verify=False)
         else:
-            response = requests.post(url, data=payload, headers=headers, verify=False)
+            response = requests.post(
+                url, data=payload, headers=headers, verify=False)
     except requests.RequestException as e:
         logger.error('HTTP Response Error: %s', e)
 
@@ -337,34 +365,35 @@ def apiPost(form,headers,body="",fields=""):
         logger.error('HTTP Response Text: %s', rst)
         data = "Error"
         if _localDebug:
-            logger.debug('ITSM: Text: %s', rst) 
+            logger.debug('ITSM: Text: %s', rst)
     elif rsc == 501:
         logger.error('HTTP Response Status: %s', rsc)
         data = "Error"
         if _localDebug:
-            logger.debug('ITSM: Text: %s', rst) 
+            logger.debug('ITSM: Text: %s', rst)
     elif rsc == 400:
-        logger.error('HTTP Response Status: %s', rsc)     
-        logger.error('HTTP Response Text: %s', rst)    
+        logger.error('HTTP Response Status: %s', rsc)
+        logger.error('HTTP Response Text: %s', rst)
         data = rst
         if _localDebug:
-            logger.debug('ITSM: Text: %s', rst)       
+            logger.debug('ITSM: Text: %s', rst)
     elif rsc != 201:
         logger.error('HTTP Response Status: %s', rsc)
         data = "Error"
         if _localDebug:
-            logger.debug('ITSM: Text: %s', rst)       
+            logger.debug('ITSM: Text: %s', rst)
     elif rsc == 201:
         # rshd = response.headers
-        rst  = response.text
+        rst = response.text
         data = rst
         if _localDebug:
-            logger.debug('ITSM: Text: %s', rst) 
+            logger.debug('ITSM: Text: %s', rst)
     else:
         logger.error('Authentication Failure Response Code: %s', response)
     return data
 
-def createIncident(token,data):
+
+def createIncident(token, data):
     '''
     Create ITSM Incident
 
@@ -374,24 +403,27 @@ def createIncident(token,data):
     :rtype: dict
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''   
+    '''
 
     authToken = "AR-JWT " + token
     headers = {
         'content-type': 'application/json',
-        'cache-control': "no-cache" ,
+        'cache-control': "no-cache",
         'Authorization': authToken
-    }    
-   
-    entryFields  = "fields=values(Incident Number)"
-    entryRespone = apiPost(form=itsm_form_inc,headers=headers,body=data,fields=entryFields).replace(" ","")
-    entryJson    = json.loads(entryRespone)
-    entryID      = w3rkstatt.getJsonValue(path="$.*.IncidentNumber",data=entryJson)
+    }
+
+    entryFields = "fields=values(Incident Number)"
+    entryRespone = apiPost(form=itsm_form_inc, headers=headers,
+                           body=data, fields=entryFields).replace(" ", "")
+    entryJson = json.loads(entryRespone)
+    entryID = w3rkstatt.getJsonValue(path="$.*.IncidentNumber", data=entryJson)
 
     return entryID
 
 # http://<server_name>:<port>/api/arsys/v1/entry/HPD:IncidentInterface_Create/Incident Number
-def getIncident(token,incident):
+
+
+def getIncident(token, incident):
     '''
     Get ITSM Incident details
 
@@ -401,23 +433,24 @@ def getIncident(token,incident):
     :rtype: dict
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''     
+    '''
 
     entryJson = {}
     authToken = "AR-JWT " + token
     headers = {
         'content-type': 'application/json',
-        'cache-control': "no-cache" ,
+        'cache-control': "no-cache",
         'Authorization': authToken
-    }    
-    
-    entryID      = incident
-    entryRespone = apiGet(form=itsm_search_inc,headers=headers,entry=entryID)
-    logger.debug('ITSM: Entry: %s', entryRespone) 
+    }
+
+    entryID = incident
+    entryRespone = apiGet(form=itsm_search_inc, headers=headers, entry=entryID)
+    logger.debug('ITSM: Entry: %s', entryRespone)
 
     return entryRespone
 
-def getIncidentStatus(token,incident):
+
+def getIncidentStatus(token, incident):
     '''
     Get ITSM Incident status
 
@@ -427,14 +460,15 @@ def getIncidentStatus(token,incident):
     :rtype: dict
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''     
+    '''
 
-    incInfo = json.loads(getIncident(token=token,incident=incident))
-    status  = w3rkstatt.getJsonValue(path="$.values.Status",data=incInfo)
+    incInfo = json.loads(getIncident(token=token, incident=incident))
+    status = w3rkstatt.getJsonValue(path="$.values.Status", data=incInfo)
 
     return status
 
-def createChange(token,data):
+
+def createChange(token, data):
     '''
     Create ITSM Change
 
@@ -444,26 +478,29 @@ def createChange(token,data):
     :rtype: dict
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''   
-       
+    '''
+
     authToken = "AR-JWT " + token
     headers = {
         'content-type': 'application/json',
-        'cache-control': "no-cache" ,
+        'cache-control': "no-cache",
         'Authorization': authToken
-    }    
-    entryFields  = "fields=values(Infrastructure Change Id)"
-    entryRespone = apiPost(form=itsm_form_crq,headers=headers,body=data,fields=entryFields)
+    }
+    entryFields = "fields=values(Infrastructure Change Id)"
+    entryRespone = apiPost(
+        form=itsm_form_crq, headers=headers, body=data, fields=entryFields)
 
-    entryRespone = entryRespone.replace(" ","")
+    entryRespone = entryRespone.replace(" ", "")
     if entryRespone == "Error":
         entryID = "0"
-    else: 
-        entryJson    = json.loads(entryRespone)
-        entryID      = w3rkstatt.getJsonValue(path="$.*.InfrastructureChangeId",data=entryJson)
+    else:
+        entryJson = json.loads(entryRespone)
+        entryID = w3rkstatt.getJsonValue(
+            path="$.*.InfrastructureChangeId", data=entryJson)
     return entryID
 
-def createChangeWorklog(token,data):
+
+def createChangeWorklog(token, data):
     '''
     Create ITSM Change Worklog entry
 
@@ -473,21 +510,24 @@ def createChangeWorklog(token,data):
     :rtype: dict
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''   
+    '''
 
     authToken = "AR-JWT " + token
     headers = {
         'content-type': 'application/json',
-        'cache-control': "no-cache" ,
+        'cache-control': "no-cache",
         'Authorization': authToken
-    }    
-    entryFields  = "fields=values(Infrastructure Change Id)"
-    entryRespone = apiPost(form=itsm_form_crq,headers=headers,body=data,fields=entryFields).replace(" ","")
-    entryJson    = json.loads(entryRespone)
-    entryID      = w3rkstatt.getJsonValue(path="$.*.InfrastructureChangeId",data=entryJson)
+    }
+    entryFields = "fields=values(Infrastructure Change Id)"
+    entryRespone = apiPost(form=itsm_form_crq, headers=headers,
+                           body=data, fields=entryFields).replace(" ", "")
+    entryJson = json.loads(entryRespone)
+    entryID = w3rkstatt.getJsonValue(
+        path="$.*.InfrastructureChangeId", data=entryJson)
     return entryID
 
-def createIncidentWorklog(token,data):
+
+def createIncidentWorklog(token, data):
     '''
     Create ITSM Incident Worklog entry
 
@@ -497,19 +537,20 @@ def createIncidentWorklog(token,data):
     :rtype: dict
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''   
+    '''
 
     authToken = "AR-JWT " + token
     headers = {
         'content-type': 'application/json',
-        'cache-control': "no-cache" ,
+        'cache-control': "no-cache",
         'Authorization': authToken
-    }    
-    entryRespone = apiPost(form=itsm_form_wlog,headers=headers,body=data)
-    
+    }
+    entryRespone = apiPost(form=itsm_form_wlog, headers=headers, body=data)
+
     return entryRespone
 
-def getChange(token,change):
+
+def getChange(token, change):
     '''
     Get ITSM Change details
 
@@ -519,22 +560,23 @@ def getChange(token,change):
     :rtype: dict
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''     
+    '''
 
     authToken = "AR-JWT " + token
     headers = {
         'content-type': 'application/json',
-        'cache-control': "no-cache" ,
+        'cache-control': "no-cache",
         'Authorization': authToken
-    }    
-    # ?q=('Request ID'="entryID") 
+    }
+    # ?q=('Request ID'="entryID")
 
-    itsm_form    = itsm_form_crq.split("_")[0]
-    entryID      = '/?q=(' + "'Infrastructure Change ID'" + '="' + change + '")' 
-    entryRespone = apiGet(form=itsm_form,headers=headers,entry=entryID)
-    logger.debug('ITSM: Entry: %s', entryRespone) 
+    itsm_form = itsm_form_crq.split("_")[0]
+    entryID = '/?q=(' + "'Infrastructure Change ID'" + '="' + change + '")'
+    entryRespone = apiGet(form=itsm_form, headers=headers, entry=entryID)
+    logger.debug('ITSM: Entry: %s', entryRespone)
 
     return entryRespone
+
 
 def extractChangeState(change):
     '''
@@ -545,14 +587,15 @@ def extractChangeState(change):
     :rtype: str
     :raises ValueError: N/A
     :raises TypeError: N/A    
-    '''     
+    '''
 
     status = ""
-    jData   = json.loads(change)
-    crqInfo = w3rkstatt.getJsonValue(path="$.entries..values",data=jData)
+    jData = json.loads(change)
+    crqInfo = w3rkstatt.getJsonValue(path="$.entries..values", data=jData)
 
     if len(crqInfo) > 1:
-        stateId = int(w3rkstatt.getJsonValue(path="$.ChangeRequestStatusString",data=crqInfo))
+        stateId = int(w3rkstatt.getJsonValue(
+            path="$.ChangeRequestStatusString", data=crqInfo))
     else:
         stateId = 99
 
@@ -590,20 +633,19 @@ def extractChangeState(change):
 
 
 if __name__ == "__main__":
-  logging.basicConfig(filename=logFile, filemode='w', level=logging.DEBUG , format='%(asctime)s - %(levelname)s # %(message)s', datefmt='%d-%b-%y %H:%M:%S')
-  logger.info('Helix: ITSM Management Start')
-  logger.info('Version: %s ', _modVer)
-  logger.info('System Platform: "%s" ', w3rkstatt.platform.system())
-  logger.info('Log Level: "%s"', loglevel)
-  logger.info('Host Name: "%s"', hostName)
-  logger.info('Host IP: "%s"', hostIP)
-  logger.info('ITSM Url: "%s"', itsm_url)
-  logger.info('User: "%s"', itsm_user)
-  logger.info('Secure Pwd: "%s"', itsm_pwd)
-  logger.info('Epoch: %s', epoch)
+    logging.basicConfig(filename=logFile, filemode='w', level=logging.DEBUG,
+                        format='%(asctime)s - %(levelname)s # %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+    logger.info('Helix: ITSM Management Start')
+    logger.info('Version: %s ', _modVer)
+    logger.info('System Platform: "%s" ', w3rkstatt.platform.system())
+    logger.info('Log Level: "%s"', loglevel)
+    logger.info('Host Name: "%s"', hostName)
+    logger.info('Host IP: "%s"', hostIP)
+    logger.info('ITSM Url: "%s"', itsm_url)
+    logger.info('User: "%s"', itsm_user)
+    logger.info('Secure Pwd: "%s"', itsm_pwd)
+    logger.info('Epoch: %s', epoch)
 
-
-
-  logger.info('Helix: ITSM Management End')
-  logging.shutdown()
-  print (f"Version: {_modVer}")
+    logger.info('Helix: ITSM Management End')
+    logging.shutdown()
+    print(f"Version: {_modVer}")

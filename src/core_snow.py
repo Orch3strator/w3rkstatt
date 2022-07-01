@@ -48,9 +48,15 @@ from jsonpath_ng import jsonpath
 from jsonpath_ng.ext import parse
 import jsonpath_rw_ext as jp
 
-# Get configuration from bmcs_core.json
-jCfgFile = os.path.join(w3rkstatt.getCurrentFolder(), "bmcs_core.json")
-jCfgData = w3rkstatt.getFileJson(jCfgFile)
+# Get configuration from json
+jCfgData = w3rkstatt.getProjectConfig()
+cfgFolder = w3rkstatt.getJsonValue(
+    path="$.DEFAULT.config_folder", data=jCfgData)
+logFolder = w3rkstatt.getJsonValue(path="$.DEFAULT.log_folder", data=jCfgData)
+tmpFolder = w3rkstatt.getJsonValue(
+    path="$.DEFAULT.template_folder", data=jCfgData)
+cryptoFile = w3rkstatt.getJsonValue(
+    path="$.DEFAULT.crypto_file", data=jCfgData)
 snow_host = w3rkstatt.getJsonValue(path="$.SNOW.host", data=jCfgData)
 snow_port = w3rkstatt.getJsonValue(path="$.SNOW.port", data=jCfgData)
 snow_ssl = w3rkstatt.getJsonValue(path="$.SNOW.ssl", data=jCfgData)
@@ -80,17 +86,16 @@ snow_base_url = snow_protocol + snow_host + ":" + snow_port + "/api"
 
 
 # Assign module defaults
-_modVer = "1.0"
+_modVer = "20.22.07.00"
 _timeFormat = '%Y-%m-%dT%H:%M:%S'
-_localDebug = True
-_localDbgAdv = True
+_localDebug = False
+_localDbgAdv = False
 logger = logging.getLogger(__name__)
-logFile = w3rkstatt.logFile
+logFile = w3rkstatt.getJsonValue(path="$.DEFAULT.log_file", data=jCfgData)
 loglevel = w3rkstatt.getJsonValue(path="$.DEFAULT.loglevel", data=jCfgData)
 epoch = time.time()
 hostName = w3rkstatt.getHostName()
 hostIP = w3rkstatt.getHostIP(hostName)
-
 # Ignore HTTPS Insecure Request Warnings
 if snow_ssl_ver == False:
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

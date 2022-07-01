@@ -32,7 +32,6 @@ Date (YMD)    Name                  What
 
 import logging
 import w3rkstatt
-import bmcs_ctm_wcm as wcm
 import os
 import logging
 import time
@@ -44,23 +43,33 @@ import core_tso as tso
 
 # pip install flask, flask_restful, flask-restplus, flask-marshmallow, flask-restplus-marshmallow
 
-# Define global variables from w3rkstatt.ini file
-jCfgFile = w3rkstatt.jCfgFile
-jCfgData = w3rkstatt.getFileJson(jCfgFile)
-workflow = w3rkstatt.getJsonValue(path="$.TSO.ctm.wcm", data=jCfgData)
+# Get configuration from bmcs_core.json
+jCfgData = w3rkstatt.getProjectConfig()
+cfgFolder = w3rkstatt.getJsonValue(
+    path="$.DEFAULT.config_folder", data=jCfgData)
+logFolder = w3rkstatt.getJsonValue(path="$.DEFAULT.log_folder", data=jCfgData)
+tmpFolder = w3rkstatt.getJsonValue(
+    path="$.DEFAULT.template_folder", data=jCfgData)
+cryptoFile = w3rkstatt.getJsonValue(
+    path="$.DEFAULT.crypto_file", data=jCfgData)
+workflow = w3rkstatt.getJsonValue(
+    path="$.TSO.ctm.wcm", data=jCfgData)
 
 # ITSM template IDs
 itsm_tmpl_crq = w3rkstatt.getJsonValue(
     path="$.ITSM.change.template_id", data=jCfgData)
 
 # Assign module defaults
-_localDebug = True
-_modVer = "1.0"
+_modVer = "20.22.07.00"
 _timeFormat = '%Y-%m-%dT%H:%M:%S'
+_localDebug = False
+_localDbgAdv = False
 logger = logging.getLogger(__name__)
-logFile = w3rkstatt.logFile
+logFile = w3rkstatt.getJsonValue(path="$.DEFAULT.log_file", data=jCfgData)
 loglevel = w3rkstatt.getJsonValue(path="$.DEFAULT.loglevel", data=jCfgData)
 epoch = time.time()
+hostName = w3rkstatt.getHostName()
+hostIP = w3rkstatt.getHostIP(hostName)
 
 
 def createTsoCrq(data):

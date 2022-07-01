@@ -29,12 +29,11 @@ Date (YMD)    Name                  What
 20220701      Volker Scheithauer    Migrate to W3rkstatt project
 """
 
-import w3rkstatt
+import w3rkstatt as w3rkstatt
 import os
 import json
 import logging
 import time
-import datetime
 import core_snow as snow
 
 import json
@@ -43,8 +42,14 @@ from jsonpath_ng.ext import parse
 import jsonpath_rw_ext as jp
 
 # Get configuration from bmcs_core.json
-jCfgFile = os.path.join(w3rkstatt.getCurrentFolder(), "bmcs_core.json")
-jCfgData = w3rkstatt.getFileJson(jCfgFile)
+jCfgData = w3rkstatt.getProjectConfig()
+cfgFolder = w3rkstatt.getJsonValue(
+    path="$.DEFAULT.config_folder", data=jCfgData)
+logFolder = w3rkstatt.getJsonValue(path="$.DEFAULT.log_folder", data=jCfgData)
+tmpFolder = w3rkstatt.getJsonValue(
+    path="$.DEFAULT.template_folder", data=jCfgData)
+cryptoFile = w3rkstatt.getJsonValue(
+    path="$.DEFAULT.crypto_file", data=jCfgData)
 
 # SNOW template IDs
 snow_tmpl_req = w3rkstatt.getJsonValue(
@@ -56,12 +61,12 @@ snow_tmpl_req = w3rkstatt.getJsonValue(
 
 
 # Assign module defaults
-_modVer = "1.0"
+_modVer = "20.22.07.00"
 _timeFormat = '%Y-%m-%dT%H:%M:%S'
-_localDebug = True
-_localDbgAdv = True
+_localDebug = False
+_localDbgAdv = False
 logger = logging.getLogger(__name__)
-logFile = w3rkstatt.logFile
+logFile = w3rkstatt.getJsonValue(path="$.DEFAULT.log_file", data=jCfgData)
 loglevel = w3rkstatt.getJsonValue(path="$.DEFAULT.loglevel", data=jCfgData)
 epoch = time.time()
 hostName = w3rkstatt.getHostName()

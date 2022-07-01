@@ -35,13 +35,10 @@ Date (YMD)    Name                  What
 20220701      Volker Scheithauer    Migrate to W3rkstatt project
 """
 
-import logging
-import w3rkstatt
-import bridge_wcm as wcm
 import os
+import w3rkstatt as w3rkstatt
 import logging
 import time
-import datetime
 import platform
 
 import bridge_helix as helix
@@ -56,9 +53,17 @@ from flasgger.utils import swag_from
 
 # pip install werkzeug flask flask_restful flask-restplus flask-marshmallow flask-restplus-marshmallow flask_restx flasgger
 
+# Get configuration from bmcs_core.json
+jCfgData = w3rkstatt.getProjectConfig()
+cfgFolder = w3rkstatt.getJsonValue(
+    path="$.DEFAULT.config_folder", data=jCfgData)
+logFolder = w3rkstatt.getJsonValue(path="$.DEFAULT.log_folder", data=jCfgData)
+tmpFolder = w3rkstatt.getJsonValue(
+    path="$.DEFAULT.template_folder", data=jCfgData)
+cryptoFile = w3rkstatt.getJsonValue(
+    path="$.DEFAULT.crypto_file", data=jCfgData)
+
 # Define global variables from w3rkstatt.ini file
-jCfgFile = w3rkstatt.jCfgFile
-jCfgData = w3rkstatt.getFileJson(jCfgFile)
 ctm_bridge_host = w3rkstatt.getJsonValue(
     path="$.CTM_BRIDGE.host", data=jCfgData)
 ctm_bridge_port = w3rkstatt.getJsonValue(
@@ -79,13 +84,16 @@ itsm_tmpl_crq = w3rkstatt.getJsonValue(
 
 
 # Assign module defaults
-_localDebug = True
-_modVer = "1.1"
+_modVer = "20.22.07.00"
 _timeFormat = '%Y-%m-%dT%H:%M:%S'
+_localDebug = False
+_localDbgAdv = False
 logger = logging.getLogger(__name__)
-logFile = w3rkstatt.logFile
+logFile = w3rkstatt.getJsonValue(path="$.DEFAULT.log_file", data=jCfgData)
 loglevel = w3rkstatt.getJsonValue(path="$.DEFAULT.loglevel", data=jCfgData)
 epoch = time.time()
+hostName = w3rkstatt.getHostName()
+hostIP = w3rkstatt.getHostIP(hostName)
 WSGIRequestHandler.protocol_version = "HTTP/1.1"
 
 # OpenAPI Info
@@ -102,7 +110,8 @@ STATE_APPROVED = "Approved"
 
 
 # ctm_bridge_api
-oApiTempFile = w3rkstatt.getFilePathLocal(ctm_bridge_api)
+oApiTempFilePath = os.path.join("swagger", ctm_bridge_api)
+oApiTempFile = w3rkstatt.getFilePathLocal(oApiTempFilePath)
 oApiTempJson = w3rkstatt.getFileJson(oApiTempFile)
 
 

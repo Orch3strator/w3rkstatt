@@ -201,7 +201,8 @@
             "server": "",
             "demo": false
         },
-        "datacenter": [{
+        "datacenter": [
+            {
                 "name": "abc",
                 "host": "abc.local"
             },
@@ -219,7 +220,7 @@
         "user": "",
         "pwd": "",
         "html": "index.html",
-        "api": "",
+        "api": "bridge.ctm.api.json",
         "tso_process": ""
     },
     "SNOW": {

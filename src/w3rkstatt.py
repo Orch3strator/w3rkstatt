@@ -1396,7 +1396,6 @@ sPlatform = platform.system()
 sUuid = str(uuid.uuid4())
 logger = logging.getLogger(__name__)
 
-
 if __name__ == "__main__":
     # Setup log file
     logFile = os.path.join(pFolder, "w3rkstatt.log")
