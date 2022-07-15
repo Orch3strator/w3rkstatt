@@ -1,17 +1,20 @@
-15-Jul-22 18:13:01 - INFO # Werkstatt Python Core Script "Start"
-15-Jul-22 18:13:01 - INFO # Version: 2.0 
-15-Jul-22 18:13:01 - INFO # System Platform: "Linux" 
-15-Jul-22 18:13:01 - INFO # System Name: "core-docs.shytwr.net" 
-15-Jul-22 18:13:01 - INFO # Project Folder: "/lumberjack/projects/w3rkstatt/src" 
-15-Jul-22 18:13:02 - ERROR # Script: File Exists: /home/oversight/.w3rkstatt/templates/bmcs.html
-15-Jul-22 18:13:02 - ERROR # Script: File Exists: /home/oversight/.w3rkstatt/templates/email.html
-15-Jul-22 18:13:02 - ERROR # Script: File Exists: /home/oversight/.w3rkstatt/templates/index.html
-15-Jul-22 18:13:02 - ERROR # Script: File Exists: /home/oversight/.w3rkstatt/templates/integrations.json
-15-Jul-22 18:13:02 - INFO # System Config JSON File: "/lumberjack/projects/w3rkstatt/src/templates/integrations.json" 
-15-Jul-22 18:13:02 - INFO # Log Folder: "/home/oversight/.w3rkstatt/logs" 
-15-Jul-22 18:13:02 - INFO # Data Folder: "/home/oversight/.w3rkstatt/data" 
-15-Jul-22 18:13:02 - INFO # Template Folder: "/home/oversight/.w3rkstatt/templates" 
-15-Jul-22 18:13:02 - INFO # Config File: "/home/oversight/.w3rkstatt/configs/core-docs.shytwr.net.json" 
-15-Jul-22 18:13:02 - INFO # Crypto Key File: "/home/oversight/.w3rkstatt/configs/core-docs.shytwr.net.bin" 
-15-Jul-22 18:13:03 - INFO # Crypto Update config file: "/home/oversight/.w3rkstatt/configs/core-docs.shytwr.net.json"
-15-Jul-22 18:13:03 - INFO # Werkstatt Python Core Script "End"
+15-Jul-22 15:38:24 - INFO # Werkstatt Python Core Script "Start"
+15-Jul-22 15:38:24 - INFO # Version: 2.0 
+15-Jul-22 15:38:24 - INFO # System Platform: "Windows" 
+15-Jul-22 15:38:24 - INFO # System Name: "core-dev" 
+15-Jul-22 15:38:24 - INFO # Project Folder: "P:\projects\orch3strator\w3rkstatt\src" 
+15-Jul-22 15:38:24 - ERROR # Script: File Exists: P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\configs\helix_itsm_mappings.json
+15-Jul-22 15:38:24 - ERROR # Script: File Exists: P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\configs\setup.settings.ini
+15-Jul-22 15:38:24 - ERROR # Script: File Exists: P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\templates\bmcs.html
+15-Jul-22 15:38:24 - ERROR # Script: File Exists: P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\templates\email.html
+15-Jul-22 15:38:24 - ERROR # Script: File Exists: P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\templates\index.html
+15-Jul-22 15:38:24 - ERROR # Script: File Exists: P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\templates\integrations.json
+15-Jul-22 15:38:24 - INFO # System Config JSON File: "P:\projects\orch3strator\w3rkstatt\src\templates\integrations.json" 
+15-Jul-22 15:38:24 - INFO # Log Folder: "P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\logs" 
+15-Jul-22 15:38:24 - INFO # Data Folder: "P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\data" 
+15-Jul-22 15:38:24 - INFO # Template Folder: "P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\templates" 
+15-Jul-22 15:38:24 - INFO # Config File: "P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\configs\core-dev.json" 
+15-Jul-22 15:38:24 - INFO # Crypto Key File: "P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\configs\core-dev.bin" 
+15-Jul-22 15:38:24 - INFO # Crypto Encrypt Password for: "BHOM"
+15-Jul-22 15:38:26 - INFO # Crypto Update config file: "P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\configs\core-dev.json"
+15-Jul-22 15:38:26 - INFO # Werkstatt Python Core Script "End"

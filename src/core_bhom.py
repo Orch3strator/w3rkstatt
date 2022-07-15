@@ -245,17 +245,18 @@ def searchEvent(token, bhomEventIdentifier, bhomEventValue):
 
 def getEventID(data):
     # {'responseTimeStamp': '2020-05-23T20:11:30', 'statusCode': '200', 'statusMsg': 'OK', 'responseList': [{'mc_ueid': 'mc.pncell_bmcs-ts-om.1ec98372.0', 'statusCode': '200', 'statusMsg': 'OK'}]}
-    key = "mc_ueid"
-    mc_ueid = ""
+    # {"responseTimeStamp":  1657927205578,        "statusCode": "200", "statusMsg": "OK", "resourceId"  : ["eps.1266486857.34238387707739678.669da8e5-844e-4352-b150-b08476f664e2"]}
+
+    key = "resourceId"
+    eps = ""
     values = {}
 
     if key in data:
         vJson = json.loads(data)
-        values = w3rkstatt.jsonExtractValues(vJson, key)
-        mc_ueid = values[0]
+        values = vJson[key][0]
         if _localDebug:
             logger.debug('bhom: Extract Event ID: %s', values)
-    return mc_ueid
+    return values
 
 # Main function
 

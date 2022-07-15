@@ -231,6 +231,46 @@ def tsimDefineEvent():
 
     return json_data
 
+# BMC Helix Operations Manager Integration
+
+
+def bhomDefineEvent():
+    # Create a dictionary to hold the attributes for the event.
+    # Be sure to use valid slot names as the keys.
+    event_data = {}
+    event_data['severity'] = 'WARNING'
+    event_data['CLASS'] = 'CTMX_EVENT'
+    event_data['msg'] = 'This event was created using the BHOM REST API'
+
+    event_data['source_identifier'] = hostFqdn
+    event_data['source_hostname'] = hostFqdn
+    event_data['source_address'] = hostFqdn
+
+    event_data['alias'] = 'BMC_ComputerSystem:' + hostFqdn + "'"
+    event_data['status'] = 'OPEN'
+    event_data['priority'] = 'PRIORITY_3'
+    event_data['location'] = domain
+    event_data['instancename'] = hostFqdn
+    event_data['cdmclass'] = 'BMC_ComputerSystem'
+    event_data['componentalias'] = 'BMC_ComputerSystem:' + hostFqdn + "'"
+
+    event_data['ctmAlertId'] = '000000'
+    event_data['ctmDataCenter'] = 'trybmc'
+    event_data['ctmTime'] = 'epoch=' + str(epoch)
+
+    # The TSOM create event call expects a list of events,
+    # even for just a single event.
+    event_list = []
+
+    # Add the event to the list
+    event_list.append(event_data)
+
+    # Convert event data to the JSON format required by the API.
+    json_data = json.dumps(event_list)
+    logger.debug('BHOM: event json payload: %s', json_data)
+
+    return json_data
+
 
 def computeCI(data):
 
@@ -441,7 +481,7 @@ def demoBHOM():
     authToken = w3rkstatt.getJsonValue(path="$.BHOM.api_Key", data=jCfgData)
     bhom_event_id = None
     if authToken != None:
-        bhom_data = tsimDefineEvent()
+        bhom_data = bhomDefineEvent()
         bhom_event_id = bhom.createEvent(token=authToken, event_data=bhom_data)
         logger.debug('BHOM: event id: %s', bhom_event_id)
     return bhom_event_id
