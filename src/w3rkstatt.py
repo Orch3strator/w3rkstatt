@@ -27,6 +27,7 @@ Date (YMD)    Name                  What
 --------      ------------------    ------------------------
 20210513      Volker Scheithauer    Tranfer Development from other projects
 20210513      Volker Scheithauer    Add Password Encryption
+20220715      Volker Scheithauer    Add API Key Encryption
 
 """
 
@@ -42,16 +43,18 @@ import uuid
 import re
 import time
 import datetime
-import pandas as pd
 import urllib
 import json
-from jsonpath_ng import jsonpath
-from jsonpath_ng.ext import parse
+import sys
 from os.path import expanduser
 
 from io import StringIO
 from pathlib import Path
 from urllib.parse import urlparse
+
+import pandas as pd
+from jsonpath_ng import jsonpath
+from jsonpath_ng.ext import parse
 
 
 try:
@@ -1152,13 +1155,16 @@ def encryptPwds(file, data, sKeyFileName=""):
             logger.info('Crypto Process Credentials for: %s', pItem)
         securePwd = ""
         jSecPwd = ""
+        aSecPwd = ""
 
         # unSecPwd = werkstatt.jsonExtractValues(jCfgData,pItem)[0]
         vPath = "$." + pItem + ".pwd"
         jPath = "$." + pItem + ".jks_pwd"
+        aPath = "$." + pItem + ".api_Key"
 
         unSecPwd = getJsonValue(path=vPath, data=sCfgData)
         ujSecPwd = getJsonValue(path=jPath, data=sCfgData)
+        uaSecPwd = getJsonValue(path=aPath, data=sCfgData)
 
         if len(unSecPwd) > 0:
             if "ENC[" in unSecPwd:
@@ -1178,21 +1184,40 @@ def encryptPwds(file, data, sKeyFileName=""):
 
         # Java Keystore passwords
         if len(ujSecPwd) > 0:
-            if "ENC[" in unSecPwd:
-                start = unSecPwd.find('ENC[') + 4
-                end = unSecPwd.find(']', start)
-                sPwd = unSecPwd[start:end]
+            if "ENC[" in ujSecPwd:
+                start = ujSecPwd.find('ENC[') + 4
+                end = ujSecPwd.find(']', start)
+                sPwd = ujSecPwd[start:end]
 
             else:
-                sPwd = unSecPwd
+                sPwd = ujSecPwd
                 securePwd = encryptPwd(data=sPwd, sKeyFileName=sKeyFileName)
                 logger.info('Crypto Encrypt JKS Password for: "%s"', pItem)
                 if _localDebug:
                     print(
                         f"Encrypted user JKS password for {pItem}: {securePwd}")
 
-                sCfgData[pItem]["pwd_secure"] = securePwd
-                sCfgData[pItem]["pwd"] = securePwd
+                sCfgData[pItem]["jks_secure"] = securePwd
+                sCfgData[pItem]["jks_pwd"] = securePwd
+
+        # API Keys
+        # disabled, need further testing
+        uaSecPwd = ""
+        if len(uaSecPwd) > 0:
+            if "ENC[" in uaSecPwd:
+                start = uaSecPwd.find('ENC[') + 4
+                end = uaSecPwd.find(']', start)
+                sPwd = uaSecPwd[start:end]
+
+            else:
+                sPwd = uaSecPwd
+                securePwd = encryptPwd(data=sPwd, sKeyFileName=sKeyFileName)
+                logger.info('Crypto Encrypt API Key for: "%s"', pItem)
+                if _localDebug:
+                    print(
+                        f"Encrypted user API Key for {pItem}: {securePwd}")
+
+                sCfgData[pItem]["api_Key"] = securePwd
 
         if _localDebug:
             logger.debug('Core: Security Function: "%s" ', "Encrypt")
@@ -1315,7 +1340,7 @@ def createProjecConfig(data):
 
     # Copy all configs
     sLocalFolder = getCurrentFolder()
-    sLocalCfgFolder = os.path.join(sLocalFolder, "configs")
+    sLocalCfgFolder = os.path.join(sLocalFolder, "config")
     copyFolder(srcFolker=sLocalCfgFolder, dstFolder=cfgFolder, override=False)
 
     # Copy all templates
