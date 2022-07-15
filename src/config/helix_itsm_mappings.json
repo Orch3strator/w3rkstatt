@@ -1,0 +1,311 @@
+[{
+        "status": {
+            "mapping": [{
+                    "name": "Draft",
+                    "id": "0"
+                },
+                {
+                    "name": "Request for Authorization",
+                    "id": "1"
+                },
+                {
+                    "name": "Request For Change",
+                    "id": "2"
+                },
+                {
+                    "name": "Planning In Progress",
+                    "id": "3"
+                },
+                {
+                    "name": "Scheduled For Review",
+                    "id": "4"
+                },
+                {
+                    "name": "Scheduled For Approval",
+                    "id": "5"
+                },
+                {
+                    "name": "Scheduled",
+                    "id": "6"
+                },
+                {
+                    "name": "Implementation In Progress",
+                    "id": "7"
+                },
+                {
+                    "name": "Pending",
+                    "id": "8"
+                },
+                {
+                    "name": "Rejected",
+                    "id": "9"
+                },
+                {
+                    "name": "Completed",
+                    "id": "10"
+                },
+                {
+                    "name": "Closed",
+                    "id": "11"
+                },
+                {
+                    "name": "Cancelled",
+                    "id": "12"
+                }
+            ]
+        }
+    },
+    {
+        "change-request-status": {
+            "mapping": [{
+                    "name": "Draft",
+                    "id": "0"
+                },
+                {
+                    "name": "Request For Authorization",
+                    "id": "1"
+                },
+                {
+                    "name": "Request For Change",
+                    "id": "2"
+                },
+                {
+                    "name": "Planning In Progress",
+                    "id": "3"
+                },
+                {
+                    "name": "Scheduled For Review",
+                    "id": "4"
+                },
+                {
+                    "name": "Scheduled For Approval",
+                    "id": "5"
+                },
+                {
+                    "name": "Scheduled",
+                    "id": "6"
+                },
+                {
+                    "name": "Implementation In Progress",
+                    "id": "7"
+                },
+                {
+                    "name": "Pending",
+                    "id": "8"
+                },
+                {
+                    "name": "Rejected",
+                    "id": "9"
+                },
+                {
+                    "name": "Completed",
+                    "id": "10"
+                },
+                {
+                    "name": "Closed",
+                    "id": "11"
+                },
+                {
+                    "name": "Cancelled",
+                    "id": "12"
+                }
+            ]
+        }
+    },
+    {
+        "impact": {
+            "mapping": [{
+                    "name": "1-Extensive/Widespread",
+                    "id": "1000"
+                },
+                {
+                    "name": "2-Significant/Large",
+                    "id": "2000"
+                },
+                {
+                    "name": "3-Moderate/Limited",
+                    "id": "3000"
+                },
+                {
+                    "name": "4-Minor/Localized",
+                    "id": "4000"
+                }
+            ]
+        }
+    },
+    {
+        "urgency": {
+            "mapping": [{
+                    "name": "1-Critical",
+                    "id": "1000"
+                },
+                {
+                    "name": "2-High",
+                    "id": "2000"
+                },
+                {
+                    "name": "3-Medium",
+                    "id": "3000"
+                },
+                {
+                    "name": "4-Low",
+                    "id": "4000"
+                }
+            ]
+        }
+    },
+    {
+        "priority": {
+            "mapping": [{
+                    "name": "Critical",
+                    "id": "0"
+                },
+                {
+                    "name": "High",
+                    "id": "1"
+                },
+                {
+                    "name": "Medium",
+                    "id": "2"
+                },
+                {
+                    "name": "Low",
+                    "id": "3"
+                }
+            ]
+        }
+    },
+    {
+        "status-reason": {
+            "mapping": [{
+                    "name": "No Longer Required",
+                    "id": "1000"
+                },
+                {
+                    "name": "Funding Not Available",
+                    "id": "2000"
+                },
+                {
+                    "name": "To Be Re-Scheduled",
+                    "id": "3000"
+                },
+                {
+                    "name": "Resources Not Available",
+                    "id": "4000"
+                },
+                {
+                    "name": "Successful",
+                    "id": "5000"
+                },
+                {
+                    "name": "Successful with Issues",
+                    "id": "6000"
+                },
+                {
+                    "name": "Unsuccessful",
+                    "id": "7000"
+                },
+                {
+                    "name": "Backed Out",
+                    "id": "8000"
+                },
+                {
+                    "name": "Final Review Complete",
+                    "id": "9000"
+                },
+                {
+                    "name": "Final Review Required",
+                    "id": "10000"
+                },
+                {
+                    "name": "Additional Coding Required",
+                    "id": "110000"
+                },
+                {
+                    "name": "Insufficient Task Data",
+                    "id": "12000"
+                },
+                {
+                    "name": "In Verification",
+                    "id": "13000"
+                },
+                {
+                    "name": "In Rollout",
+                    "id": "14000"
+                },
+                {
+                    "name": "Insufficient Change Data",
+                    "id": "15000"
+                },
+                {
+                    "name": "Schedule Conflicts",
+                    "id": "16000"
+                },
+                {
+                    "name": "In Development",
+                    "id": "17000"
+                },
+                {
+                    "name": "In Test",
+                    "id": "18000"
+                },
+                {
+                    "name": "In Build",
+                    "id": "19000"
+                },
+                {
+                    "name": "In Rollback",
+                    "id": "20000"
+                },
+                {
+                    "name": "In Documentation",
+                    "id": "21000"
+                },
+                {
+                    "name": "Vendor Purchase",
+                    "id": "22000"
+                },
+                {
+                    "name": "Support Group Communication",
+                    "id": "23000"
+                },
+                {
+                    "name": "Task Review",
+                    "id": "24000"
+                },
+                {
+                    "name": "Miscellaneous",
+                    "id": "25000"
+                },
+                {
+                    "name": "Future Enhancement",
+                    "id": "26000"
+                },
+                {
+                    "name": "Manager Intervention",
+                    "id": "27000"
+                },
+                {
+                    "name": "Accepted",
+                    "id": "28000"
+                },
+                {
+                    "name": "Assigned",
+                    "id": "29000"
+                },
+                {
+                    "name": "Built",
+                    "id": "30000"
+                },
+                {
+                    "name": "On Hold",
+                    "id": "31000"
+                },
+                {
+                    "name": "Automatically Closed",
+                    "id": "32000"
+                }
+            ]
+        }
+    }
+]
