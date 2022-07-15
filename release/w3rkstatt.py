@@ -1338,9 +1338,9 @@ def getProjectDefaultConfigFileName():
     '''
 
     sLocalFolder = getCurrentFolder()
-    sLocalCfgFileNAme = os.path.join(
-        sLocalFolder, "samples", "integrations.json")
-    return sLocalCfgFileNAme
+    sLocalCfgFileName = os.path.join(
+        sLocalFolder, "templates", "integrations.json")
+    return sLocalCfgFileName
 
 
 def getProjectDefaultConfig(file):
