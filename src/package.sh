@@ -118,6 +118,9 @@ RELEASE_VERSION=$(sed -e 's/^"//' -e 's/"$//' <<<"${RELEASE_TEMP_A}")
 RELEASE_TEMP_B=$(cat ${PROJECT_TOML} | grep name | awk -F "=" '{print $2}' | awk '{gsub(/^ +| +$/,"")} {print $0}')
 RELEASE_NAME=$(sed -e 's/^"//' -e 's/"$//' <<<"${RELEASE_TEMP_B}")
 
+RELEASE_TEMP_C=$(cat ${PROJECT_TOML} | grep description | awk -F "=" '{print $2}' | awk '{gsub(/^ +| +$/,"")} {print $0}')
+RELEASE_DESCRIPTION=$(sed -e 's/^"//' -e 's/"$//' <<<"${RELEASE_TEMP_C}")
+
 FILES_REQUIRED=(
     "bridge_ctm.py"
     "bridge_helix.py"
@@ -200,13 +203,26 @@ SCRIPT_ACTION="Archive Files and Folders"
 echo -e " Script Status: ${Purple}${SCRIPT_ACTION}${Color_Off}"
 
 if [ -d "${RELEASE_DIR}" ]; then
-    RELEASE_TARGET="${DIR_NAME_PROJECT}/${RELEASE_NAME}_${RELEASE_VERSION}.tar.gz"
+    RELEASE_TARGET_TAR="${DIR_NAME_PROJECT}/${RELEASE_NAME}_${RELEASE_VERSION}.tar.gz"
+    RELEASE_TARGET_ZIP="${DIR_NAME_PROJECT}/${RELEASE_NAME}_${RELEASE_VERSION}.zip"
 
     echo -e " ${Cyan}Base Dir         : ${Yellow}${DIR_NAME_PROJECT}${Color_Off}"
     echo -e " ${Cyan}Release Name     : ${Yellow}${RELEASE_NAME}${Color_Off}"
     echo -e " ${Cyan}Release Version  : ${Yellow}${RELEASE_VERSION}${Color_Off}"
+    echo -e " ${Cyan}Release Comment  : ${Yellow}${RELEASE_DESCRIPTION}${Color_Off}"
     echo -e " ${Cyan}Release Dir      : ${Yellow}${RELEASE_DIR}${Color_Off}"
-    echo -e " ${Cyan}Release Target   : ${Yellow}${RELEASE_TARGET}${Color_Off}"
-    tar czf ${RELEASE_TARGET} -C ${RELEASE_DIR} .
+    echo -e " ${Cyan}Release Tar      : ${Yellow}${RELEASE_TARGET_TAR}${Color_Off}"
+    echo -e " ${Cyan}Release Zip      : ${Yellow}${RELEASE_TARGET_ZIP}${Color_Off}"
+
+    if [ -f "${RELEASE_TARGET_TAR}" ]; then
+        sudo rm ${RELEASE_TARGET_TAR} -Rf
+    fi
+
+    if [ -f "${RELEASE_TARGET_ZIP}" ]; then
+        sudo rm ${RELEASE_TARGET_ZIP} -Rf
+    fi
+
+    tar czf ${RELEASE_TARGET_TAR} -C ${RELEASE_DIR} .
+    zip -rjq ${RELEASE_TARGET_ZIP} ${RELEASE_DIR}/*
 
 fi
