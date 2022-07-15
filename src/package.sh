@@ -222,7 +222,7 @@ if [ -d "${RELEASE_DIR}" ]; then
         sudo rm ${RELEASE_TARGET_ZIP} -Rf
     fi
 
-    tar czf ${RELEASE_TARGET_TAR} -C ${RELEASE_DIR} .
+    tar -czf ${RELEASE_TARGET_TAR} -C ${RELEASE_DIR} .
     zip -rjq ${RELEASE_TARGET_ZIP} ${RELEASE_DIR}/*
 
 fi
