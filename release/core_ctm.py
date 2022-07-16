@@ -30,12 +30,17 @@ Date (YMD)    Name                  What
 """
 
 
-import os, json, logging
+import os
+import json
+import logging
 import re
-import time, datetime
-import sys, getopt
-import requests, urllib3
-from collections import OrderedDict 
+import time
+import datetime
+import sys
+import getopt
+import requests
+import urllib3
+from collections import OrderedDict
 import urllib3
 from urllib3 import disable_warnings
 from urllib3.exceptions import NewConnectionError, MaxRetryError, InsecureRequestWarning
@@ -47,12 +52,13 @@ import controlm_py as ctm
 from controlm_py.rest import ApiException
 # from controlm_py.models.run_report_info import RunReportInfo
 
-# handle dev environment vs. production 
+# handle dev environment vs. production
 try:
     import w3rkstatt as w3rkstatt
 except:
     # fix import issues for modules
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+    sys.path.append(os.path.dirname(
+        os.path.dirname(os.path.realpath(__file__))))
     from src import w3rkstatt as w3rkstat
 
 # To Handle CTM JSON with '
@@ -60,27 +66,32 @@ except:
 
 
 # Get configuration from bmcs_core.json
-jCfgData   = w3rkstatt.getProjectConfig()
-cfgFolder  = w3rkstatt.getJsonValue(path="$.DEFAULT.config_folder",data=jCfgData)
-logFolder  = w3rkstatt.getJsonValue(path="$.DEFAULT.log_folder",data=jCfgData)
-tmpFolder  = w3rkstatt.getJsonValue(path="$.DEFAULT.template_folder",data=jCfgData)
-cryptoFile = w3rkstatt.getJsonValue(path="$.DEFAULT.crypto_file",data=jCfgData)
+jCfgData = w3rkstatt.getProjectConfig()
+cfgFolder = w3rkstatt.getJsonValue(
+    path="$.DEFAULT.config_folder", data=jCfgData)
+logFolder = w3rkstatt.getJsonValue(path="$.DEFAULT.log_folder", data=jCfgData)
+tmpFolder = w3rkstatt.getJsonValue(
+    path="$.DEFAULT.template_folder", data=jCfgData)
+cryptoFile = w3rkstatt.getJsonValue(
+    path="$.DEFAULT.crypto_file", data=jCfgData)
 
-ctm_host    = w3rkstatt.getJsonValue(path="$.CTM.host",data=jCfgData)
-ctm_port    = w3rkstatt.getJsonValue(path="$.CTM.port",data=jCfgData)
-ctm_aapi    = w3rkstatt.getJsonValue(path="$.CTM.aapi",data=jCfgData)
-ctm_user    = w3rkstatt.getJsonValue(path="$.CTM.user",data=jCfgData)
-ctm_pwd     = w3rkstatt.getJsonValue(path="$.CTM.pwd",data=jCfgData)
-ctm_ssl     = w3rkstatt.getJsonValue(path="$.CTM.ssl",data=jCfgData)
-ctm_ssl_ver = w3rkstatt.getJsonValue(path="$.CTM.ssl_verification",data=jCfgData)
-ctm_url     = 'https://' + ctm_host + ':' + ctm_port + ctm_aapi + '/'
-ctm_rpt_jsm = w3rkstatt.getJsonValue(path="$.CTM.service_model_rpt_job",data=jCfgData)
+ctm_host = w3rkstatt.getJsonValue(path="$.CTM.host", data=jCfgData)
+ctm_port = w3rkstatt.getJsonValue(path="$.CTM.port", data=jCfgData)
+ctm_aapi = w3rkstatt.getJsonValue(path="$.CTM.aapi", data=jCfgData)
+ctm_user = w3rkstatt.getJsonValue(path="$.CTM.user", data=jCfgData)
+ctm_pwd = w3rkstatt.getJsonValue(path="$.CTM.pwd", data=jCfgData)
+ctm_ssl = w3rkstatt.getJsonValue(path="$.CTM.ssl", data=jCfgData)
+ctm_ssl_ver = w3rkstatt.getJsonValue(
+    path="$.CTM.ssl_verification", data=jCfgData)
+ctm_url = 'https://' + ctm_host + ':' + ctm_port + ctm_aapi + '/'
+ctm_rpt_jsm = w3rkstatt.getJsonValue(
+    path="$.CTM.service_model_rpt_job", data=jCfgData)
 # CTM Report Name to get job definitions for service model
 
 
 # Compute CTM Server Name
 ctm_server = w3rkstatt.getHostFromFQDN(ctm_host)
-ctm_agent  = ctm_server
+ctm_agent = ctm_server
 
 # Assign module defaults
 _modVer = "20.21.05.00"
@@ -89,16 +100,17 @@ _localDebug = False
 _localDebugAdv = False
 _localQA = False
 
-logger   = logging.getLogger(__name__) 
-logFile  = w3rkstatt.getJsonValue(path="$.DEFAULT.log_file",data=jCfgData)
-loglevel = w3rkstatt.getJsonValue(path="$.DEFAULT.loglevel",data=jCfgData)
-epoch    = time.time()
+logger = logging.getLogger(__name__)
+logFile = w3rkstatt.getJsonValue(path="$.DEFAULT.log_file", data=jCfgData)
+loglevel = w3rkstatt.getJsonValue(path="$.DEFAULT.loglevel", data=jCfgData)
+epoch = time.time()
 hostName = w3rkstatt.getHostName()
-hostIP   = w3rkstatt.getHostIP(hostName)
+hostIP = w3rkstatt.getHostIP(hostName)
 
 # Ignore HTTPS Insecure Request Warnings
 if ctm_ssl_ver == 'true':
-  urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 
 class CtmConnection(object):
     """
@@ -139,16 +151,20 @@ class CtmConnection(object):
         configuration.host = configuration.host + host + ':' + port + endpoint
 
         self.api_client = ctm.api_client.ApiClient(configuration=configuration)
-        self.session_api = ctm.api.session_api.SessionApi(api_client=self.api_client)
-        credentials = ctm.models.LoginCredentials(username=user, password=password)
+        self.session_api = ctm.api.session_api.SessionApi(
+            api_client=self.api_client)
+        credentials = ctm.models.LoginCredentials(
+            username=user, password=password)
 
         if additional_login_header is not None:
             for header in additional_login_header.keys():
-                self.api_client.set_default_header(header, additional_login_header[header])
+                self.api_client.set_default_header(
+                    header, additional_login_header[header])
 
         try:
             api_token = self.session_api.do_login(body=credentials)
-            self.api_client.default_headers.setdefault('Authorization', 'Bearer ' + api_token.token)
+            self.api_client.default_headers.setdefault(
+                'Authorization', 'Bearer ' + api_token.token)
             self.logged_in = True
             if _localDebug:
                 logger.debug('CTM: API Login: %s', True)
@@ -157,15 +173,17 @@ class CtmConnection(object):
             logger.error('CTM: connection error occurred: %s', exp)
             exit(42)
 
-
     def __del__(self):
         if self.session_api is not None:
             try:
                 self.logout()
             except ImportError:
-                logger.error('CTM: Network access for Logout unavailable due to python shutdown.')
-                logger.error('CTM: Program termination occurred before deleting ApiClient object, which performs logout')
-                logger.error('CTM: SECURITY RISK: Token will still be available to continue operations.')
+                logger.error(
+                    'CTM: Network access for Logout unavailable due to python shutdown.')
+                logger.error(
+                    'CTM: Program termination occurred before deleting ApiClient object, which performs logout')
+                logger.error(
+                    'CTM: SECURITY RISK: Token will still be available to continue operations.')
                 exit(50)
 
     def logout(self):
@@ -176,13 +194,14 @@ class CtmConnection(object):
                 if _localDebug:
                     logger.debug('CTM: API Logout: %s', True)
             except ctm.rest.ApiException as exp:
-                logger.error('CTM: Exception when calling SessionAp => do_logout: %s', exp)
+                logger.error(
+                    'CTM: Exception when calling SessionAp => do_logout: %s', exp)
                 raise("Exception when calling SessionApi => do_logout: %s\n" % exp)
-                
+
 
 # Main function
 
-def getCtmAgents(ctmApiClient,ctmServer):
+def getCtmAgents(ctmApiClient, ctmServer):
     """
     Simple function that uses the get_agents service to get all the agents of the specified Control-M Server.
 
@@ -198,17 +217,20 @@ def getCtmAgents(ctmApiClient,ctmServer):
     # Call CTM AAPI
     try:
         logger.debug('CTM: API Function: %s', "get_agents")
-        results = ctmCfgAapi.get_agents(server=ctmServer, _return_http_data_only=True )      
-        results = str(results).replace("\n",'')
-        results = str(results).replace("'",'"')
-        results = str(results).replace("None",'"None"')
-        results = str(results).replace('"                                 "','')
+        results = ctmCfgAapi.get_agents(
+            server=ctmServer, _return_http_data_only=True)
+        results = str(results).replace("\n", '')
+        results = str(results).replace("'", '"')
+        results = str(results).replace("None", '"None"')
+        results = str(results).replace(
+            '"                                 "', '')
 
         # logger.debug('CTM: API Result:\n%s', results)
         results = json.loads(results)
     except ctm.rest.ApiException as exp:
         logger.error('CTM: API Error: %s', exp)
     return results
+
 
 def getCtmServers(ctmApiClient):
     """get all the Servers name and hostname in the system  # noqa: E501
@@ -231,9 +253,9 @@ def getCtmServers(ctmApiClient):
     # Call CTM AAPI
     try:
         logger.debug('CTM: API Function: %s', "get_servers")
-        results = ctmCfgAapi.get_servers(_return_http_data_only=True )
-        results = str(results).replace("'",'"')
-        results = str(results).replace("None",'"None"')
+        results = ctmCfgAapi.get_servers(_return_http_data_only=True)
+        results = str(results).replace("'", '"')
+        results = str(results).replace("None", '"None"')
 
         logger.debug('CTM: API Result:\n%s', results)
         results = json.loads(results)
@@ -241,7 +263,8 @@ def getCtmServers(ctmApiClient):
         logger.error('CTM: API Error: %s', exp)
     return results
 
-def getCtmServerParams(ctmApiClient,ctmServer):
+
+def getCtmServerParams(ctmApiClient, ctmServer):
     """get Server parameters  # noqa: E501
 
     Get all the parameters of the specified Server.  # noqa: E501
@@ -263,9 +286,10 @@ def getCtmServerParams(ctmApiClient,ctmServer):
     # Call CTM AAPI
     try:
         logger.debug('CTM: API Function: %s', "get_server_parameters")
-        results = ctmCfgAapi.get_server_parameters(server=ctmServer, _return_http_data_only=True )
-        results = str(results).replace("'",'"')
-        results = str(results).replace("None",'"None"')
+        results = ctmCfgAapi.get_server_parameters(
+            server=ctmServer, _return_http_data_only=True)
+        results = str(results).replace("'", '"')
+        results = str(results).replace("None", '"None"')
 
         logger.debug('CTM: API Result:\n%s', results)
         results = json.loads(results)
@@ -273,7 +297,8 @@ def getCtmServerParams(ctmApiClient,ctmServer):
         logger.error('CTM: API Error: %s', exp)
     return results
 
-def getCtmAgentConnectionProfile(ctmApiClient,ctmServer,ctmAgent,ctmAppType):
+
+def getCtmAgentConnectionProfile(ctmApiClient, ctmServer, ctmAgent, ctmAppType):
     """Get local deployed connection profiles  # noqa: E501
 
     Get currently local deployed connection profiles according to the search query as JSON.  # noqa: E501
@@ -298,7 +323,8 @@ def getCtmAgentConnectionProfile(ctmApiClient,ctmServer,ctmAgent,ctmAppType):
     # Call CTM AAPI
     try:
         # logger.debug('CTM: API Function: %s', "get_deployed_connection_profiles")
-        results = ctmDeployAapi.get_deployed_connection_profiles(server=ctmServer,agent=ctmAgent,type=ctmAppType, _return_http_data_only=True )
+        results = ctmDeployAapi.get_deployed_connection_profiles(
+            server=ctmServer, agent=ctmAgent, type=ctmAppType, _return_http_data_only=True)
         results = w3rkstatt.dTranslate4Json(data=results)
 
         # logger.debug('CTM: API Result:\n%s', results)
@@ -308,7 +334,8 @@ def getCtmAgentConnectionProfile(ctmApiClient,ctmServer,ctmAgent,ctmAppType):
         pass
     return results
 
-def getCtmCentralConnectionProfile(ctmApiClient,ctmAppType):
+
+def getCtmCentralConnectionProfile(ctmApiClient, ctmAppType):
     """Get centralized deployed connection profile  # noqa: E501
 
     Get currently centralized deployed connection profiles according to the search query as JSON.  # noqa: E501
@@ -331,7 +358,8 @@ def getCtmCentralConnectionProfile(ctmApiClient,ctmAppType):
     # Call CTM AAPI
     try:
         # logger.debug('CTM: API Function: %s', "get_deployed_connection_profiles")
-        results = ctmDeployAapi.get_shared_connection_profiles(type=ctmAppType, _return_http_data_only=True )
+        results = ctmDeployAapi.get_shared_connection_profiles(
+            type=ctmAppType, _return_http_data_only=True)
         results = w3rkstatt.dTranslate4Json(data=results)
 
         # logger.debug('CTM: API Result:\n%s', results)
@@ -340,6 +368,7 @@ def getCtmCentralConnectionProfile(ctmApiClient,ctmAppType):
         logger.error('CTM: API Error: %s', exp)
         pass
     return results
+
 
 def getDeployedAiJobtypes(ctmApiClient, ctmAiJobDeployStatus="ready to deploy"):
     """Get Application Integrator job types  # noqa: E501
@@ -366,10 +395,11 @@ def getDeployedAiJobtypes(ctmApiClient, ctmAiJobDeployStatus="ready to deploy"):
     # Call CTM AAPI
     try:
         # logger.debug('CTM: API Function: %s', "get_deployed_connection_profiles")
-        results = ctmDeployAapi.get_deployed_ai_jobtypes(_return_http_data_only=True )
+        results = ctmDeployAapi.get_deployed_ai_jobtypes(
+            _return_http_data_only=True)
         items = results.jobtypes
         jJobTypes = ""
-        jJobType  = ""
+        jJobType = ""
         for item in items:
             sTemp = str(item)
             xTemp = str(sTemp).split("\n")
@@ -386,14 +416,14 @@ def getDeployedAiJobtypes(ctmApiClient, ctmAiJobDeployStatus="ready to deploy"):
                     elif "status" in key:
                         job_status = val
                     elif "description" in key:
-                        job_description = val      
+                        job_description = val
 
             if ctmAiJobDeployStatus in job_status:
-                jJobType = '{"job_type_id":"' + job_type_id + '","job_type_name":"' + job_type_name + '","status":"' + job_status +'"}'
+                jJobType = '{"job_type_id":"' + job_type_id + '","job_type_name":"' + \
+                    job_type_name + '","status":"' + job_status + '"}'
                 jJobTypes = jJobType + "," + jJobTypes
             if _localDebug:
                 logger.debug('CTM: AI Job Type: %s', jJobType)
-    
 
         jJobTypes = jJobTypes[:-1]
         jResult = '{"jobtypes":[' + jJobTypes + ']}'
@@ -410,7 +440,8 @@ def getDeployedAiJobtypes(ctmApiClient, ctmAiJobDeployStatus="ready to deploy"):
         pass
     return results
 
-def getCtmAgentParams(ctmApiClient,ctmServer, ctmAgent):
+
+def getCtmAgentParams(ctmApiClient, ctmServer, ctmAgent):
     """get agent parameters  # noqa: E501
 
     Get all the parameters of the specified Agent.  # noqa: E501
@@ -434,9 +465,10 @@ def getCtmAgentParams(ctmApiClient,ctmServer, ctmAgent):
     # Call CTM AAPI
     try:
         # logger.debug('CTM: API Function: %s', "get_agent_parameters")
-        results = ctmCfgAapi.get_agent_parameters(server=ctmServer, agent=ctmAgent, _return_http_data_only=True )
-        results = str(results).replace("'",'"')
-        results = str(results).replace("None",'"None"')
+        results = ctmCfgAapi.get_agent_parameters(
+            server=ctmServer, agent=ctmAgent, _return_http_data_only=True)
+        results = str(results).replace("'", '"')
+        results = str(results).replace("None", '"None"')
 
         # logger.debug('CTM: API Result:\n%s', results)
         results = json.loads(results)
@@ -444,7 +476,8 @@ def getCtmAgentParams(ctmApiClient,ctmServer, ctmAgent):
         logger.error('CTM: API Error: %s', exp)
     return results
 
-def getCtmJobOutput(ctmApiClient,ctmJobID, ctmJobRunId):
+
+def getCtmJobOutput(ctmApiClient, ctmJobID, ctmJobRunId):
     """
     Get the output returned from a job
 
@@ -456,28 +489,40 @@ def getCtmJobOutput(ctmApiClient,ctmJobID, ctmJobRunId):
     """
     # Instantiate the AAPI object
     ctmCfgAapi = ctm.RunApi(api_client=ctmApiClient)
-    if _localDebugAdv: 
+    if _localDebugAdv:
         logger.debug('CTM: AAPI object: %s', ctmCfgAapi)
 
     # Call CTM AAPI
     results = ""
     try:
-        if _localDebugAdv: 
+        if _localDebugAdv:
             logger.debug('CTM: AAPI Function: %s', "get_job_output")
-        results = ctmCfgAapi.get_job_output(job_id=ctmJobID, run_no=ctmJobRunId )
-        if _localDebugAdv: 
+        results = ctmCfgAapi.get_job_output(
+            job_id=ctmJobID, run_no=ctmJobRunId)
+        if _localDebugAdv:
             logger.debug('CTM: AAPI Result: %s', results)
     except ctm.rest.ApiException as exp:
         logger.error('CTM: AAPI Function: %s', "get_job_output")
-        sBody = str(exp).split("HTTP response body:")[1]
-        sMessage = str(sBody)#.replace("\\n","").replace("\n","").strip()
-        jMessage = json.loads(sMessage)
-        sNote    = str(w3rkstatt.getJsonValue(path="$.errors.[0].message",data=jMessage)).strip()
+        logger.error('CTM: AAPI Error: %s', str(exp))
+        sNote = {}
+        try:
+            sBody = str(exp).split("HTTP response body:")[1]
+            # .replace("\\n","").replace("\n","").strip()
+            sMessage = re.findall(r"'(.*?)'", str(sBody), re.DOTALL)
+            logger.debug('CTM: AAPI Response Message: %s', str(sMessage))
+
+            jMessage = json.loads(sMessage)
+            sNote = str(w3rkstatt.getJsonValue(
+                path="$.errors.[0].message", data=jMessage)).strip()
+        except:
+            pass
+
         logger.error('CTM: AAPI Error: %s', sNote)
         results = sNote
     return results
 
-def getCtmArchiveJobLog(ctmApiClient,ctmJobID, ctmJobRunCounter):
+
+def getCtmArchiveJobLog(ctmApiClient, ctmJobID, ctmJobRunCounter):
     # ctm_pwd = w3rkstatt.decrypt(ctm_pwd_sec,"")
     # aapi_client = CtmConnection(host=ctm_host,port=ctm_port, ssl=ctm_ssl, verify_ssl=ctm_ssl_ver,
     #                         user=ctm_user,password=ctm_pwd,
@@ -496,7 +541,7 @@ def getCtmArchiveJobLog(ctmApiClient,ctmJobID, ctmJobRunCounter):
     results = ""
     try:
         logger.debug('CTM: AAPI Function: %s', "get_archive_job_log")
-        results = ctmCfgAapi.get_archive_job_log(ctmJobID, ctmJobRunCounter )
+        results = ctmCfgAapi.get_archive_job_log(ctmJobID, ctmJobRunCounter)
         logger.debug('CTM: AAPI Result: %s', results)
     except ctm.rest.ApiException as exp:
         logger.error('CTM: AAPI Function: %s', "get_archive_job_log")
@@ -506,7 +551,8 @@ def getCtmArchiveJobLog(ctmApiClient,ctmJobID, ctmJobRunCounter):
         logger.error('CTM: AAPI Continue ....',)
     return results
 
-def getCtmArchiveJobOutput(ctmApiClient,ctmJobID, ctmJobRunId):
+
+def getCtmArchiveJobOutput(ctmApiClient, ctmJobID, ctmJobRunId):
     """
     Get job output by unique job key
 
@@ -521,7 +567,8 @@ def getCtmArchiveJobOutput(ctmApiClient,ctmJobID, ctmJobRunId):
     results = ""
     try:
         logger.debug('CTM: AAPI Function: %s', "get_archive_job_output")
-        results = ctmCfgAapi.get_archive_job_output(job_id=ctmJobID, run_no=ctmJobRunId )
+        results = ctmCfgAapi.get_archive_job_output(
+            job_id=ctmJobID, run_no=ctmJobRunId)
         logger.debug('CTM: AAPI Result: %s', results)
     except ctm.rest.ApiException as exp:
         logger.error('CTM: AAPI Function: %s', "get_archive_job_output")
@@ -531,7 +578,8 @@ def getCtmArchiveJobOutput(ctmApiClient,ctmJobID, ctmJobRunId):
         logger.error('CTM: AAPI Continue ....',)
     return results
 
-def getCtmJobLog(ctmApiClient,ctmJobID):
+
+def getCtmJobLog(ctmApiClient, ctmJobID):
     # ctm_pwd = w3rkstatt.decrypt(ctm_pwd_sec,"")
     # aapi_client = CtmConnection(host=ctm_host,port=ctm_port, ssl=ctm_ssl, verify_ssl=ctm_ssl_ver,
     #                         user=ctm_user,password=ctm_pwd,
@@ -547,20 +595,32 @@ def getCtmJobLog(ctmApiClient,ctmJobID):
 
     # Call CTM AAPI
     results = ""
-    try:            
-        results = ctmCfgAapi.get_job_log(ctmJobID )
-        if _localDebugAdv: 
-            logger.debug('CTM: AAPI Function: %s', "get_archive_job_output")
+    try:
+        results = ctmCfgAapi.get_job_log(ctmJobID)
+        if _localDebugAdv:
+            logger.debug('CTM: AAPI Function: %s', "get_job_log")
             logger.debug('CTM: AAPI Result: %s', results)
     except ctm.rest.ApiException as exp:
-        logger.error('CTM: AAPI Function: %s', "get_job_output")
-        sBody = str(exp).split("HTTP response body:")[1]
-        sMessage = str(sBody)#.replace("\\n","").replace("\n","").strip()
-        jMessage = json.loads(sMessage)
-        sNote    = str(w3rkstatt.getJsonValue(path="$.errors.[0].message",data=jMessage)).strip()
+        # b'{"errors":[{"message":"Request  rejected by Data Center\\n CTM5319 OUTPUT DOES NOT EXIST FOR THIS JOB\\n"}]}'
+        logger.error('CTM: AAPI Function: %s', "get_job_log")
+        logger.error('CTM: AAPI Error: %s', str(exp))
+        sNote = {}
+        try:
+            sBody = str(exp).split("HTTP response body:")[1]
+            # .replace("\\n","").replace("\n","").strip()
+            sMessage = re.findall(r"'(.*?)'", str(sBody), re.DOTALL)
+            logger.debug('CTM: AAPI Response Message: %s', str(sMessage))
+
+            jMessage = json.loads(sMessage)
+            sNote = str(w3rkstatt.getJsonValue(
+                path="$.errors.[0].message", data=jMessage)).strip()
+        except:
+            pass
+
         logger.error('CTM: AAPI Error: %s', sNote)
         results = sNote
     return results
+
 
 def getCtmJobStatus(ctmApiClient, ctmServer, ctmOrderID):
     """
@@ -577,15 +637,15 @@ def getCtmJobStatus(ctmApiClient, ctmServer, ctmOrderID):
     ctmCfgAapi = ctm.api.run_api.RunApi(api_client=ctmApiClient)
     results = ""
     if ctmOrderID == "00000":
-        if _localDebugAdv: 
+        if _localDebugAdv:
             logger.debug('CTM: Order ID: %s', ctmOrderID)
     else:
-        #Call the service
+        # Call the service
         cmtJobID = ctmServer + ":" + ctmOrderID
         try:
-            results  = ctmCfgAapi.get_jobs_status_by_filter(jobid=cmtJobID)
+            results = ctmCfgAapi.get_jobs_status_by_filter(jobid=cmtJobID)
             if len(str(results)) > 0:
-                # Tranform to JSON, require result as dict 
+                # Tranform to JSON, require result as dict
                 dResults = results.to_dict()
                 jResults = w3rkstatt.dTranslate4Json(data=dResults)
                 if _localDebugAdv:
@@ -594,46 +654,57 @@ def getCtmJobStatus(ctmApiClient, ctmServer, ctmOrderID):
             else:
                 jResults = {}
                 if _localDebugAdv:
-                    logger.debug('CTM: API Function: %s', "get_job_status")                
+                    logger.debug('CTM: API Function: %s', "get_job_status")
                     logger.debug('CTM: API Result: %s', "no data")
 
         except ctm.rest.ApiException as exp:
             logger.error('CTM: AAPI Function: %s', "get_job_output")
             sBody = str(exp).split("HTTP response body:")[1]
-            sMessage = str(sBody)#.replace("\\n","").replace("\n","").strip()
+            # .replace("\\n","").replace("\n","").strip()
+            sMessage = str(sBody)
             jMessage = json.loads(sMessage)
-            sNote    = str(w3rkstatt.getJsonValue(path="$.errors.[0].message",data=jMessage)).strip()
+            sNote = str(w3rkstatt.getJsonValue(
+                path="$.errors.[0].message", data=jMessage)).strip()
             logger.error('CTM: AAPI Error: %s', sNote)
             jResults = sNote
 
     return jResults
 
-def getCtmAgentStatus(ctmApiClient,ctmAgent):
+
+def getCtmAgentStatus(ctmApiClient, ctmAgent):
 
     ctmAgentInfo = getCtmAgents(ctmApiClient, ctm_server)
     # ctmAgentInfoJson = json.loads(ctmAgentInfo)
-    ctmAgentStatus = w3rkstatt.jsonExtractValues(ctmAgentInfo,"status")
+    ctmAgentStatus = w3rkstatt.jsonExtractValues(ctmAgentInfo, "status")
     return ctmAgentStatus
 
+
 def getCtmConnection():
-    ctm_pwd_decrypted  = w3rkstatt.decryptPwd(data=ctm_pwd,sKeyFileName=cryptoFile)
-    ctmApiCli = CtmConnection(host=ctm_host,port=ctm_port, ssl=ctm_ssl, verify_ssl=ctm_ssl_ver,
-                            user=ctm_user,password=ctm_pwd_decrypted,
-                            additional_login_header={'accept': 'application/json'})    
+    ctm_pwd_decrypted = w3rkstatt.decryptPwd(
+        data=ctm_pwd, sKeyFileName=cryptoFile)
+    ctmApiCli = CtmConnection(host=ctm_host, port=ctm_port, ssl=ctm_ssl, verify_ssl=ctm_ssl_ver,
+                              user=ctm_user, password=ctm_pwd_decrypted,
+                              additional_login_header={'accept': 'application/json'})
     return ctmApiCli
 
-def delCtmConnection(ctmApiObj): 
+
+def delCtmConnection(ctmApiObj):
     ctmApiObj.logout()
-        
+
+
 def ctmTest(ctmApiClient):
-    ctmReportInfo   = runCtmReport(ctmApiClient=ctmApiClient,ctmReportName=ctm_rpt_jsm)
-    ctmReportID     = w3rkstatt.jsonExtractSimpleValue(ctmReportInfo,"id")
-    ctmReportInfo   = getCtmReportStatus(ctmApiClient=ctmApiClient,ctmReportID=ctmReportID)
-    ctmReportStatus = w3rkstatt.jsonExtractSimpleValue(ctmReportInfo,"status")
+    ctmReportInfo = runCtmReport(
+        ctmApiClient=ctmApiClient, ctmReportName=ctm_rpt_jsm)
+    ctmReportID = w3rkstatt.jsonExtractSimpleValue(ctmReportInfo, "id")
+    ctmReportInfo = getCtmReportStatus(
+        ctmApiClient=ctmApiClient, ctmReportID=ctmReportID)
+    ctmReportStatus = w3rkstatt.jsonExtractSimpleValue(ctmReportInfo, "status")
 
     while (ctmReportStatus == "PROCESSING") or (ctmReportStatus == "PENDING") or (ctmReportStatus != "SUCCEEDED"):
-        ctmReportInfo   = getCtmReportStatus(ctmApiClient=ctmApiClient,ctmReportID=ctmReportID)
-        ctmReportStatus = w3rkstatt.jsonExtractSimpleValue(ctmReportInfo,"status")
+        ctmReportInfo = getCtmReportStatus(
+            ctmApiClient=ctmApiClient, ctmReportID=ctmReportID)
+        ctmReportStatus = w3rkstatt.jsonExtractSimpleValue(
+            ctmReportInfo, "status")
         time.sleep(10)
 
     # ToDo: Review loop
@@ -651,18 +722,20 @@ def ctmTest(ctmApiClient):
     #         attempts += 1
     #         logger.debug('CTM: Report Status Loop: %s', attempts)
 
-    ctmReportUrl  = w3rkstatt.jsonExtractSimpleValue(ctmReportInfo,"url")
+    ctmReportUrl = w3rkstatt.jsonExtractSimpleValue(ctmReportInfo, "url")
     ctmReportData = getCtmReportData(ctmReportUrl)
-    ctmReportJson = w3rkstatt.convertCsv2Json(data=ctmReportData,keepDuplicate="last")
+    ctmReportJson = w3rkstatt.convertCsv2Json(
+        data=ctmReportData, keepDuplicate="last")
 
     logger.info('CTM Report ID: %s', ctmReportID)
     logger.info('CTM Report Status: %s', ctmReportStatus)
     logger.info('CTM Report Url: %s', ctmReportUrl)
     logger.info('CTM Report JSON: %s', ctmReportJson)
 
-    return 
-    
-def runCtmReport(ctmApiClient,ctmReportName):
+    return
+
+
+def runCtmReport(ctmApiClient, ctmReportName):
     """
     Simple function that uses the ABC service to get a the report of the specified Control-M Server.
 
@@ -672,15 +745,17 @@ def runCtmReport(ctmApiClient,ctmReportName):
     # Instantiate the AAPI object
     ctmRptAapi = ctm.api.reporting_api.ReportingApi(api_client=ctmApiClient)
     logger.debug('CTM: API object: %s', ctmRptAapi)
-    ctmReportRun = ctm.RunReport(name=ctmReportName,format="csv") # RunReport | The report generation parameters
+    # RunReport | The report generation parameters
+    ctmReportRun = ctm.RunReport(name=ctmReportName, format="csv")
     # Call CTM AAPI
     try:
         logger.debug('CTM: API Function: %s', "RunReport")
-        results = ctmRptAapi.run_report(body=ctmReportRun,async_req=True,_return_http_data_only=True)
+        results = ctmRptAapi.run_report(
+            body=ctmReportRun, async_req=True, _return_http_data_only=True)
 
-        ctmRptInfo   = results.get()
-        ctmRptId     = ctmRptInfo.report_id
-        ctmRptName   = ctmRptInfo.name
+        ctmRptInfo = results.get()
+        ctmRptId = ctmRptInfo.report_id
+        ctmRptName = ctmRptInfo.name
         ctmRptStatus = ctmRptInfo.status
 
         logger.debug('CTM: Report ID: %s', ctmRptId)
@@ -693,13 +768,14 @@ def runCtmReport(ctmApiClient,ctmReportName):
         report_data['name'] = ctmRptName
         report_data['status'] = ctmRptStatus
         json_data = json.dumps(report_data)
-        logger.debug('CTM: Report JSON: %s', json_data)        
+        logger.debug('CTM: Report JSON: %s', json_data)
 
     except ctm.rest.ApiException as exp:
         logger.error('CTM: API Error: %s', exp)
     return json_data
 
-def getCtmReportStatus(ctmApiClient,ctmReportID):
+
+def getCtmReportStatus(ctmApiClient, ctmReportID):
     """
     Simple function that uses the ABC service to get a the report of the specified Control-M Server.
 
@@ -712,13 +788,14 @@ def getCtmReportStatus(ctmApiClient,ctmReportID):
     # Call CTM AAPI
     try:
         logger.debug('CTM: API Function: %s', "RunReport")
-        results = ctmRptAapi.get_report_status(report_id=ctmReportID,_return_http_data_only=True)
+        results = ctmRptAapi.get_report_status(
+            report_id=ctmReportID, _return_http_data_only=True)
 
-        ctmRptInfo   = results
-        ctmRptId     = ctmRptInfo.report_id
-        ctmRptName   = ctmRptInfo.name
+        ctmRptInfo = results
+        ctmRptId = ctmRptInfo.report_id
+        ctmRptName = ctmRptInfo.name
         ctmRptFormat = ctmRptInfo.format
-        ctmRptUrl    = ctmRptInfo.url
+        ctmRptUrl = ctmRptInfo.url
         ctmRptStatus = ctmRptInfo.status
 
         logger.debug('CTM: Report ID: %s', ctmRptId)
@@ -732,50 +809,53 @@ def getCtmReportStatus(ctmApiClient,ctmReportID):
         report_data['url'] = ctmRptUrl
         report_data['status'] = ctmRptStatus
         json_data = json.dumps(report_data)
-        logger.debug('CTM: Report JSON: %s', json_data)        
+        logger.debug('CTM: Report JSON: %s', json_data)
 
     except ctm.rest.ApiException as exp:
         logger.error('CTM: API Error: %s', exp)
     return json_data
 
+
 def getCtmReportData(ctmReportUrl):
-  url = ctmReportUrl
+    url = ctmReportUrl
 
-  # Create a dictionary for the request body
-  request_body = {}
+    # Create a dictionary for the request body
+    request_body = {}
 
-  # Load the request body into the payload in JSON format.
-  payload = json.dumps(request_body)
-  headers = {
-      'content-type': "application/json",
-      'cache-control': "no-cache" ,
-  }
+    # Load the request body into the payload in JSON format.
+    payload = json.dumps(request_body)
+    headers = {
+        'content-type': "application/json",
+        'cache-control': "no-cache",
+    }
 
-  logger.debug('HTTP API Url: %s', url)
-  logger.debug('HTTP Headers: %s', headers)
-  logger.debug('HTTP Payload: %s', payload)
+    logger.debug('HTTP API Url: %s', url)
+    logger.debug('HTTP Headers: %s', headers)
+    logger.debug('HTTP Payload: %s', payload)
 
-  # Execute the API call.
-  try:
-    response = requests.get(url, data=payload, headers=headers, verify=False)
-  except requests.RequestException as e:
-    logger.error('HTTP Response Error: %s', e)
+    # Execute the API call.
+    try:
+        response = requests.get(
+            url, data=payload, headers=headers, verify=False)
+    except requests.RequestException as e:
+        logger.error('HTTP Response Error: %s', e)
 
-  # Capture the authentication token
-  rsc = response.status_code
-  if rsc == 501:
-    logger.error('HTTP Response Status: %s', rsc)
-  elif rsc != 200:
-    logger.error('HTTP Response Status: %s', rsc)
-  elif rsc == 200:
-    csv_data = response.text
-    # logger.debug('CTM: Report Data: %s', csv_data)
-    return csv_data
-  else:
-      logger.error('HTTP Response Code: %s', response)
-      # exit()
+    # Capture the authentication token
+    rsc = response.status_code
+    if rsc == 501:
+        logger.error('HTTP Response Status: %s', rsc)
+    elif rsc != 200:
+        logger.error('HTTP Response Status: %s', rsc)
+    elif rsc == 200:
+        csv_data = response.text
+        # logger.debug('CTM: Report Data: %s', csv_data)
+        return csv_data
+    else:
+        logger.error('HTTP Response Code: %s', response)
+        # exit()
 
-def getCtmHostGroupMembers(ctmApiClient,ctmServer,ctmHostGroup):
+
+def getCtmHostGroupMembers(ctmApiClient, ctmServer, ctmHostGroup):
     """get hostgroup agents  # noqa: E501
 
     Get the agents that compose the specified hostgroup  # noqa: E501
@@ -792,24 +872,26 @@ def getCtmHostGroupMembers(ctmApiClient,ctmServer,ctmHostGroup):
 
     # Instantiate the AAPI object
     ctmCfgAapi = ctm.api.config_api.ConfigApi(api_client=ctmApiClient)
-    if _localDebug: 
+    if _localDebug:
         logger.debug('CTM: API object: %s', ctmCfgAapi)
     results = ""
 
     # Call CTM AAPI
     try:
-        if _localDebug: 
+        if _localDebug:
             logger.debug('CTM: API Function: %s', "get_hosts_in_group")
-        results = ctmCfgAapi.get_hosts_in_group(server=ctmServer, hostgroup=ctmHostGroup , _return_http_data_only=True )
-        results = str(results).replace("'",'"')
-        if _localDebug: 
+        results = ctmCfgAapi.get_hosts_in_group(
+            server=ctmServer, hostgroup=ctmHostGroup, _return_http_data_only=True)
+        results = str(results).replace("'", '"')
+        if _localDebug:
             logger.debug('CTM: API Result: %s', results)
         results = json.loads(results)
     except ctm.rest.ApiException as exp:
         logger.error('CTM: API Error: %s', exp)
     return results
 
-def getCtmHostGroups(ctmApiClient,ctmServer):
+
+def getCtmHostGroups(ctmApiClient, ctmServer):
     """get Server hostgroups  # noqa: E501
 
     Get all the hostgroups of the specified Server.  # noqa: E501
@@ -825,24 +907,26 @@ def getCtmHostGroups(ctmApiClient,ctmServer):
 
     # Instantiate the AAPI object
     ctmCfgAapi = ctm.api.config_api.ConfigApi(api_client=ctmApiClient)
-    if _localDebug: 
+    if _localDebug:
         logger.debug('CTM: API object: %s', ctmCfgAapi)
     results = ""
 
     # Call CTM AAPI
     try:
-        if _localDebug: 
+        if _localDebug:
             logger.debug('CTM: API Function: %s', "get_hosts_in_group")
-        results = ctmCfgAapi.get_hostgroups(server=ctmServer, _return_http_data_only=True )
-        results = str(results).replace("'",'"')
-        if _localDebug: 
+        results = ctmCfgAapi.get_hostgroups(
+            server=ctmServer, _return_http_data_only=True)
+        results = str(results).replace("'", '"')
+        if _localDebug:
             logger.debug('CTM: API Result: %s', results)
         results = json.loads(results)
     except ctm.rest.ApiException as exp:
         logger.error('CTM: API Error: %s', exp)
     return results
 
-def getCtmRemoteHosts(ctmApiClient,ctmServer):
+
+def getCtmRemoteHosts(ctmApiClient, ctmServer):
     """get Server remote hosts  # noqa: E501
 
     Get all the remote hosts of the specified Server.  # noqa: E501
@@ -858,24 +942,26 @@ def getCtmRemoteHosts(ctmApiClient,ctmServer):
 
     # Instantiate the AAPI object
     ctmCfgAapi = ctm.api.config_api.ConfigApi(api_client=ctmApiClient)
-    if _localDebug: 
+    if _localDebug:
         logger.debug('CTM: API object: %s', ctmCfgAapi)
     results = ""
 
     # Call CTM AAPI
     try:
-        if _localDebug: 
+        if _localDebug:
             logger.debug('CTM: API Function: %s', "get_remote_hosts")
-        results = ctmCfgAapi.get_remote_hosts(server=ctmServer, _return_http_data_only=True )
-        results = str(results).replace("'",'"')
-        if _localDebug: 
+        results = ctmCfgAapi.get_remote_hosts(
+            server=ctmServer, _return_http_data_only=True)
+        results = str(results).replace("'", '"')
+        if _localDebug:
             logger.debug('CTM: API Result: %s', results)
         results = json.loads(results)
     except ctm.rest.ApiException as exp:
         logger.error('CTM: API Error: %s', exp)
     return results
 
-def getRemoteHostProperties(ctmApiClient,ctmServer,ctmRemoteHost):
+
+def getRemoteHostProperties(ctmApiClient, ctmServer, ctmRemoteHost):
     """get a remote host configuration from Server  # noqa: E501
 
     Get the remote host configuration properties from the Server  # noqa: E501
@@ -892,110 +978,115 @@ def getRemoteHostProperties(ctmApiClient,ctmServer,ctmRemoteHost):
 
     # Instantiate the AAPI object
     ctmCfgAapi = ctm.api.config_api.ConfigApi(api_client=ctmApiClient)
-    if _localDebug: 
+    if _localDebug:
         logger.debug('CTM: API object: %s', ctmCfgAapi)
     results = ""
 
     # Call CTM AAPI
     try:
-        if _localDebug: 
+        if _localDebug:
             logger.debug('CTM: API Function: %s', "get_remote_host_properties")
-        results = ctmCfgAapi.get_remote_host_properties(server=ctmServer,remotehost=ctmRemoteHost, _return_http_data_only=True )
-        results = w3rkstatt.dTranslate4Json(data=results)   
+        results = ctmCfgAapi.get_remote_host_properties(
+            server=ctmServer, remotehost=ctmRemoteHost, _return_http_data_only=True)
+        results = w3rkstatt.dTranslate4Json(data=results)
 
-        if _localDebug: 
+        if _localDebug:
             logger.debug('CTM: API Result: %s', results)
         results = json.loads(results)
     except ctm.rest.ApiException as exp:
         logger.error('CTM: API Error: %s', exp)
     return results
 
+
 def getCtmJobInfo(ctmApiClient, ctmServer, ctmOrderID):
-    ctmJobInfo = getCtmJobStatus(ctmApiClient=ctmApiClient, ctmServer=ctmServer, ctmOrderID=ctmOrderID)
-    if _localQA: 
+    ctmJobInfo = getCtmJobStatus(
+        ctmApiClient=ctmApiClient, ctmServer=ctmServer, ctmOrderID=ctmOrderID)
+    if _localQA:
         logger.info('CMT QA Get Job Status: %s', ctmJobInfo)
 
     # Get counter of CTM Job Info
-    ctmJobId   = ctmServer + ":" + ctmOrderID
-    jPath      = "$.statuses[?(@.job_id=='" + ctmJobId + "')]"
-    jData      = json.loads(ctmJobInfo)
-    jRecords   = int(w3rkstatt.getJsonValue(path="$.total",data=jData))
-    sStatus    = False
-    iCounter   = None
+    ctmJobId = ctmServer + ":" + ctmOrderID
+    jPath = "$.statuses[?(@.job_id=='" + ctmJobId + "')]"
+    jData = json.loads(ctmJobInfo)
+    jRecords = int(w3rkstatt.getJsonValue(path="$.total", data=jData))
+    sStatus = False
+    iCounter = None
 
     # Assign default
-    jJobInfo  = '{"count":' +  str(None) + '}'
+    jJobInfo = '{"count":' + str(None) + '}'
 
     if jRecords >= 1:
-        sStatus  = True
+        sStatus = True
         iCounter = int(jRecords)
         # Extract CTM Job Info
-        jJobInfo  = w3rkstatt.getJsonValue(path=jPath,data=jData)
+        jJobInfo = w3rkstatt.getJsonValue(path=jPath, data=jData)
         # beutify job info
         for (key, value) in jJobInfo.items():
             if key == "start_time":
                 if value is not None or not "None" in str(value):
                     value = extractCtmAlertDate(data=value)
-                jJobInfo[key] = value         
+                jJobInfo[key] = value
             if key == "end_time":
                 if value is not None or not "None" in str(value):
                     value = extractCtmAlertDate(data=value)
-                jJobInfo[key] = value    
+                jJobInfo[key] = value
             if key == "estimated_end_time":
                 if value is not None or not "None" in str(value):
                     value = value[0]
                     value = extractCtmAlertDate(data=value)
-                jJobInfo[key] = value  
+                jJobInfo[key] = value
             if key == "estimated_start_time":
                 if value is not None or not "None" in str(value):
                     value = value[0]
                     value = extractCtmAlertDate(data=value)
-                jJobInfo[key] = value                          
+                jJobInfo[key] = value
             if key == "order_date":
                 if value is not None or not "None" in str(value):
                     value = extractCtmOrderDate(data=value)
-                jJobInfo[key] = value     
+                jJobInfo[key] = value
 
         jJobInfo["count"] = len(jJobInfo)
-    
+
     elif jRecords == 0:
-        sStatus   = True
-        iCounter  = 0
-        jJobInfo  = ctmJobInfo
+        sStatus = True
+        iCounter = 0
+        jJobInfo = ctmJobInfo
 
-
-    xData = '{"count":' + str(iCounter) + ',"status":' + str(sStatus) + ',"entries":[' + str(jJobInfo) + ']}'   
+    xData = '{"count":' + str(iCounter) + ',"status":' + \
+        str(sStatus) + ',"entries":[' + str(jJobInfo) + ']}'
     sData = w3rkstatt.dTranslate4Json(data=xData)
     # jData = json.loads(sData)
 
-    if _localDebugAdv: 
+    if _localDebugAdv:
         logger.debug('CTM Job Info: %s', sData)
 
     return sData
 
+
 def getCtmJobStatusAdv(ctmApiClient, ctmServer, ctmOrderID):
     ctmJobStatus = {}
-    ctmJobStatuses = getCtmJobStatus(ctmApiClient=ctmApiClient, ctmServer=ctmServer, ctmOrderID=ctmOrderID)
-    ctmJobStatusList =  json.loads(ctmJobStatuses)
+    ctmJobStatuses = getCtmJobStatus(
+        ctmApiClient=ctmApiClient, ctmServer=ctmServer, ctmOrderID=ctmOrderID)
+    ctmJobStatusList = json.loads(ctmJobStatuses)
 
-    
     ctmJobs = ctmJobStatusList["statuses"]
     ctmJobIDTemp = ctmServer + ":" + ctmOrderID
 
     if ctmJobs:
         for ctmJob in ctmJobs:
-            ctmJobApp  = ctmJob["application"]
-            ctmJobID   = ctmJob["job_id"]
-            
+            ctmJobApp = ctmJob["application"]
+            ctmJobID = ctmJob["job_id"]
+
             if ctmJobID == ctmJobIDTemp:
                 ctmJobStatus = w3rkstatt.jsonTranslateValues(ctmJob)
-                ctmFolder    = ctmJob["folder"]
+                ctmFolder = ctmJob["folder"]
                 logger.debug('CTM: Job Application: "%s"', ctmJobApp)
                 logger.debug('CTM: Job ID: "%s"', ctmJobID)
                 logger.debug('CTM: Job Folder: "%s"', ctmFolder)
                 logger.debug('CTM: Job Status: %s', ctmJobStatus)
 
     return ctmJobStatus
+
 
 def getCtmDeployedFolder(ctmApiClient, ctmServer, ctmFolder):
     """Get deployed jobs that match the search criteria.  # noqa: E501
@@ -1014,131 +1105,146 @@ def getCtmDeployedFolder(ctmApiClient, ctmServer, ctmFolder):
         """
     # Instantiate the AAPI object
     ctmCfgAapi = ctm.DeployApi(api_client=ctmApiClient)
-    if _localDebugAdv: 
+    if _localDebugAdv:
         logger.debug('CTM: AAPI object: %s', ctmCfgAapi)
 
     # Call CTM AAPI
     results = ""
-    try:    
-        results = ctmCfgAapi.get_deployed_folders_new(format="json",folder=ctmFolder,server=ctmServer)
-        if _localDebugAdv: 
+    try:
+        results = ctmCfgAapi.get_deployed_folders_new(
+            format="json", folder=ctmFolder, server=ctmServer)
+        if _localDebugAdv:
             logger.debug('CTM: AAPI Function: %s', "get_deployed_folders_new")
             logger.debug('CTM: AAPI Result: %s', results)
     except ctm.rest.ApiException as exp:
         logger.error('CTM: AAPI Function: %s', "get_job_output")
         sBody = str(exp).split("HTTP response body:")[1]
-        sMessage = str(sBody)#.replace("\\n","").replace("\n","").strip()
+        sMessage = str(sBody)  # .replace("\\n","").replace("\n","").strip()
         jMessage = json.loads(sMessage)
-        sNote    = str(w3rkstatt.getJsonValue(path="$.errors.[0].message",data=jMessage)).strip().replace('"',"")
+        sNote = str(w3rkstatt.getJsonValue(
+            path="$.errors.[0].message", data=jMessage)).strip().replace('"', "")
         logger.error('CTM: AAPI Error: "%s"', sNote)
         results = sNote
     return results
 
-def translateCtmAlertStatus (data):   
+
+def translateCtmAlertStatus(data):
     # http://documents.bmc.com/supportu/9.0.19/help/Main_help/en-US/index.htm#45731.htm
     if "Not_Noticed" in data:
         value = "OPEN"
-    elif  "Noticed" in data:
+    elif "Noticed" in data:
         value = "ACK"
     elif "Handled" in data:
         value = "CLOSED"
     else:
         value = "OPEN"
-    
-    return value 
 
-def translateCtmAlertSeverity (data):
+    return value
+
+
+def translateCtmAlertSeverity(data):
     # https://docs.bmc.com/docs/display/tsim107/Understanding+event+states
     if "R" in data:
         value = "INFO"
-    elif  "U" in data:
+    elif "U" in data:
         value = "MAJOR"
     elif "V" in data:
         value = "CRITICAL"
     else:
         value = "INFO"
-    
+
     return value
 
-def translateCtmAlertOpCat3 (data):
+
+def translateCtmAlertOpCat3(data):
     if "Ended not OK" in data:
         value = "Failed Job"
     else:
         value = "Information"
-    
+
     return value
 
-def translateCtmAlertUpdateType (data):   
+
+def translateCtmAlertUpdateType(data):
     # http://documents.bmc.com/supportu/9.0.19/help/Main_help/en-US/index.htm#45731.htm
     if "I" in data:
         value = "New"
-    elif  "U" in data:
+    elif "U" in data:
         value = "Update"
     else:
         value = "New"
-    
-    return value 
+
+    return value
+
 
 def extractCtmAlertId(data):
     jsonEvent = data
     value = ""
     if "run_counter" in jsonEvent:
-        value = jsonEvent['alert_id']  
+        value = jsonEvent['alert_id']
 
     ctmAlertId = value
     return ctmAlertId
 
-def extractCtmAlertType (data):   
+
+def extractCtmAlertType(data):
     # http://documents.bmc.com/supportu/9.0.19/help/Main_help/en-US/index.htm#45731.htm
     if "R" in data:
         value = "Regular"
-    elif  "B" in data:
+    elif "B" in data:
         value = "BMC Batch Impact Manager"
     else:
         value = "Regular"
-    
+
     return value
 
-def extractCtmAlertDate (data):
+
+def extractCtmAlertDate(data):
     # 2020-05-26 22:57:36
-    sYear   = data[0:4]
-    sMonth  = data[4:6]
-    sDay    = data[6:8]
-    sHour   = data[8:10]
-    sMin    = data[10:12]
-    sSec    = data[12:]
-    sDate   = sYear + "-" + sMonth + "-" + sDay  + " " + sHour + ":" + sMin + ":" + sSec
+    sYear = data[0:4]
+    sMonth = data[4:6]
+    sDay = data[6:8]
+    sHour = data[8:10]
+    sMin = data[10:12]
+    sSec = data[12:]
+    sDate = sYear + "-" + sMonth + "-" + sDay + \
+        " " + sHour + ":" + sMin + ":" + sSec
     return sDate
 
-def extractCtmDate (data):
+
+def extractCtmDate(data):
     # 2020-05-26 22:57:36
-    sYear   = data[0:4]
-    sMonth  = data[4:6]
-    sDay    = data[6:8]
-    sHour   = data[8:10]
-    sMin    = data[10:12]
-    sDate   = sYear + "-" + sMonth + "-" + sDay  + " " + sHour + ":" + sMin 
+    sYear = data[0:4]
+    sMonth = data[4:6]
+    sDay = data[6:8]
+    sHour = data[8:10]
+    sMin = data[10:12]
+    sDate = sYear + "-" + sMonth + "-" + sDay + " " + sHour + ":" + sMin
     return sDate
 
-def extractCtmAlertCal (data):
+
+def extractCtmAlertCal(data):
     # 20200525
-    sDate   = data[0:8]
+    sDate = data[0:8]
     return sDate
+
 
 def extractCtmAlertDataCenter(data):
     jsonEvent = data
     value = ""
     if "data_center" in jsonEvent:
-        value = jsonEvent['data_center']   
+        value = jsonEvent['data_center']
     return value
 
-def extractCtmOrderDate (data):
+
+def extractCtmOrderDate(data):
     # 2020-05-26 22:57:36
-    sYear   = data[0:2]
-    sMonth  = data[2:4]
-    sDay    = data[4:6]
-    sDate   = "20" + sYear + "-" + sMonth + "-" + sDay
+    sYear = data[0:2]
+    sMonth = data[2:4]
+    sDay = data[4:6]
+    sDate = "20" + sYear + "-" + sMonth + "-" + sDay
     return sDate
+
 
 def trasnformtCtmAlert(data):
     alias = None
@@ -1161,13 +1267,12 @@ def trasnformtCtmAlert(data):
     ctmUpdateDate = None
     sAlertCat = None
     sSystemStatus = None
-    
-    
 
     jCtmAlert = data
-    ctmDataCenter = w3rkstatt.getJsonValue(path="$.data_center",data=jCtmAlert)
+    ctmDataCenter = w3rkstatt.getJsonValue(
+        path="$.data_center", data=jCtmAlert)
     for (key, value) in jCtmAlert.items():
-        
+
         if key == "call_type":
             value = translateCtmAlertUpdateType(data=value)
             jCtmAlert[key] = value
@@ -1185,12 +1290,11 @@ def trasnformtCtmAlert(data):
         # Mainframe job type
         if key == "memname":
             if value is not None:
-                logger.debug('CTM Alert Entry: %s=%s' , key,value)
+                logger.debug('CTM Alert Entry: %s=%s', key, value)
                 if value == "None":
                     ctmJobScript = None
-                elif value != "None": 
+                elif value != "None":
                     ctmJobScript = value
-
 
         # X-Alert
         if key == "Xtime":
@@ -1199,48 +1303,47 @@ def trasnformtCtmAlert(data):
             sAlertCat = "infrastructure"
         if key == "Xtime_of_last":
             value = extractCtmAlertDate(data=value)
-            jCtmAlert[key] = value            
- 
- 
- 
+            jCtmAlert[key] = value
+
         if key == "alert_type":
             value = extractCtmAlertType(data=value)
             jCtmAlert[key] = value
         if key == "severity":
             value = translateCtmAlertSeverity(data=value)
-            jCtmAlert[key] = value      
+            jCtmAlert[key] = value
         if key == "status":
             value = translateCtmAlertStatus(data=value)
-            jCtmAlert[key] = value        
+            jCtmAlert[key] = value
         if key == "run_counter":
-             if value is not None:
-                ctmOrderId    = w3rkstatt.getJsonValue(path="$.order_id",data=jCtmAlert)
-                ctmJobId      = ctmDataCenter + ":" + ctmOrderId
+            if value is not None:
+                ctmOrderId = w3rkstatt.getJsonValue(
+                    path="$.order_id", data=jCtmAlert)
+                ctmJobId = ctmDataCenter + ":" + ctmOrderId
         if key == "data_center":
             # get data center details from config josn
             # $.CTM.datacenter[?(@.name=='bmcbzos')].host
-            jQl              = "$.CTM.datacenter[?(@.name=='" + str(value) + "')].host" 
-            data_center      = w3rkstatt.getJsonValue(path=jQl,data=jCfgData)
+            jQl = "$.CTM.datacenter[?(@.name=='" + str(value) + "')].host"
+            data_center = w3rkstatt.getJsonValue(path=jQl, data=jCfgData)
             if len(data_center) > 1:
-                data_center_ip   = w3rkstatt.getHostIP(hostname=data_center)
+                data_center_ip = w3rkstatt.getHostIP(hostname=data_center)
                 data_center_fqdn = w3rkstatt.getHostFqdn(hostname=data_center)
-                data_center_dns  = w3rkstatt.getHostDomain(hostname=data_center)
+                data_center_dns = w3rkstatt.getHostDomain(hostname=data_center)
             else:
-                data_center_ip   = None
+                data_center_ip = None
                 data_center_fqdn = None
-                data_center_dns  = None
+                data_center_dns = None
         if key == "host_id":
             if value is not None:
                 if len(value) > 0:
                     host_ip = w3rkstatt.getHostIP(hostname=value)
                     host_ip_fqdn = w3rkstatt.getHostFqdn(hostname=value)
-                    host_ip_dns  = w3rkstatt.getHostDomain(hostname=value)
+                    host_ip_dns = w3rkstatt.getHostDomain(hostname=value)
 
         if key == "Component_machine":
             host_ip = w3rkstatt.getHostIP(hostname=value)
             host_ip_fqdn = w3rkstatt.getHostFqdn(hostname=value)
-            host_ip_dns  = w3rkstatt.getHostDomain(hostname=value)
-            alias = cdmclass + ":" + value  + ":" + host_ip_dns
+            host_ip_dns = w3rkstatt.getHostDomain(hostname=value)
+            alias = cdmclass + ":" + value + ":" + host_ip_dns
 
         if key == "message":
             if "STATUS OF AGENT PLATFORM" in value:
@@ -1248,8 +1351,8 @@ def trasnformtCtmAlert(data):
                 host_name = sTemp[4]
                 host_ip = w3rkstatt.getHostIP(hostname=host_name)
                 host_ip_fqdn = w3rkstatt.getHostFqdn(hostname=host_name)
-                host_ip_dns  = w3rkstatt.getHostDomain(hostname=host_name)
-                alias = cdmclass + ":" + host_name  + ":" + host_ip_dns
+                host_ip_dns = w3rkstatt.getHostDomain(hostname=host_name)
+                alias = cdmclass + ":" + host_name + ":" + host_ip_dns
                 sAgentStatus = sTemp[7]
                 sAlertCat = "agent"
             elif "DATA CENTER" in value:
@@ -1257,8 +1360,8 @@ def trasnformtCtmAlert(data):
                 host_name = sTemp[2]
                 host_ip = w3rkstatt.getHostIP(hostname=host_name)
                 host_ip_fqdn = w3rkstatt.getHostFqdn(hostname=host_name)
-                host_ip_dns  = w3rkstatt.getHostDomain(hostname=host_name)
-                alias = cdmclass + ":" + host_name  + ":" + host_ip_dns
+                host_ip_dns = w3rkstatt.getHostDomain(hostname=host_name)
+                alias = cdmclass + ":" + host_name + ":" + host_ip_dns
                 sDataCenterStatus = sTemp[4]
                 sAlertCat = "datacenter"
             elif "Distributed Control-M/EM Configuration Agent" in value:
@@ -1266,87 +1369,102 @@ def trasnformtCtmAlert(data):
                 host_name = sTemp[2]
                 host_ip = w3rkstatt.getHostIP(hostname=host_name)
                 host_ip_fqdn = w3rkstatt.getHostFqdn(hostname=host_name)
-                host_ip_dns  = w3rkstatt.getHostDomain(hostname=host_name)
-                alias = cdmclass + ":" + host_name  + ":" + host_ip_dns
+                host_ip_dns = w3rkstatt.getHostDomain(hostname=host_name)
+                alias = cdmclass + ":" + host_name + ":" + host_ip_dns
                 # sCtmComponenttatus = sTemp[4]
-                sAlertCat = "infrastructure"                
+                sAlertCat = "infrastructure"
             elif "Ended not OK" in value:
-                ctmOrderId    = w3rkstatt.getJsonValue(path="$.order_id",data=jCtmAlert)
-                ctmJobRunId   = ctmDataCenter + ":" + ctmOrderId
-                job_name      = w3rkstatt.getJsonValue(path="$.job_name",data=jCtmAlert)
-                run_counter   = w3rkstatt.getJsonValue(path="$.run_counter",data=jCtmAlert)
-                summary  = "Job " + job_name + " failed"
-                notes = "CTRL-M Job " + job_name + " failed. Job ID: " + ctmJobRunId + " with Job Run Count: " + run_counter
+                ctmOrderId = w3rkstatt.getJsonValue(
+                    path="$.order_id", data=jCtmAlert)
+                ctmJobRunId = ctmDataCenter + ":" + ctmOrderId
+                job_name = w3rkstatt.getJsonValue(
+                    path="$.job_name", data=jCtmAlert)
+                run_counter = w3rkstatt.getJsonValue(
+                    path="$.run_counter", data=jCtmAlert)
+                summary = "Job " + job_name + " failed"
+                notes = "CTRL-M Job " + job_name + " failed. Job ID: " + \
+                    ctmJobRunId + " with Job Run Count: " + run_counter
                 sAlertCat = "job"
                 sSystemStatus = "failed"
             elif "Failed to order" in value:
-                ctmOrderId    = w3rkstatt.getJsonValue(path="$.order_id",data=jCtmAlert)
-                ctmJobRunId   = ctmDataCenter + ":" + ctmOrderId
-                job_name      = w3rkstatt.getJsonValue(path="$.job_name",data=jCtmAlert)
-                run_counter   = w3rkstatt.getJsonValue(path="$.run_counter",data=jCtmAlert)
+                ctmOrderId = w3rkstatt.getJsonValue(
+                    path="$.order_id", data=jCtmAlert)
+                ctmJobRunId = ctmDataCenter + ":" + ctmOrderId
+                job_name = w3rkstatt.getJsonValue(
+                    path="$.job_name", data=jCtmAlert)
+                run_counter = w3rkstatt.getJsonValue(
+                    path="$.run_counter", data=jCtmAlert)
 
                 if job_name is None:
                     summary = value
-                    notes = "CTRL-M Job failed. Job ID: " + ctmJobRunId + " with Job Run Count: " + run_counter
+                    notes = "CTRL-M Job failed. Job ID: " + \
+                        ctmJobRunId + " with Job Run Count: " + run_counter
                 else:
-                    summary  = "Job " + job_name + " failed"
-                    notes = "CTRL-M Job " + job_name + " failed. Job ID: " + ctmJobRunId + " with Job Run Count: " + run_counter
+                    summary = "Job " + job_name + " failed"
+                    notes = "CTRL-M Job " + job_name + " failed. Job ID: " + \
+                        ctmJobRunId + " with Job Run Count: " + run_counter
                 sAlertCat = "job"
                 sSystemStatus = "failed"
             elif "BIM / SIM" in value:
-                ctmOrderId    = w3rkstatt.getJsonValue(path="$.order_id",data=jCtmAlert)
-                ctmJobRunId   = ctmDataCenter + ":" + ctmOrderId
-                job_name      = w3rkstatt.getJsonValue(path="$.job_name",data=jCtmAlert)
-                run_counter   = w3rkstatt.getJsonValue(path="$.run_counter",data=jCtmAlert)
+                ctmOrderId = w3rkstatt.getJsonValue(
+                    path="$.order_id", data=jCtmAlert)
+                ctmJobRunId = ctmDataCenter + ":" + ctmOrderId
+                job_name = w3rkstatt.getJsonValue(
+                    path="$.job_name", data=jCtmAlert)
+                run_counter = w3rkstatt.getJsonValue(
+                    path="$.run_counter", data=jCtmAlert)
 
                 if job_name is None:
                     summary = value
-                    notes = "CTRL-M Job failed. Job ID: " + ctmJobRunId + " with Job Run Count: " + run_counter
+                    notes = "CTRL-M Job failed. Job ID: " + \
+                        ctmJobRunId + " with Job Run Count: " + run_counter
                 else:
-                    summary  = "Job " + job_name + " failed"
-                    notes = "CTRL-M Job " + job_name + " failed. Job ID: " + ctmJobRunId + " with Job Run Count: " + run_counter
+                    summary = "Job " + job_name + " failed"
+                    notes = "CTRL-M Job " + job_name + " failed. Job ID: " + \
+                        ctmJobRunId + " with Job Run Count: " + run_counter
                 sAlertCat = "job"
-                sSystemStatus = "failed"                
+                sSystemStatus = "failed"
             else:
                 summary = value
                 notes = value
 
         if key == "Message":
-                summary  = value
-                notes = "CTRL-M Component " + value + ". Managed by: " + host_ip_dns
-                
-              
-                
+            summary = value
+            notes = "CTRL-M Component " + value + ". Managed by: " + host_ip_dns
 
-    if not ctmOrderId == "00000" and  ctmOrderId is not None:
-        job_uri =  "https://" + ctm_host + ":" + ctm_port + "/ControlM/#Search:id=Search_2&search=" + ctmOrderId + "&date=" + ctmUpdateDate + "&controlm=" + ctmDataCenter
+    if not ctmOrderId == "00000" and ctmOrderId is not None:
+        job_uri = "https://" + ctm_host + ":" + ctm_port + "/ControlM/#Search:id=Search_2&search=" + \
+            ctmOrderId + "&date=" + ctmUpdateDate + "&controlm=" + ctmDataCenter
         jCtmAlert["job_id"] = ctmJobId
         jCtmAlert["job_uri"] = job_uri
 
-
     if sAgentStatus is not None:
         if "UNAVAILABLE" in sAgentStatus:
-            jCtmAlert["severity"] =  "MAJOR"
-            summary  = "Agent on " + host_name + " not availabble"
-            notes = "CTRL-M Agent on " + host_ip_fqdn + " down or not availabble. Managed by: " + ctmDataCenter
+            jCtmAlert["severity"] = "MAJOR"
+            summary = "Agent on " + host_name + " not availabble"
+            notes = "CTRL-M Agent on " + host_ip_fqdn + \
+                " down or not availabble. Managed by: " + ctmDataCenter
             sSystemStatus = "unavailabble"
 
         elif "AVAILABLE" in sAgentStatus:
-            jCtmAlert["severity"] =  "OK"
-            summary  = "Agent on " + host_name + " availabble"
-            notes = "CTRL-M Agent on " + host_ip_fqdn + " availabble. Managed by: " + ctmDataCenter  
+            jCtmAlert["severity"] = "OK"
+            summary = "Agent on " + host_name + " availabble"
+            notes = "CTRL-M Agent on " + host_ip_fqdn + \
+                " availabble. Managed by: " + ctmDataCenter
             sSystemStatus = "availabble"
 
     if sDataCenterStatus is not None:
         if "DISCONNECTED" in sDataCenterStatus:
-            jCtmAlert["severity"] =  "CRITICAL"
-            summary  = "Data Center " + ctmDataCenter + " was disconnected"
-            notes = "CTRL-M Data Center " + ctmDataCenter + " on " + host_ip_fqdn + " down or disconnected."
+            jCtmAlert["severity"] = "CRITICAL"
+            summary = "Data Center " + ctmDataCenter + " was disconnected"
+            notes = "CTRL-M Data Center " + ctmDataCenter + \
+                " on " + host_ip_fqdn + " down or disconnected."
             sSystemStatus = "disconnected"
         elif "CONNECTED" in sDataCenterStatus:
-            jCtmAlert["severity"] =  "OK"
-            summary  = "Data Center on " + host_name + " availabble"
-            notes = "CTRL-M Data Center " + ctmDataCenter + " on " + host_ip_fqdn + " availabble or connected."
+            jCtmAlert["severity"] = "OK"
+            summary = "Data Center on " + host_name + " availabble"
+            notes = "CTRL-M Data Center " + ctmDataCenter + \
+                " on " + host_ip_fqdn + " availabble or connected."
             sSystemStatus = "connected"
 
     jCtmAlert["data_center_ip"] = data_center_ip
@@ -1359,8 +1477,7 @@ def trasnformtCtmAlert(data):
     jCtmAlert["system_status"] = sSystemStatus
     jCtmAlert["system_class"] = alias
     jCtmAlert["job_script"] = ctmJobScript
-    
-    
+
     # CTM Agent issues
     jCtmAlert["message_summary"] = summary
     jCtmAlert["message_notes"] = notes
@@ -1368,35 +1485,37 @@ def trasnformtCtmAlert(data):
     jCtmAlert = OrderedDict(sorted(jCtmAlert.items()))
 
     for (key, value) in jCtmAlert.items():
-        if _localDebugAdv: 
-            logger.debug('CTM Alert Entry: %s=%s' , key,value)
+        if _localDebugAdv:
+            logger.debug('CTM Alert Entry: %s=%s', key, value)
 
     # Tweak final json
     jCtmAlertData = json.dumps(jCtmAlert)
     tCtmAlertData = w3rkstatt.jsonTranslateValues(jCtmAlertData)
     xCtmAlertData = json.loads(tCtmAlertData)
-    jCtmAlert     = jCtmAlertData
-    
+    jCtmAlert = jCtmAlertData
+
     return jCtmAlert
+
 
 def transformCtmJobStatus(data):
     pass
-        
+
+
 def transformCtmJobOutput(data):
     jValue = {}
     s = "\n"
     xList = [s for s in data.splitlines(True) if s.strip("\r\n")]
-    yList = list(map(str.strip,xList))
+    yList = list(map(str.strip, xList))
     sStatus = False
 
     i = 0
     for item in yList:
-        jValue["entry-" + str(i).zfill(4)] = item.replace("'","")
+        jValue["entry-" + str(i).zfill(4)] = item.replace("'", "")
         i += 1
 
     # {"count":2,"entries":[{"entry-0000": "Request  rejected by Data Center", "entry-0001": "ECS3010 USER NOT AUTHORIZED"}]}
-    xValue   = json.dumps(jValue)
-    iCounter = int(len(jValue)) 
+    xValue = json.dumps(jValue)
+    iCounter = int(len(jValue))
 
     if iCounter == 0:
         sStatus = None
@@ -1413,16 +1532,17 @@ def transformCtmJobOutput(data):
             sStatus = True
     else:
         sStatus = True
-    
-    xData = '{"count":' + str(iCounter) + ',"status":' + str(sStatus) + ',"entries":[' + str(xValue) + ']}'   
+
+    xData = '{"count":' + str(iCounter) + ',"status":' + \
+        str(sStatus) + ',"entries":[' + str(xValue) + ']}'
     sData = w3rkstatt.dTranslate4Json(data=xData)
     jData = json.loads(sData)
-            
-    if _localDebugAdv: 
+
+    if _localDebugAdv:
         logger.debug('CMT Job Output Transform Raw: %s', sData)
-  
+
     return jData
-  
+
 
 def transformCtmJobLog(data):
     lgo = []
@@ -1430,9 +1550,8 @@ def transformCtmJobLog(data):
     jValue = {}
     s = "\n"
     xList = [s for s in data.splitlines(True) if s.strip("\r\n")]
-    yList = list(map(str.strip,xList))
+    yList = list(map(str.strip, xList))
     sJobLogStatus = False
-
 
     i = 0
     # Extract Data from line
@@ -1440,18 +1559,19 @@ def transformCtmJobLog(data):
     for item in yList:
         log_data = {}
 
-        sTemp    = re.split(r'\s{2,}', item)
-        sTime    = item.split()[0]
-        sDate    = item.split()[1]
+        sTemp = re.split(r'\s{2,}', item)
+        sTime = item.split()[0]
+        sDate = item.split()[1]
         sMessage = sTemp[1].split("\t")[0]
-        sCtmCode =  item.split("\t")[1]
+        sCtmCode = item.split("\t")[1]
 
         if sCtmCode == "5100":
             xTemp = sMessage.split()
-            log_data['oscompstat'] = xTemp[4].replace(".","")
+            log_data['oscompstat'] = xTemp[4].replace(".", "")
             log_data['run_count'] = xTemp[6]
-            log_data['ended'] = extractCtmAlertDate (data=xTemp[2].replace(".",""))
-                   
+            log_data['ended'] = extractCtmAlertDate(
+                data=xTemp[2].replace(".", ""))
+
         log_data['time'] = sTime
         log_data['date'] = sDate
         log_data['message'] = sMessage
@@ -1469,26 +1589,29 @@ def transformCtmJobLog(data):
         jData = '{"count":0,"status":' + str(sJobLogStatus) + ',"entries":[]}'
     else:
         sJobLogStatus = True
-        jData = '{"count":' + str(i) + ',"status":' + str(sJobLogStatus) + ',"entries":[' + str(jData) + ']}'    
+        jData = '{"count":' + str(i) + ',"status":' + \
+            str(sJobLogStatus) + ',"entries":[' + str(jData) + ']}'
 
     # json_data = json.dumps(log_list)
     jStatus = w3rkstatt.jsonValidator(data=jData)
-    if jStatus:   
+    if jStatus:
         jData = json.loads(jData)
         return jData
     else:
-        jData = '{"count":1,"status":' + str(sJobLogStatus) + ',"entries":[' + str(jData) + ']}'
+        jData = '{"count":1,"status":' + \
+            str(sJobLogStatus) + ',"entries":[' + str(jData) + ']}'
         sData = w3rkstatt.dTranslate4Json(data=jData)
         return sData
 
-def transformCtmJobLogMini(data,runCounter):
+
+def transformCtmJobLogMini(data, runCounter):
     ctmJobRunCounter = runCounter.strip("0")
     log_list = []
     jValue = {}
     s = "\n"
     xList = [s for s in data.splitlines(True) if s.strip("\r\n")]
-    yList = list(map(str.strip,xList))
-    sStatus  = yList[0]
+    yList = list(map(str.strip, xList))
+    sStatus = yList[0]
     sJobLogStatus = False
 
     i = 0
@@ -1497,9 +1620,9 @@ def transformCtmJobLogMini(data,runCounter):
     for item in yList:
         log_data = {}
 
-        sTemp    = re.split(r'\s{2,}', item)
-        sTime    = item.split()[0]
-        sDate    = item.split()[1]
+        sTemp = re.split(r'\s{2,}', item)
+        sTime = item.split()[0]
+        sDate = item.split()[1]
 
         if "Failed to get job log" in sStatus:
             sMessage = sTemp[0]
@@ -1510,23 +1633,25 @@ def transformCtmJobLogMini(data,runCounter):
 
             # construct json string
             if i == 0:
-                sEntry = '"entry-' + str(i).zfill(4) + '":"' +  sMessage + '"'
+                sEntry = '"entry-' + str(i).zfill(4) + '":"' + sMessage + '"'
             else:
-                sEntry = sEntry + ',"entry-' + str(i).zfill(4) + '":"' +  sMessage + '"'
+                sEntry = sEntry + ',"entry-' + \
+                    str(i).zfill(4) + '":"' + sMessage + '"'
 
             i += 1
         else:
             sJobLogStatus = True
             sMessage = sTemp[1].split("\t")[0]
-            sCtmCode =  item.split("\t")[1]
+            sCtmCode = item.split("\t")[1]
 
             if sCtmCode == "5100":
                 xTemp = sMessage.split()
                 zTemp = xTemp[6]
                 if zTemp == ctmJobRunCounter:
-                    log_data['oscompstat'] = xTemp[4].replace(".","")
+                    log_data['oscompstat'] = xTemp[4].replace(".", "")
                     log_data['run_count'] = xTemp[6]
-                    log_data['ended'] = extractCtmAlertDate (data=xTemp[2].replace(".",""))                   
+                    log_data['ended'] = extractCtmAlertDate(
+                        data=xTemp[2].replace(".", ""))
                     log_data['time'] = sTime
                     log_data['date'] = sDate
                     log_data['message'] = sMessage
@@ -1536,22 +1661,25 @@ def transformCtmJobLogMini(data,runCounter):
                     log_wrapper = {}
                     log_wrapper['entry-' + str(i).zfill(4)] = log_data
                     log_list.append(log_wrapper)
-                
+
                 i += 1
 
     # custom json in case no access to CTM API
     if sJobLogStatus:
         xData = json.dumps(log_list)
-        jData = '{"count":' + str(i) + ',"status":' + str(sJobLogStatus) + ',"entries":[' + str(xData) + ']}'
+        jData = '{"count":' + str(i) + ',"status":' + \
+            str(sJobLogStatus) + ',"entries":[' + str(xData) + ']}'
     else:
         xData = '{' + sEntry + '}'
-        jData = '{"count":' + str(i) + ',"status":' + str(sJobLogStatus) + ',"entries":[' + str(xData) + ']}'
-    
+        jData = '{"count":' + str(i) + ',"status":' + \
+            str(sJobLogStatus) + ',"entries":[' + str(xData) + ']}'
+
     sData = w3rkstatt.dTranslate4Json(data=jData)
 
     return sData
 
-def updateCtmAlertCore(ctmApiClient,ctmAlertIDs, ctmAlertComment, ctmAlertUrgency="Normal"):
+
+def updateCtmAlertCore(ctmApiClient, ctmAlertIDs, ctmAlertComment, ctmAlertUrgency="Normal"):
     """Update alert.  # noqa: E501
     Update alert.  # noqa: E501
     This method makes a synchronous HTTP request by default. To make an
@@ -1564,7 +1692,8 @@ def updateCtmAlertCore(ctmApiClient,ctmAlertIDs, ctmAlertComment, ctmAlertUrgenc
                 returns the request thread.
     """
     # https://docs.bmc.com/docs/automation-api/monthly/run-service-989443409.html#Runservice-alerts_updaterunalerts::update
-    sCtmAlertData = '{"alertIds":[' + ctmAlertIDs + '],"urgency":"' + ctmAlertUrgency + '","comment":"' + ctmAlertComment + '"}'
+    sCtmAlertData = '{"alertIds":[' + ctmAlertIDs + '],"urgency":"' + \
+        ctmAlertUrgency + '","comment":"' + ctmAlertComment + '"}'
     sCtmAlertData = json.loads(sCtmAlertData)
     # Instantiate the AAPI object
     ctmCfgAapi = ctm.api.run_api.RunApi(api_client=ctmApiClient)
@@ -1572,18 +1701,20 @@ def updateCtmAlertCore(ctmApiClient,ctmAlertIDs, ctmAlertComment, ctmAlertUrgenc
 
     # Call CTM AAPI
     try:
-        results = ctmCfgAapi.update_alert(body=sCtmAlertData,_return_http_data_only=True )
-        results = str(results).replace("'",'"')
-        results = str(results).replace("None",'"None"')
+        results = ctmCfgAapi.update_alert(
+            body=sCtmAlertData, _return_http_data_only=True)
+        results = str(results).replace("'", '"')
+        results = str(results).replace("None", '"None"')
         if _localDebugAdv:
             logger.debug('CTM: API Function: %s', "update_alert")
             logger.debug('CTM: API Result:\n%s', results)
         results = json.loads(results)
     except ctm.rest.ApiException as exp:
         logger.error('CTM: API Error: %s', exp)
-    return results    
+    return results
 
-def updateCtmAlertStatus(ctmApiClient,ctmAlertIDs, ctmAlertStatus="Reviewed"):
+
+def updateCtmAlertStatus(ctmApiClient, ctmAlertIDs, ctmAlertStatus="Reviewed"):
     """Update alert.  # noqa: E501
     Update alert.  # noqa: E501
     This method makes a synchronous HTTP request by default. To make an
@@ -1596,7 +1727,8 @@ def updateCtmAlertStatus(ctmApiClient,ctmAlertIDs, ctmAlertStatus="Reviewed"):
                 returns the request thread.
     """
     # https://docs.bmc.com/docs/automation-api/monthly/run-service-989443409.html#Runservice-alerts_status_updaterunalerts:status::update
-    sCtmAlertData = '{"alertIds":[' + ctmAlertIDs + '],"status":"' + ctmAlertStatus + '"}'
+    sCtmAlertData = '{"alertIds":[' + ctmAlertIDs + \
+        '],"status":"' + ctmAlertStatus + '"}'
     sCtmAlertData = json.loads(sCtmAlertData)
     # Instantiate the AAPI object
     ctmCfgAapi = ctm.api.run_api.RunApi(api_client=ctmApiClient)
@@ -1604,94 +1736,125 @@ def updateCtmAlertStatus(ctmApiClient,ctmAlertIDs, ctmAlertStatus="Reviewed"):
 
     # Call CTM AAPI
     try:
-        results = ctmCfgAapi.update_alert_status(body=sCtmAlertData,_return_http_data_only=True )
-        results = str(results).replace("'",'"')
-        results = str(results).replace("None",'"None"')
+        results = ctmCfgAapi.update_alert_status(
+            body=sCtmAlertData, _return_http_data_only=True)
+        results = str(results).replace("'", '"')
+        results = str(results).replace("None", '"None"')
         if _localDebugAdv:
             logger.debug('CTM: API Function: %s', "update_alert_status")
             logger.debug('CTM: API Result:\n%s', results)
         results = json.loads(results)
     except ctm.rest.ApiException as exp:
         logger.error('CTM: API Error: %s', exp)
-    return results   
+    return results
 
-def updateCtmAlert(ctmApiClient,ctmAlertIDs, ctmAlertComment, ctmAlertUrgency="Normal",ctmAlertStatus="Reviewed"):
-    ctmAlertsCore = updateCtmAlertCore(ctmApiClient=ctmApiClient,ctmAlertIDs=ctmAlertIDs, ctmAlertComment=ctmAlertComment, ctmAlertUrgency=ctmAlertUrgency)
-    ctmAlertsStatus = updateCtmAlertStatus(ctmApiClient=ctmApiClient,ctmAlertIDs=ctmAlertIDs, ctmAlertStatus=ctmAlertStatus)
+
+def updateCtmAlert(ctmApiClient, ctmAlertIDs, ctmAlertComment, ctmAlertUrgency="Normal", ctmAlertStatus="Reviewed"):
+    ctmAlertsCore = updateCtmAlertCore(ctmApiClient=ctmApiClient, ctmAlertIDs=ctmAlertIDs,
+                                       ctmAlertComment=ctmAlertComment, ctmAlertUrgency=ctmAlertUrgency)
+    ctmAlertsStatus = updateCtmAlertStatus(
+        ctmApiClient=ctmApiClient, ctmAlertIDs=ctmAlertIDs, ctmAlertStatus=ctmAlertStatus)
 
     # replace, strip, translate issues
-    ctmAlertsStatusMsg = str(w3rkstatt.getJsonValue(path="$.message",data=ctmAlertsStatus)).replace("[","id: ").replace("]","; msg:")
-    ctmAlertsCoreMsg   = str(w3rkstatt.getJsonValue(path="$.message",data=ctmAlertsCore)).replace("[","id: ").replace("]","; msg:")
+    ctmAlertsStatusMsg = str(w3rkstatt.getJsonValue(
+        path="$.message", data=ctmAlertsStatus)).replace("[", "id: ").replace("]", "; msg:")
+    ctmAlertsCoreMsg = str(w3rkstatt.getJsonValue(
+        path="$.message", data=ctmAlertsCore)).replace("[", "id: ").replace("]", "; msg:")
 
-    sCtmAlertData = '{"alert":"' + ctmAlertsCoreMsg + '","status":"' + ctmAlertsStatusMsg + '"}'
+    sCtmAlertData = '{"alert":"' + ctmAlertsCoreMsg + \
+        '","status":"' + ctmAlertsStatusMsg + '"}'
     sCtmAlertData = json.loads(sCtmAlertData)
     return sCtmAlertData
 
+
 def updateCtmITSM(data):
-    ctmEventType = w3rkstatt.getJsonValue(path="$.call_type",data=data) 
+    ctmEventType = w3rkstatt.getJsonValue(path="$.call_type", data=data)
 
     jValue = {}
     # For new Incident
     if "New" in ctmEventType:
-        jValue["First_Name"] = w3rkstatt.getJsonValue(path="$.ITSM.defaults.name-first",data=jCfgData)
-        jValue["Last_Name"] =  w3rkstatt.getJsonValue(path="$.ITSM.defaults.name-last",data=jCfgData)
-        jValue["Description"] = w3rkstatt.getJsonValue(path="$.message_summary",data=data)
-        jValue["Impact"] = w3rkstatt.getJsonValue(path="$.ITSM.incident.impact",data=jCfgData)
-        jValue["Urgency"] = w3rkstatt.getJsonValue(path="$.ITSM.incident.urgency",data=jCfgData)
-        jValue["Status"] = w3rkstatt.getJsonValue(path="$.ITSM.incident.status",data=jCfgData)
-        jValue["Reported_Source"] = w3rkstatt.getJsonValue(path="$.ITSM.incident.reported-source",data=jCfgData)
-        jValue["Service_Type"] = w3rkstatt.getJsonValue(path="$.ITSM.incident.service-type",data=jCfgData)
-        jValue["ServiceCI"] = w3rkstatt.getJsonValue(path="$.ITSM.defaults.service-ci",data=jCfgData)
-        jValue["Assigned_Group"] = w3rkstatt.getJsonValue(path="$.ITSM.defaults.assigned-group",data=jCfgData)
-        jValue["Assigned_Support_Company"] = w3rkstatt.getJsonValue(path="$.ITSM.defaults.support-company",data=jCfgData)
-        jValue["Assigned_Support_Organization"] = w3rkstatt.getJsonValue(path="$.ITSM.defaults.support-organization",data=jCfgData)
-        jValue["Categorization_Tier_1"] = w3rkstatt.getJsonValue(path="$.ITSM.defaults.op_cat_1",data=jCfgData)
-        jValue["Categorization_Tier_2"] = w3rkstatt.getJsonValue(path="$.ITSM.defaults.op_cat_2",data=jCfgData)
-        jValue["Categorization_Tier_3"] = w3rkstatt.getJsonValue(path="$.ITSM.defaults.op_cat_3",data=jCfgData)
-        jValue["Product_Categorization_Tier_1"] = w3rkstatt.getJsonValue(path="$.ITSM.defaults.prod_cat_1",data=jCfgData)
-        jValue["Product_Categorization_Tier_2"] = w3rkstatt.getJsonValue(path="$.ITSM.defaults.prod_cat_2",data=jCfgData)
-        jValue["Product_Categorization_Tier_3"] = w3rkstatt.getJsonValue(path="$.ITSM.defaults.prod_cat_3",data=jCfgData)
-        jValue["Product_Name"] = w3rkstatt.getJsonValue(path="$.ITSM.defaults.product_name",data=jCfgData)
+        jValue["First_Name"] = w3rkstatt.getJsonValue(
+            path="$.ITSM.defaults.name-first", data=jCfgData)
+        jValue["Last_Name"] = w3rkstatt.getJsonValue(
+            path="$.ITSM.defaults.name-last", data=jCfgData)
+        jValue["Description"] = w3rkstatt.getJsonValue(
+            path="$.message_summary", data=data)
+        jValue["Impact"] = w3rkstatt.getJsonValue(
+            path="$.ITSM.incident.impact", data=jCfgData)
+        jValue["Urgency"] = w3rkstatt.getJsonValue(
+            path="$.ITSM.incident.urgency", data=jCfgData)
+        jValue["Status"] = w3rkstatt.getJsonValue(
+            path="$.ITSM.incident.status", data=jCfgData)
+        jValue["Reported_Source"] = w3rkstatt.getJsonValue(
+            path="$.ITSM.incident.reported-source", data=jCfgData)
+        jValue["Service_Type"] = w3rkstatt.getJsonValue(
+            path="$.ITSM.incident.service-type", data=jCfgData)
+        jValue["ServiceCI"] = w3rkstatt.getJsonValue(
+            path="$.ITSM.defaults.service-ci", data=jCfgData)
+        jValue["Assigned_Group"] = w3rkstatt.getJsonValue(
+            path="$.ITSM.defaults.assigned-group", data=jCfgData)
+        jValue["Assigned_Support_Company"] = w3rkstatt.getJsonValue(
+            path="$.ITSM.defaults.support-company", data=jCfgData)
+        jValue["Assigned_Support_Organization"] = w3rkstatt.getJsonValue(
+            path="$.ITSM.defaults.support-organization", data=jCfgData)
+        jValue["Categorization_Tier_1"] = w3rkstatt.getJsonValue(
+            path="$.ITSM.defaults.op_cat_1", data=jCfgData)
+        jValue["Categorization_Tier_2"] = w3rkstatt.getJsonValue(
+            path="$.ITSM.defaults.op_cat_2", data=jCfgData)
+        jValue["Categorization_Tier_3"] = w3rkstatt.getJsonValue(
+            path="$.ITSM.defaults.op_cat_3", data=jCfgData)
+        jValue["Product_Categorization_Tier_1"] = w3rkstatt.getJsonValue(
+            path="$.ITSM.defaults.prod_cat_1", data=jCfgData)
+        jValue["Product_Categorization_Tier_2"] = w3rkstatt.getJsonValue(
+            path="$.ITSM.defaults.prod_cat_2", data=jCfgData)
+        jValue["Product_Categorization_Tier_3"] = w3rkstatt.getJsonValue(
+            path="$.ITSM.defaults.prod_cat_3", data=jCfgData)
+        jValue["Product_Name"] = w3rkstatt.getJsonValue(
+            path="$.ITSM.defaults.product_name", data=jCfgData)
 
     # For worklog entry with incident
-    if "Update" in ctmEventType: 
-        ctmAlertNotes = str(w3rkstatt.getJsonValue(path="$.notes",data=data))
-        ctmAlertStatus = w3rkstatt.getJsonValue(path="$.status",data=data) 
+    if "Update" in ctmEventType:
+        ctmAlertNotes = str(w3rkstatt.getJsonValue(path="$.notes", data=data))
+        ctmAlertStatus = w3rkstatt.getJsonValue(path="$.status", data=data)
 
         jValue["Work_Log_Submitter"] = "user"
         jValue["Status"] = "Enabled"
-        jValue["Incident_Number"] = w3rkstatt.getJsonValue(path="$.ticket_number",data=data) 
+        jValue["Incident_Number"] = w3rkstatt.getJsonValue(
+            path="$.ticket_number", data=data)
         jValue["Work_Log_Type"] = "Incident Task / Action"
         jValue["View_Access"] = "Public"
         jValue["Secure_Work_Log"] = "No"
 
-        if ctmAlertNotes is not None or "null" in ctmAlertNotes:            
-            jValue["Description"] =  ctmAlertStatus + " - Scheduler Notes" 
-            jValue["Detailed_Description"] = ctmAlertNotes    
+        if ctmAlertNotes is not None or "null" in ctmAlertNotes:
+            jValue["Description"] = ctmAlertStatus + " - Scheduler Notes"
+            jValue["Detailed_Description"] = ctmAlertNotes
         else:
-            jValue["Description"] =  ctmAlertStatus + " - " + w3rkstatt.getJsonValue(path="$.message_summary",data=data) 
-            jValue["Detailed_Description"] = w3rkstatt.getJsonValue(path="$.message_notes",data=data)
+            jValue["Description"] = ctmAlertStatus + " - " + \
+                w3rkstatt.getJsonValue(path="$.message_summary", data=data)
+            jValue["Detailed_Description"] = w3rkstatt.getJsonValue(
+                path="$.message_notes", data=data)
 
-    
     xValue = json.dumps(jValue)
     logger.debug('CMT Job Output Transform Raw: %s', xValue)
     jStatus = w3rkstatt.jsonValidator(data=xValue)
-    if jStatus:   
+    if jStatus:
         return xValue
     else:
         return {'lines': None}
 
+
 def extractFolderJobDetails(data):
     pass
+
 
 def simplifyCtmJson(data):
     jParamEntries = ""
     for key in data:
-                    
+
         sParam = w3rkstatt.dTranslate4Json(data=key)
         jParam = json.loads(sParam)
-        sParamName = w3rkstatt.getJsonValue(path="$.name",data=jParam).lower()
-        sParamVal  = w3rkstatt.getJsonValue(path="$.value",data=jParam)
+        sParamName = w3rkstatt.getJsonValue(path="$.name", data=jParam).lower()
+        sParamVal = w3rkstatt.getJsonValue(path="$.value", data=jParam)
         if len(sParamVal) > 0:
             jParamEntry = '"' + sParamName + '":"' + sParamVal + '"'
         else:
@@ -1701,17 +1864,93 @@ def simplifyCtmJson(data):
     jParamEntries = jParamEntries[:-1]
     jParameters = '{' + str(jParamEntries) + '}'
     sParameters = w3rkstatt.dTranslate4Json(data=jParameters)
-    sParameters = sParameters.replace("\\",'\\\\')
+    sParameters = sParameters.replace("\\", '\\\\')
 
     jParameters = json.loads(sParameters)
     dParameters = OrderedDict(sorted(jParameters.items()))
-    dParameters = json.dumps(dParameters)   
+    dParameters = json.dumps(dParameters)
     return dParameters
+
+
+def transformCtmBHOM(data, category):
+    json_ctm_data = data
+    json_data = {}
+
+    if category == "infrastructure":
+        event_data = {}
+        event_data['severity'] = 'WARNING'
+        event_data['CLASS'] = 'CTMX_EVENT'
+        event_data['msg'] = 'This event was created using the BHOM REST API'
+
+        event_data['source_identifier'] = data
+        event_data['source_hostname'] = data
+        event_data['source_address'] = data
+
+        event_data['alias'] = 'BMC_ComputerSystem:' + None + "'"
+        event_data['status'] = 'OPEN'
+        event_data['priority'] = 'PRIORITY_3'
+        event_data['location'] = None
+        event_data['instancename'] = None
+        event_data['cdmclass'] = 'BMC_ComputerSystem'
+        event_data['componentalias'] = 'BMC_ComputerSystem:' + None + "'"
+
+        event_data['ctmAlertId'] = '000000'
+        event_data['ctmDataCenter'] = 'trybmc'
+        event_data['ctmTime'] = 'epoch=' + str(epoch)
+
+        # The BHOM create event call expects a list of events,
+        # even for just a single event.
+        event_list = []
+
+        # Add the event to the list
+        event_list.append(event_data)
+
+        # Convert event data to the JSON format required by the API.
+        json_data = json.dumps(event_list)
+        logger.debug('BHOM: event json payload: %s', json_data)
+
+    elif category == "job":
+        pass
+    else:
+
+        event_data['severity'] = 'WARNING'
+        event_data['CLASS'] = 'CTMX_EVENT'
+        event_data['msg'] = 'This event was created using the BHOM REST API'
+
+        event_data['source_identifier'] = data
+        event_data['source_hostname'] = data
+        event_data['source_address'] = data
+
+        event_data['alias'] = 'BMC_ComputerSystem:' + None + "'"
+        event_data['status'] = 'OPEN'
+        event_data['priority'] = 'PRIORITY_3'
+        event_data['location'] = None
+        event_data['instancename'] = None
+        event_data['cdmclass'] = 'BMC_ComputerSystem'
+        event_data['componentalias'] = 'BMC_ComputerSystem:' + None + "'"
+
+        event_data['ctmAlertId'] = '000000'
+        event_data['ctmDataCenter'] = 'trybmc'
+        event_data['ctmTime'] = 'epoch=' + str(epoch)
+
+        # The BHOM create event call expects a list of events,
+        # even for just a single event.
+        event_list = []
+
+        # Add the event to the list
+        event_list.append(event_data)
+
+        # Convert event data to the JSON format required by the API.
+        json_data = json.dumps(event_list)
+        logger.debug('BHOM: event json payload: %s', json_data)
+
+    return json_data
 
 
 if __name__ == "__main__":
 
-    logging.basicConfig(filename=logFile, filemode='w', level=logging.DEBUG , format='%(asctime)s - %(levelname)s # %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+    logging.basicConfig(filename=logFile, filemode='w', level=logging.DEBUG,
+                        format='%(asctime)s - %(levelname)s # %(message)s', datefmt='%d-%b-%y %H:%M:%S')
     logger.info('CTM: Workload Management Start')
     logger.info('Version: %s ', _modVer)
     logger.info('System Platform: %s ', w3rkstatt.platform.system())
@@ -1723,4 +1962,4 @@ if __name__ == "__main__":
     logger.info('Epoch: %s', epoch)
     logger.info('CTM: Workload Management End')
     logging.shutdown()
-    print (f"Version: {_modVer}")
+    print(f"Version: {_modVer}")
