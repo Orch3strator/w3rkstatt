@@ -193,6 +193,11 @@
       "service_model_rpt_job": "",
       "service_model_root_node": ""
     },
+    "bhom": {
+      "enabled": true,
+      "service_model_rpt_job": "",
+      "service_model_root_node": ""
+    },
     "itsm": {
       "enabled": false
     },
