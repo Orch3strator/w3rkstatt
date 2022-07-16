@@ -658,15 +658,23 @@ def getCtmJobStatus(ctmApiClient, ctmServer, ctmOrderID):
                     logger.debug('CTM: API Result: %s', "no data")
 
         except ctm.rest.ApiException as exp:
-            logger.error('CTM: AAPI Function: %s', "get_job_output")
-            sBody = str(exp).split("HTTP response body:")[1]
-            # .replace("\\n","").replace("\n","").strip()
-            sMessage = str(sBody)
-            jMessage = json.loads(sMessage)
-            sNote = str(w3rkstatt.getJsonValue(
-                path="$.errors.[0].message", data=jMessage)).strip()
+            logger.error('CTM: AAPI Function: %s', "get_job_status")
+            logger.error('CTM: AAPI Error: %s', str(exp))
+            sNote = {}
+            try:
+                sBody = str(exp).split("HTTP response body:")[1]
+                # .replace("\\n","").replace("\n","").strip()
+                sMessage = re.findall(r"'(.*?)'", str(sBody), re.DOTALL)
+                logger.debug('CTM: AAPI Response Message: %s', str(sMessage))
+
+                jMessage = json.loads(sMessage)
+                sNote = str(w3rkstatt.getJsonValue(
+                    path="$.errors.[0].message", data=jMessage)).strip()
+            except:
+                pass
+
             logger.error('CTM: AAPI Error: %s', sNote)
-            jResults = sNote
+            results = sNote
 
     return jResults
 
