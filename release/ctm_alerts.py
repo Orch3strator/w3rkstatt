@@ -309,9 +309,11 @@ def getCtmJobRunOutput(ctmApiClient, data):
 
     value = ctm.getCtmJobOutput(
         ctmApiClient=ctmApiClient, ctmJobID=ctmJobID, ctmJobRunId=ctmJobRunCounter)
+
     ctmJobOutput = ctm.transformCtmJobOutput(data=value)
     if _localDebugAdv:
-        logger.debug('CMT Job Output Raw: %s', ctmJobOutput)
+        logger.debug('CMT Job Output Raw: %s', value)
+        logger.debug('CMT Job Output: %s', ctmJobOutput)
     return ctmJobOutput
 
 
@@ -893,7 +895,75 @@ if __name__ == "__main__":
                                  ctmAlertsStatus)
                 logger.debug('CTM ITSM Integration: "%s"', "End")
 
+            sampleJson = {
+                "uuid": "ee4bc44f-f1c2-4c3e-97d6-bbb81cbcfab0",
+                "raw": [{
+                    "call_type": "I",
+                    "Serial": "51",
+                    "Component_type": "20",
+                    "Component_machine": "ctm-archive.trybmc.com",
+                    "Component_name": "Workload Archiving Server",
+                    "Message_id": "32016",
+                    "Xseverity": "3",
+                    "Message": "Control-M/EM stopped sending jobs to Control-M Workload Archiving since server startup.",
+                    "Xtime": "20220715222434",
+                    "Xtime_of_last": "20220715222434",
+                    "Counter": "1",
+                    "Status": "1",
+                    "Note": None,
+                    "Key1": None,
+                    "Key2": None,
+                    "Key3": None,
+                    "Key4": None,
+                    "Key5": None
+                }],
+                "infraAlert": [{
+                    "Component_machine": "ctm-archive.trybmc.com",
+                    "Component_name": "Workload Archiving Server",
+                    "Component_type": "20",
+                    "Counter": "1",
+                    "Key1": None,
+                    "Key2": None,
+                    "Key3": None,
+                    "Key4": None,
+                    "Key5": None,
+                    "Message": "Control-M/EM stopped sending jobs to Control-M Workload Archiving since server startup.",
+                    "Message_id": "32016",
+                    "Note": None,
+                    "Serial": "51",
+                    "Status": "1",
+                    "Xseverity": "3",
+                    "Xtime": "2022-07-15 22:24:34",
+                    "Xtime_of_last": "2022-07-15 22:24:34",
+                    "call_type": "New",
+                    "data_center_dns": None,
+                    "data_center_fqdn": None,
+                    "data_center_ip": None,
+                    "host_ip": "192.168.100.63",
+                    "host_ip_dns": "trybmc.com",
+                    "host_ip_fqdn": "ctm-archive.trybmc.com",
+                    "job_script": None,
+                    "message_notes": "CTRL-M Component Control-M/EM stopped sending jobs to Control-M Workload Archiving since server startup.. Managed by: trybmc.com",
+                    "message_summary": "Control-M/EM stopped sending jobs to Control-M Workload Archiving since server startup.",
+                    "system_category": "infrastructure",
+                    "system_class": "BMC_ApplicationService:ctm-archive.trybmc.com:trybmc.com",
+                    "system_status": None
+                }]
+            }
             if integration_bhom_enabled:
+                ctmCoreData = sampleJson
+                ctmAlertCat == "x"
+
+                if ctmAlertCat == "infrastructure":
+                    ctm.transformCtmBHOM(
+                        data=ctmCoreData, category=ctmAlertCat)
+                elif ctmAlertCat == "job":
+                    ctm.transformCtmBHOM(
+                        data=ctmJobData, category=ctmAlertCat)
+                else:
+                    ctm.transformCtmBHOM(
+                        data=ctmCoreData, category=ctmAlertCat)
+
                 if _localDebug:
                     logger.debug(
                         'CTM BHOM Integration Infrastructure: "%s"', ctmCoreData)
