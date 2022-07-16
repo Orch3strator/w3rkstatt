@@ -131,11 +131,13 @@ FILES_REQUIRED=(
     "core_smtp.py"
     "core_snow.py"
     "core_tsim.py"
+    "core_bhom.py"
     "core_tso.py"
     "ctm_alerts.py"
     "disco_ctm.py"
     "w3rkstatt.py"
     "ctm_alerts.sh"
+    "uat.py"
     "ignore test"
 )
 
