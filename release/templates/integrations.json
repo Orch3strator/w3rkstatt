@@ -1,290 +1,308 @@
 {
-    "DEFAULT": {
-        "version": 2.0,
-        "loglevel": "debug",
-        "env_name": "lab",
-        "insecureRequestWarning": "true",
-        "crypto_file": "",
-        "config_file": "",
-        "config_folder": "",
-        "log_file": "",
-        "log_folder": "",
-        "data_folder": "",
-        "template_folder": "",
-        "demo": true
+  "DEFAULT": {
+    "version": 2.0,
+    "loglevel": "debug",
+    "env_name": "lab",
+    "insecureRequestWarning": "true",
+    "crypto_file": "",
+    "config_file": "",
+    "config_folder": "",
+    "log_file": "",
+    "log_folder": "",
+    "data_folder": "",
+    "template_folder": "",
+    "demo": true
+  },
+  "MAIL": {
+    "host": "",
+    "port": "465",
+    "ssl": true,
+    "ssl_verification": true,
+    "user": "",
+    "pwd": "",
+    "display": "",
+    "template": "email.html"
+  },
+  "BHOM": {
+    "host": "",
+    "port": "443",
+    "ssl": true,
+    "ssl_ignore": true,
+    "user": "",
+    "pwd": "",
+    "api_version": "v1.0",
+    "api_docs": "",
+    "api_namespace": "tsws",
+    "api_Key": "",
+    "demo": false
+  },
+  "TSIM": {
+    "host": "",
+    "port": "",
+    "ssl": true,
+    "ssl_ignore": true,
+    "user": "admin",
+    "pwd": "",
+    "cell": "",
+    "routing": "CELL_NAME",
+    "tenant": "*"
+  },
+  "TSPS": {
+    "host": "",
+    "port": "",
+    "ssl": true,
+    "ssl_ignore": true,
+    "user": "admin",
+    "pwd": "",
+    "api_version": "v10.1",
+    "api_docs": "https://docs.bmc.com/docs/tsps113/consolidated-list-of-truesight-apis-793938298.html"
+  },
+  "ITSM": {
+    "host": "",
+    "port": "443",
+    "ssl": true,
+    "ssl_verification": false,
+    "user": "",
+    "pwd": "",
+    "api_namespace": "arsys",
+    "api_version": "v1",
+    "api_docs": "https://docs.bmc.com/docs/ars9000/bmc-remedy-ar-system-rest-api-overview-515804627.html",
+    "api_docs_02": "https://communities.bmc.com/docs/DOC-127482",
+    "api_docs_03": "https://communities.bmc.com/message/871421#871421",
+    "api_docs_04": "https://bmcsites.force.com/casemgmt/sc_KnowledgeArticle?sfdcid=kA33n000000XqnpCAC&type=ProductDescription",
+    "mappings_file": "helix_itsm_mappings.json",
+    "change": {
+      "form_name": "CHG:ChangeInterface_Create",
+      "impact": "3000",
+      "urgency": "3000",
+      "status": "7",
+      "status_reason": "17000",
+      "cab": "",
+      "template_name": "",
+      "template_id": "",
+      "template_name_auto": "",
+      "template_id_auto": "",
+      "demo": false
     },
-    "MAIL": {
-        "host": "",
-        "port": "465",
-        "ssl": true,
-        "ssl_verification": true,
-        "user": "",
-        "pwd": "",
-        "display": "",
-        "template": "email.html"
+    "incident": {
+      "form_name": "HPD:IncidentInterface_Create",
+      "form_search": "HPD:IncidentInterface",
+      "template_id": "",
+      "template_name": "",
+      "impact": "4-Minor/Localized",
+      "urgency": "3-Medium",
+      "status": "New",
+      "reported-source": "Direct Input",
+      "service-type": "User Service Request",
+      "demo": true
     },
-    "TSIM": {
-        "host": "",
-        "port": "",
-        "ssl": true,
-        "ssl_ignore": true,
-        "user": "admin",
-        "pwd": "",
-        "cell": "",
-        "routing": "CELL_NAME",
-        "tenant": "*"
+    "worklog": {
+      "form_name": "HPD:WorkLog"
     },
-    "TSPS": {
-        "host": "",
-        "port": "",
-        "ssl": true,
-        "ssl_ignore": true,
-        "user": "admin",
-        "pwd": "",
-        "api_version": "v10.1",
-        "api_docs": "https://docs.bmc.com/docs/tsps113/consolidated-list-of-truesight-apis-793938298.html"
+    "cmdb": {
+      "form_name": ""
     },
-    "ITSM": {
-        "host": "",
-        "port": "443",
-        "ssl": true,
-        "ssl_verification": false,
-        "user": "",
-        "pwd": "",
-        "api_namespace": "arsys",
-        "api_version": "v1",
-        "api_docs": "https://docs.bmc.com/docs/ars9000/bmc-remedy-ar-system-rest-api-overview-515804627.html",
-        "api_docs_02": "https://communities.bmc.com/docs/DOC-127482",
-        "api_docs_03": "https://communities.bmc.com/message/871421#871421",
-        "api_docs_04": "https://bmcsites.force.com/casemgmt/sc_KnowledgeArticle?sfdcid=kA33n000000XqnpCAC&type=ProductDescription",
-        "mappings_file": "helix_itsm_mappings.json",
-        "change": {
-            "form_name": "CHG:ChangeInterface_Create",
-            "impact": "3000",
-            "urgency": "3000",
-            "status": "7",
-            "status_reason": "17000",
-            "cab": "",
-            "template_name": "",
-            "template_id": "",
-            "template_name_auto": "",
-            "template_id_auto": "",
-            "demo": false
-        },
-        "incident": {
-            "form_name": "HPD:IncidentInterface_Create",
-            "form_search": "HPD:IncidentInterface",
-            "template_id": "",
-            "template_name": "",
-            "impact": "4-Minor/Localized",
-            "urgency": "3-Medium",
-            "status": "New",
-            "reported-source": "Direct Input",
-            "service-type": "User Service Request",
-            "demo": true
-        },
-        "worklog": {
-            "form_name": "HPD:WorkLog"
-        },
-        "cmdb": {
-            "form_name": ""
-        },
-        "defaults": {
-            "timedelta": 1,
-            "name-first": "",
-            "name-last": "",
-            "e-mail": "",
-            "location-company": "",
-            "region": "Americas",
-            "site-group": "United States",
-            "site": "",
-            "support-company": "",
-            "support-organization": "I",
-            "assigned-group": "",
-            "service-ci": "",
-            "op_cat_1": "",
-            "op_cat_2": "",
-            "op_cat_3": "",
-            "prod_cat_1": "",
-            "prod_cat_2": "",
-            "prod_cat_3": "",
-            "product_name": ""
-        }
-    },
-    "SMARTIT": {
-        "host": "",
-        "port": "443",
-        "ssl": false,
-        "ssl_verification": false
-    },
-    "TSO": {
-        "host": "",
-        "port": "443",
-        "ssl": true,
-        "ssl_verification": false,
-        "ssl_san": "",
-        "user": "",
-        "pwd": "",
-        "itsm": {
-            "incident": "",
-            "change": ""
-        },
-        "ctm": {
-            "wcm": ""
-        }
-    },
-    "TSSA": {
-        "host": "",
-        "port": "",
-        "ssl": true,
-        "ssl_verification": false,
-        "user": "",
-        "pwd": "",
-        "tssa_host": "",
-        "tssa_port": "8080",
-        "tssa_user": "bladmin",
-        "tssa_pwd": "",
-        "tssa_pwd_secure": ""
-    },
-    "DISCO": {
-        "host": "",
-        "fqdn": "",
-        "port": "443",
-        "ssl": true,
-        "ssl_verification": false,
-        "user": "",
-        "pwd": "",
-        "external_port": "443",
-        "api_version": "v1.1",
-        "api_search_limit": 100,
-        "token": ""
-    },
-    "CTM": {
-        "host": "",
-        "port": "8443",
-        "ssl": true,
-        "ssl_verification": false,
-        "jks_pwd": "",
-        "jks_secure": "",
-        "user": "",
-        "pwd": "",
-        "docs-api": "https://docs.bmc.com/docs/automation-api/monthly/code-reference-989443381.html",
-        "docs-3rd": "http://www.ctmguru.com/p/faq.html",
-        "docs-itsm": "https://docs.bmc.com/docs/bsr/35/integrating-bmc-control-m-workload-automation-with-proactivenet-589660480.html",
-        "python": "https://github.com/dcompane/controlm_py",
-        "env": "",
-        "aapi": "/automation-api",
-        "swagger": "/automation-api/swagger-ui.html",
-        "tsim": {
-            "enabled": false,
-            "service_model_rpt_job": "",
-            "service_model_root_node": ""
-        },
-        "itsm": {
-            "enabled": false
-        },
-        "alerts": {
-            "ids": "",
-            "comment": "",
-            "urgency": "",
-            "status": "",
-            "demo": false
-        },
-        "ctmag": {
-            "windows": "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\ctmag",
-            "nix": "",
-            "demo": false
-        },
-        "jobs": {
-            "log_level": "",
-            "oderid": "",
-            "server": "",
-            "demo": false
-        },
-        "datacenter": [
-            {
-                "name": "abc",
-                "host": "abc.local"
-            },
-            {
-                "name": "123",
-                "host": "123.local"
-            }
-        ]
-    },
-    "CTM_BRIDGE": {
-        "host": "0.0.0.0",
-        "port": "8888",
-        "ssl": false,
-        "ssl_verification": false,
-        "user": "",
-        "pwd": "",
-        "html": "index.html",
-        "api": "bridge.ctm.api.json",
-        "tso_process": ""
-    },
-    "SNOW": {
-        "host": "",
-        "port": "443",
-        "ssl": true,
-        "ssl_verification": false,
-        "user": "",
-        "pwd": "",
-        "api_namespace": "now",
-        "api_version": "latest",
-        "api_docs": "https://docs.servicenow.com/bundle/paris-application-development/page/integrate/inbound-rest/concept/c_RESTAPI.html",
-        "url": "https://dev65176.service-now.com/login.do?user_name=admin&sys_action=sysverb_login&user_password=2hPJftw0TZHr",
-        "request": {
-            "template_name": "",
-            "template_id": ""
-        }
-    },
-    "TWILIO": {
-        "host": "www.twilio.com",
-        "port": "443",
-        "ssl": true,
-        "ssl_verification": true,
-        "user": "",
-        "pwd": "",
-        "account_sid": "",
-        "token": "",
-        "phone": "",
-        "admin": "",
-        "mms_media": "",
-        "api_init": false,
-        "api_key": "",
-        "api_key_riendly_name": "",
-        "api_search_limit": 100
-    },
-    "SLACK": {
-        "host": "",
-        "port": "1443",
-        "ssl": false,
-        "ssl_verification": false,
-        "user": "sa",
-        "pwd": "",
-        "driver": "ODBC Driver 17 for SQL Server",
-        "db": "ADE"
-    },
-    "KAFKA": {
-        "host": "",
-        "port": "9092",
-        "topic": "",
-        "replication-factor": 1,
-        "partitions": 1
-    },
-    "ZOOKEEPER": {
-        "host": "",
-        "port": "2181"
-    },
-    "ETL": {
-        "host": "",
-        "port": "1443",
-        "ssl": false,
-        "ssl_verification": false,
-        "user": "sa",
-        "pwd": "",
-        "driver": "ODBC Driver 17 for SQL Server",
-        "db": ""
+    "defaults": {
+      "timedelta": 1,
+      "name-first": "",
+      "name-last": "",
+      "e-mail": "",
+      "location-company": "",
+      "region": "Americas",
+      "site-group": "United States",
+      "site": "",
+      "support-company": "",
+      "support-organization": "I",
+      "assigned-group": "",
+      "service-ci": "",
+      "op_cat_1": "",
+      "op_cat_2": "",
+      "op_cat_3": "",
+      "prod_cat_1": "",
+      "prod_cat_2": "",
+      "prod_cat_3": "",
+      "product_name": ""
     }
+  },
+  "SMARTIT": {
+    "host": "",
+    "port": "443",
+    "ssl": false,
+    "ssl_verification": false
+  },
+  "TSO": {
+    "host": "",
+    "port": "443",
+    "ssl": true,
+    "ssl_verification": false,
+    "ssl_san": "",
+    "user": "",
+    "pwd": "",
+    "itsm": {
+      "incident": "",
+      "change": ""
+    },
+    "ctm": {
+      "wcm": ""
+    }
+  },
+  "TSSA": {
+    "host": "",
+    "port": "",
+    "ssl": true,
+    "ssl_verification": false,
+    "user": "",
+    "pwd": "",
+    "tssa_host": "",
+    "tssa_port": "8080",
+    "tssa_user": "bladmin",
+    "tssa_pwd": "",
+    "tssa_pwd_secure": ""
+  },
+  "DISCO": {
+    "host": "",
+    "fqdn": "",
+    "port": "443",
+    "ssl": true,
+    "ssl_verification": false,
+    "user": "",
+    "pwd": "",
+    "external_port": "443",
+    "api_version": "v1.1",
+    "api_search_limit": 100,
+    "token": ""
+  },
+  "CTM": {
+    "host": "",
+    "port": "8443",
+    "ssl": true,
+    "ssl_verification": false,
+    "jks_pwd": "",
+    "jks_secure": "",
+    "user": "",
+    "pwd": "",
+    "docs-api": "https://docs.bmc.com/docs/automation-api/monthly/code-reference-989443381.html",
+    "docs-3rd": "http://www.ctmguru.com/p/faq.html",
+    "docs-itsm": "https://docs.bmc.com/docs/bsr/35/integrating-bmc-control-m-workload-automation-with-proactivenet-589660480.html",
+    "python": "https://github.com/dcompane/controlm_py",
+    "env": "",
+    "aapi": "/automation-api",
+    "swagger": "/automation-api/swagger-ui.html",
+    "tsim": {
+      "enabled": false,
+      "service_model_rpt_job": "",
+      "service_model_root_node": ""
+    },
+    "bhom": {
+      "enabled": true,
+      "service_model_rpt_job": "",
+      "service_model_root_node": ""
+    },
+    "itsm": {
+      "enabled": false
+    },
+    "alerts": {
+      "ids": "",
+      "comment": "",
+      "urgency": "",
+      "status": "",
+      "demo": false
+    },
+    "ctmag": {
+      "windows": "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\ctmag",
+      "nix": "",
+      "demo": false
+    },
+    "jobs": {
+      "log_level": "",
+      "oderid": "",
+      "server": "",
+      "demo": false
+    },
+    "datacenter": [
+      {
+        "name": "abc",
+        "host": "abc.local"
+      },
+      {
+        "name": "123",
+        "host": "123.local"
+      }
+    ]
+  },
+  "CTM_BRIDGE": {
+    "host": "0.0.0.0",
+    "port": "8888",
+    "ssl": false,
+    "ssl_verification": false,
+    "user": "",
+    "pwd": "",
+    "html": "index.html",
+    "api": "bridge.ctm.api.json",
+    "tso_process": ""
+  },
+  "SNOW": {
+    "host": "",
+    "port": "443",
+    "ssl": true,
+    "ssl_verification": false,
+    "user": "",
+    "pwd": "",
+    "api_namespace": "now",
+    "api_version": "latest",
+    "api_docs": "https://docs.servicenow.com/bundle/paris-application-development/page/integrate/inbound-rest/concept/c_RESTAPI.html",
+    "url": "https://dev65176.service-now.com/login.do?user_name=admin&sys_action=sysverb_login&user_password=2hPJftw0TZHr",
+    "request": {
+      "template_name": "",
+      "template_id": ""
+    }
+  },
+  "TWILIO": {
+    "host": "www.twilio.com",
+    "port": "443",
+    "ssl": true,
+    "ssl_verification": true,
+    "user": "",
+    "pwd": "",
+    "account_sid": "",
+    "token": "",
+    "phone": "",
+    "admin": "",
+    "mms_media": "",
+    "api_init": false,
+    "api_key": "",
+    "api_key_riendly_name": "",
+    "api_search_limit": 100
+  },
+  "SLACK": {
+    "host": "",
+    "port": "1443",
+    "ssl": false,
+    "ssl_verification": false,
+    "user": "sa",
+    "pwd": "",
+    "driver": "ODBC Driver 17 for SQL Server",
+    "db": "ADE"
+  },
+  "KAFKA": {
+    "host": "",
+    "port": "9092",
+    "topic": "",
+    "replication-factor": 1,
+    "partitions": 1
+  },
+  "ZOOKEEPER": {
+    "host": "",
+    "port": "2181"
+  },
+  "ETL": {
+    "host": "",
+    "port": "1443",
+    "ssl": false,
+    "ssl_verification": false,
+    "user": "sa",
+    "pwd": "",
+    "driver": "ODBC Driver 17 for SQL Server",
+    "db": ""
+  }
 }
