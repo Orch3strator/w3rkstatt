@@ -244,6 +244,10 @@ def getCtmJobLog(ctmApiClient, data):
         logger.debug('CMT Job Log: First attempt to retrieve data')
     time.sleep(2)
     sCtmJobLog = getCtmJobRunLog(ctmApiClient, data)
+
+    if _localDebugAdv:
+        logger.debug('CMT Job Log Raw: %s', sCtmJobLog)
+
     jCtmJobLog = json.loads(sCtmJobLog)
     ctmStatus = w3rkstatt.getJsonValue(path="$.status", data=jCtmJobLog)
 
@@ -309,10 +313,12 @@ def getCtmJobRunOutput(ctmApiClient, data):
 
     value = ctm.getCtmJobOutput(
         ctmApiClient=ctmApiClient, ctmJobID=ctmJobID, ctmJobRunId=ctmJobRunCounter)
-
-    ctmJobOutput = ctm.transformCtmJobOutput(data=value)
     if _localDebugAdv:
         logger.debug('CMT Job Output Raw: %s', value)
+
+    ctmJobOutput = ctm.transformCtmJobOutput(data=value)
+
+    if _localDebugAdv:
         logger.debug('CMT Job Output: %s', ctmJobOutput)
     return ctmJobOutput
 
@@ -534,8 +540,9 @@ def analyzeAlert4Job(ctmApiClient, raw, data):
                     ctmApiClient=ctmApiClient, data=jCtmAlert)
                 sCtmJobOutput = getCtmJobOutput(
                     ctmApiClient=ctmApiClient, data=jCtmAlert)
-                sCtmJobLog = getCtmJobLog(
-                    ctmApiClient=ctmApiClient, data=jCtmAlert)
+                # sCtmJobLog = getCtmJobLog( ctmApiClient = ctmApiClient, data = jCtmAlert)
+
+                sCtmJobLog = '{"collection":"wotk in progress"}'
 
                 # Create JSON object
                 jCtmJobInfo = json.loads(sCtmJobInfo)
@@ -549,8 +556,8 @@ def analyzeAlert4Job(ctmApiClient, raw, data):
                     sCtmJobConfig = getCtmJobConfig(
                         ctmApiClient=ctmApiClient, data=jCtmJobInfo)
                 else:
-                    xData = '{"count":0,"status":' + \
-                        str(None) + ',"entries":[]}'
+                    xData = '{"count":0,"status":' +
+                    str(None) + ',"entries":[]}'
                     sCtmJobConfig = w3rkstatt.dTranslate4Json(data=xData)
             else:
                 sCtmJobInfo = '{"ctm_api":"not accessible"}'
@@ -578,9 +585,9 @@ def analyzeAlert4Job(ctmApiClient, raw, data):
             data='{"count":' + str(None) + ',"status":' + str(None) + ',"entries":[]}')
         sCtmJobConfig = w3rkstatt.dTranslate4Json(
             data='{"count":' + str(None) + ',"status":' + str(None) + ',"entries":[]}')
-        ctmJobData = '{"uuid":"' + sUuid + '","raw":[' + sCtmAlertRaw + '],"jobAlert":[' + sCtmAlertData + '],"jobInfo":[' + \
-            sCtmJobInfo + '],"jobConfig":[' + sCtmJobConfig + '],"jobLog":[' + \
-            sCtmJobLog + '],"jobOutput":[' + sCtmJobOutput + ']}'
+        ctmJobData = '{"uuid":"' + sUuid + '","raw":[' + sCtmAlertRaw + '],"jobAlert":[' + sCtmAlertData + '],"jobInfo":[' +
+        sCtmJobInfo + '],"jobConfig":[' + sCtmJobConfig + '],"jobLog":[' +
+        sCtmJobLog + '],"jobOutput":[' + sCtmJobOutput + ']}'
 
     if _localInfo:
         logger.info('CTM: Analyze Alert for Jobs - End')
