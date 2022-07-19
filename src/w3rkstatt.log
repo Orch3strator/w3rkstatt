@@ -1,20 +1,20 @@
-15-Jul-22 15:38:24 - INFO # Werkstatt Python Core Script "Start"
-15-Jul-22 15:38:24 - INFO # Version: 2.0 
-15-Jul-22 15:38:24 - INFO # System Platform: "Windows" 
-15-Jul-22 15:38:24 - INFO # System Name: "core-dev" 
-15-Jul-22 15:38:24 - INFO # Project Folder: "P:\projects\orch3strator\w3rkstatt\src" 
-15-Jul-22 15:38:24 - ERROR # Script: File Exists: P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\configs\helix_itsm_mappings.json
-15-Jul-22 15:38:24 - ERROR # Script: File Exists: P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\configs\setup.settings.ini
-15-Jul-22 15:38:24 - ERROR # Script: File Exists: P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\templates\bmcs.html
-15-Jul-22 15:38:24 - ERROR # Script: File Exists: P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\templates\email.html
-15-Jul-22 15:38:24 - ERROR # Script: File Exists: P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\templates\index.html
-15-Jul-22 15:38:24 - ERROR # Script: File Exists: P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\templates\integrations.json
-15-Jul-22 15:38:24 - INFO # System Config JSON File: "P:\projects\orch3strator\w3rkstatt\src\templates\integrations.json" 
-15-Jul-22 15:38:24 - INFO # Log Folder: "P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\logs" 
-15-Jul-22 15:38:24 - INFO # Data Folder: "P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\data" 
-15-Jul-22 15:38:24 - INFO # Template Folder: "P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\templates" 
-15-Jul-22 15:38:24 - INFO # Config File: "P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\configs\core-dev.json" 
-15-Jul-22 15:38:24 - INFO # Crypto Key File: "P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\configs\core-dev.bin" 
-15-Jul-22 15:38:24 - INFO # Crypto Encrypt Password for: "BHOM"
-15-Jul-22 15:38:26 - INFO # Crypto Update config file: "P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\configs\core-dev.json"
-15-Jul-22 15:38:26 - INFO # Werkstatt Python Core Script "End"
+18-Jul-22 11:56:29 - INFO # Werkstatt Python Core Script "Start"
+18-Jul-22 11:56:29 - INFO # Version: 2.0 
+18-Jul-22 11:56:29 - INFO # System Platform: "Windows" 
+18-Jul-22 11:56:29 - INFO # System Name: "core-dev" 
+18-Jul-22 11:56:29 - INFO # Project Folder: "P:\projects\orch3strator\w3rkstatt\src" 
+18-Jul-22 11:56:29 - ERROR # Script: File Exists: P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\configs\helix_itsm_mappings.json
+18-Jul-22 11:56:29 - ERROR # Script: File Exists: P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\configs\setup.settings.ini
+18-Jul-22 11:56:29 - ERROR # Script: File Exists: P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\templates\bmcs.html
+18-Jul-22 11:56:29 - ERROR # Script: File Exists: P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\templates\email.html
+18-Jul-22 11:56:29 - ERROR # Script: File Exists: P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\templates\index.html
+18-Jul-22 11:56:29 - ERROR # Script: File Exists: P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\templates\integrations.json
+18-Jul-22 11:56:29 - INFO # System Config JSON File: "P:\projects\orch3strator\w3rkstatt\src\templates\integrations.json" 
+18-Jul-22 11:56:29 - INFO # Log Folder: "P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\logs" 
+18-Jul-22 11:56:29 - INFO # Data Folder: "P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\data" 
+18-Jul-22 11:56:29 - INFO # Template Folder: "P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\templates" 
+18-Jul-22 11:56:29 - INFO # Config File: "P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\configs\core-dev.json" 
+18-Jul-22 11:56:29 - INFO # Crypto Key File: "P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\configs\core-dev.bin" 
+18-Jul-22 11:56:30 - INFO # Crypto Encrypt Password for: "CTM"
+18-Jul-22 11:56:30 - INFO # Crypto Update config file: "P:\projects\orch3strator\w3rkstatt\src\.w3rkstatt\configs\core-dev.json"
+18-Jul-22 11:56:30 - INFO # Werkstatt Python Core Script "End"

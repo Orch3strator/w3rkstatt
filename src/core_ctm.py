@@ -1,5 +1,5 @@
 #!/usr/bin/python
-#Filename: core_ctm.py
+# Filename: core_ctm.py
 
 """
 (c) 2020 Volker Scheithauer
@@ -19,7 +19,7 @@ https://opensource.org/licenses/GPL-3.0
 # SPDX-License-Identifier: GPL-3.0-or-later
 For information on SDPX, https://spdx.org/licenses/GPL-3.0-or-later.html
 
-BMC Software Python Core Tools 
+BMC Software Python Core Tools
 Provide core functions for BMC Software related python scripts
 
 Change Log
@@ -99,6 +99,7 @@ _timeFormat = '%d %b %Y %H:%M:%S,%f'
 _localDebug = False
 _localDebugAdv = False
 _localQA = False
+_localSecurityDebugAdv = True
 
 logger = logging.getLogger(__name__)
 logFile = w3rkstatt.getJsonValue(path="$.DEFAULT.log_file", data=jCfgData)
@@ -588,7 +589,7 @@ def getCtmJobLog(ctmApiClient, ctmJobID):
     #                         user=ctm_user,password=ctm_pwd,
     #                         additional_login_header={'accept': 'application/json'})
     """
-    Get the job execution log. 
+    Get the job execution log.
 
     :param api_client: property from CTMConnection object
     :return: list of named tuple: [{'key': 'value'}] access as list[0].key
@@ -693,8 +694,17 @@ def getCtmAgentStatus(ctmApiClient, ctmAgent):
 
 
 def getCtmConnection():
+    if _localSecurityDebugAdv:
+        logger.debug('CTM: AAPI EM   : %s', ctm_host)
+        logger.debug('CTM: AAPI User : %s', ctm_user)
+        logger.debug('CTM: AAPI Pwd  : %s', ctm_pwd)
+
     ctm_pwd_decrypted = w3rkstatt.decryptPwd(
         data=ctm_pwd, sKeyFileName=cryptoFile)
+
+    if _localSecurityDebugAdv:
+        logger.debug('CTM: AAPI Pwd  : %s', ctm_pwd_decrypted)
+
     ctmApiCli = CtmConnection(host=ctm_host, port=ctm_port, ssl=ctm_ssl, verify_ssl=ctm_ssl_ver,
                               user=ctm_user, password=ctm_pwd_decrypted,
                               additional_login_header={'accept': 'application/json'})
@@ -1132,12 +1142,15 @@ def getCtmDeployedFolder(ctmApiClient, ctmServer, ctmFolder):
     except ctm.rest.ApiException as exp:
         logger.error('CTM: AAPI Function: %s', "get_job_output")
         sBody = str(exp).split("HTTP response body:")[1]
-        sMessage = str(sBody)  # .replace("\\n","").replace("\n","").strip()
+        sMessage = str(sBody).replace("\\n", "").replace("\n", "").strip()
+        if sMessage.startswith("b"):
+            sMessage = sMessage[2:-1]
+
         jMessage = json.loads(sMessage)
         sNote = str(w3rkstatt.getJsonValue(
             path="$.errors.[0].message", data=jMessage)).strip().replace('"', "")
         logger.error('CTM: AAPI Error: "%s"', sNote)
-        results = sNote
+        results = jMessage
     return results
 
 
@@ -1622,60 +1635,95 @@ def transformCtmJobLogMini(data, runCounter):
     log_list = []
     jValue = {}
     s = "\n"
-    xList = [s for s in data.splitlines(True) if s.strip("\r\n")]
-    yList = list(map(str.strip, xList))
-    sStatus = yList[0]
+
+    if data.startswith('b"'):
+        start = data.find('b"') + 2
+        end = data.find('n"', start) + 1
+        pData = data[start:end]
+    else:
+        pData = data
+
+    pList = pData.split("\\n")
+    # xList = [s for s in pData.splitlines(True) if s.strip("\r\n")]
+    # yList = list(map(str.strip, xList))
     sJobLogStatus = False
 
     i = 0
     # Extract Data from line
     # 12:48:07 2-Apr-2021  ORDERED JOB:24; DAILY FORCED, ODATE 20210402   	5065
-    for item in yList:
+    for item in pList:
         log_data = {}
+        # Event Time
 
-        sTemp = re.split(r'\s{2,}', item)
-        sTime = item.split()[0]
-        sDate = item.split()[1]
+        if (len(item) > 1 and not item.startswith("Event Time")):
+            sTemp = re.split(r'\s{2,}', item)
+            sTime = item.split()[0]
+            sDate = item.split()[1]
 
-        if "Failed to get job log" in sStatus:
-            sMessage = sTemp[0]
-            # Build JSON
-            # log_wrapper = {}
-            # log_wrapper['entry-' + str(i).zfill(4)] = sMessage
-            # log_list.append(log_wrapper)
+            sMessage = sTemp[1]
 
-            # construct json string
-            if i == 0:
-                sEntry = '"entry-' + str(i).zfill(4) + '":"' + sMessage + '"'
+            # Get CTM Output Code
+            lTemp = len(sTemp)
+            if lTemp == 3:
+                sCodeTmp = sTemp[2]
+                if len(sCodeTmp) > 1:
+                    sCtmCode = sCodeTmp.split("\\t")[1]
             else:
-                sEntry = sEntry + ',"entry-' + \
-                    str(i).zfill(4) + '":"' + sMessage + '"'
+                sCodeTmp = sMessage.split("\\t")
+                if len(sCodeTmp) > 1:
+                    sCtmCode = sCodeTmp[1]
+                    sMessage = sCodeTmp[0]
 
-            i += 1
-        else:
-            sJobLogStatus = True
-            sMessage = sTemp[1].split("\t")[0]
-            sCtmCode = item.split("\t")[1]
+            if "'" in sMessage:
+                sMessage = sMessage.replace("'", "--")
 
-            if sCtmCode == "5100":
-                xTemp = sMessage.split()
-                zTemp = xTemp[6]
-                if zTemp == ctmJobRunCounter:
-                    log_data['oscompstat'] = xTemp[4].replace(".", "")
-                    log_data['run_count'] = xTemp[6]
-                    log_data['ended'] = extractCtmAlertDate(
-                        data=xTemp[2].replace(".", ""))
+            if "Failed to get job log" in sMessage:
+                # Build JSON
+                # log_wrapper = {}
+                # log_wrapper['entry-' + str(i).zfill(4)] = sMessage
+                # log_list.append(log_wrapper)
+
+                # construct json string
+                if i == 0:
+                    sEntry = '"entry-' + \
+                        str(i).zfill(4) + '":"' + sMessage + '"'
+                else:
+                    sEntry = sEntry + ',"entry-' + \
+                        str(i).zfill(4) + '":"' + sMessage + '"'
+
+                i += 1
+            else:
+                sJobLogStatus = True
+                if sCtmCode == "5100":
+                    xTemp = sMessage.split()
+                    zTemp = xTemp[6]
+                    if zTemp == ctmJobRunCounter:
+                        log_data['oscompstat'] = xTemp[4].replace(".", "")
+                        log_data['run_count'] = xTemp[6]
+                        log_data['ended'] = extractCtmAlertDate(
+                            data=xTemp[2].replace(".", ""))
+                        log_data['time'] = sTime
+                        log_data['date'] = sDate
+                        log_data['message'] = sMessage
+                        log_data['code'] = sCtmCode
+
+                        # Build JSON
+                        log_wrapper = {}
+                        log_wrapper['entry-' + str(i).zfill(4)] = log_data
+                        log_list.append(log_wrapper)
+
+                    i += 1
+                else:
                     log_data['time'] = sTime
                     log_data['date'] = sDate
                     log_data['message'] = sMessage
                     log_data['code'] = sCtmCode
-
                     # Build JSON
                     log_wrapper = {}
                     log_wrapper['entry-' + str(i).zfill(4)] = log_data
                     log_list.append(log_wrapper)
 
-                i += 1
+                    i += 1
 
     # custom json in case no access to CTM API
     if sJobLogStatus:
@@ -1886,13 +1934,13 @@ def simplifyCtmJson(data):
 
 
 def transformCtmBHOM(data, category):
-    json_ctm_data = data
+    json_ctm_data = json.loads(data)
     json_data = {}
+    event_data = {}
 
     if category == "infrastructure":
-        event_data = {}
         event_data['severity'] = 'WARNING'
-        event_data['CLASS'] = 'CTMX_EVENT'
+        event_data['CLASS'] = 'CTM_EVENT'
         event_data['msg'] = 'This event was created using the BHOM REST API'
 
         event_data['source_identifier'] = data
@@ -1923,7 +1971,91 @@ def transformCtmBHOM(data, category):
         logger.debug('BHOM: event json payload: %s', json_data)
 
     elif category == "job":
-        pass
+
+        ctmFolder = json_ctm_data["jobInfo"][0]["entries"][0]["folder"]
+        event_data['severity'] = 'WARNING'
+        event_data['CLASS'] = 'CTM_JOB'
+        event_data['msg'] = json_ctm_data["jobAlert"][0]["message_notes"]
+
+        event_data['source_identifier'] = json_ctm_data["jobAlert"][0]["host_id"]
+        event_data['source_hostname'] = json_ctm_data["jobAlert"][0]["host_id"]
+        event_data['source_address'] = json_ctm_data["jobAlert"][0]["host_ip"]
+
+        event_data['alias'] = 'BMC_ComputerSystem:' \
+            + json_ctm_data["jobAlert"][0]["host_id"]
+        event_data['status'] = 'OPEN'
+        event_data['priority'] = 'PRIORITY_3'
+        event_data['location'] = json_ctm_data["jobAlert"][0]["data_center"]
+        event_data['instancename'] = json_ctm_data["jobAlert"][0]["host_id"]
+        event_data['cdmclass'] = 'BMC_ComputerSystem'
+        event_data['componentalias'] = 'BMC_ComputerSystem:' \
+            + json_ctm_data["jobAlert"][0]["host_id"]
+
+        # Alert update type 'I' Insert - new alert 'U' Update existing alert
+        event_data['ctmUpdateType'] = json_ctm_data["jobAlert"][0]["call_type"]
+        # Alert id Unique alert identifier
+        event_data['ctmAlertId'] = json_ctm_data["jobAlert"][0]["alert_id"]
+        # Control-M server name
+        event_data['ctmDataCenter'] = json_ctm_data["jobAlert"][0]["data_center"]
+        # Job member name
+        event_data['ctmMemName'] = json_ctm_data["jobAlert"][0]["memname"]
+        # Job order id
+        event_data['ctmOrderId'] = json_ctm_data["jobAlert"][0]["order_id"]
+        # Alert severity 'R' - regular 'U' - urgent 'V' - very urgent
+        event_data['ctmSeverity'] = json_ctm_data["jobAlert"][0]["severity"]
+        # representation = date; # Alert creation time (YYYYMMDDhhmmss)
+        event_data['ctmTime'] = json_ctm_data["jobAlert"][0]["send_time"]
+        # Alert status (Not_Noticed, Noticed or Handled)
+        event_data['ctmStatus'] = json_ctm_data["jobAlert"][0]["status"]
+        # Job node id
+        event_data['ctmNodeId'] = json_ctm_data["jobAlert"][0]["host_id"]
+        # Job name
+        event_data['ctmJobName'] = json_ctm_data["jobAlert"][0]["job_name"]
+        # Alert message
+        event_data['ctmMessage'] = json_ctm_data["jobAlert"][0]["message"]
+        # Job application name
+        event_data['ctmApplication'] = json_ctm_data["jobAlert"][0]["application"]
+        # Job sub application name
+        event_data['ctmSubApplication'] = json_ctm_data["jobAlert"][0]["sub_application"]
+        # Alert type B - BIM alert type R or empty - regular alert type
+        event_data['ctmAlertType'] = json_ctm_data["jobAlert"][0]["alert_type"]
+        # Closed from Control-M/Enterprise Manager Y - yes N or empty - no
+        event_data['ctmClosedFromEM'] = json_ctm_data["jobAlert"][0]["closed_from_em"]
+        # Remedy ticket number
+        event_data['ctmTicketNumber'] = json_ctm_data["jobAlert"][0]["ticket_number"]
+        # Job's run counter
+        event_data['ctmRunCounter'] = json_ctm_data["jobAlert"][0]["run_counter"]
+        # Last updated by, user name
+        event_data['ctmUser'] = "TBD"
+        # representation = date; # Last time the alert was updated (YYYYMMDDhhmmss)
+        event_data['ctmUpdateTime'] = json_ctm_data["jobAlert"][0]["send_time"]
+        # The user who runs the job
+        event_data['ctmOwner'] = json_ctm_data["jobConfig"][0]["entries"][0][ctmFolder]["CreatedBy"]
+        # Alert notes
+        event_data['ctmNotes'] = json_ctm_data["jobAlert"][0]["notes"]
+        # Job folder
+        event_data['ctmFolder'] = json_ctm_data["jobInfo"][0]["entries"][0]["folder"]
+        # Job folder ID
+        event_data['ctmFolderID'] = json_ctm_data["jobInfo"][0]["entries"][0]["folder_id"]
+        # Job ID
+        event_data['ctmJobID'] = json_ctm_data["jobAlert"][0]["job_id"]
+        # Job hold status
+        event_data['ctmJobHeld'] = json_ctm_data["jobInfo"][0]["entries"][0]["held"]
+        # Job Type
+        event_data['ctmJobType'] = json_ctm_data["jobInfo"][0]["entries"][0]["type"]
+        # Job Schedule
+        event_data['ctmJobCyclic'] = json_ctm_data["jobInfo"][0]["entries"][0]["cyclic"]
+
+        # The BHOM create event call expects a list of events,
+        # even for just a single event.
+        event_list = []
+
+        # Add the event to the list
+        event_list.append(event_data)
+
+        # Convert event data to the JSON format required by the API.
+        json_data = json.dumps(event_list)
+        logger.debug('BHOM: event json payload: %s', json_data)
     else:
 
         event_data['severity'] = 'WARNING'
