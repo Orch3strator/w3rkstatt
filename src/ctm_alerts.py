@@ -96,8 +96,8 @@ ctmJobData = None
 _localDebug = False
 _localDebugAdv = False
 _localInfo = False
-_localQA = False
-_localQAlert = False
+_localQA = True
+_localQAlert = True
 _localDebugITSM = False
 _modVer = "3.0"
 _timeFormat = '%d %b %Y %H:%M:%S,%f'
@@ -724,11 +724,12 @@ if __name__ == "__main__":
                          'message': 'Failed to order SAP Job CHILD_1 by template job y_SAP-Childjob in Table DCO_SAP_Basic_Jobs  please verify template job definition', 'run_as': None, 'sub_application': None, 'application': None, 'job_name': None, 'host_id': None, 'alert_type': 'R', 'closed_from_em': None, 'ticket_number': None, 'run_counter': '00000000000', 'notes': None}
             jCtmAlert = {'call_type': 'I', 'alert_id': '212166', 'data_center': 'bmcbzos', 'memname': 'COBCOMP', 'order_id': '031BH', 'severity': 'V', 'status': 'Not_Noticed', 'send_time': '20210420181108', 'last_user': None, 'last_time': None,
                          'message': 'Ended not OK', 'run_as': 'RDWDXC', 'sub_application': 'DCO_SORT', 'application': 'DCO', 'job_name': 'COBCOMP', 'host_id': None, 'alert_type': 'R', 'closed_from_em': None, 'ticket_number': None, 'run_counter': '00002', 'notes': None}
-            jCtmAlert = {"call_type": "I", "alert_id": "212721", "data_center": "psctm", "memname": None, "order_id": "00000", "severity": "R", "status": "Not_Noticed", "send_time": "20210421013938", "last_user": None, "last_time": None,
-                         "message": "Failed to order SAP Job CHILD_2 by template job y_SAP-Childjob in Table DCO_SAP_Basic_Jobs  please verify template job definition", "run_as": None, "sub_application": None, "application": None, "job_name": None, "host_id": None, "alert_type": "R", "closed_from_em": None, "ticket_number": None, "run_counter": "00000000000", "notes": None}
 
             jCtmAlert = {"call_type": "I", "alert_id": "101", "data_center": "ctm-srv.trybmc.com", "memname": None, "order_id": "00007", "severity": "V", "status": "Not_Noticed", "send_time": "20220718195539", "last_user": None, "last_time": None, "message": "Ended not OK",
                          "run_as": "ctmem", "sub_application": "Integration", "application": "ADE", "job_name": "Agent Health", "host_id": "ctm-net.trybmc.com", "alert_type": "R", "closed_from_em": None,  "ticket_number": None,  "run_counter": "00004", "notes": None}
+
+            jCtmAlert = {"call_type": "I", "alert_id": "113", "data_center": "ctm-srv.trybmc.com", "memname": None, "order_id": "00000", "severity": "R", "status": "Not_Noticed", "send_time": "20220718230035", "last_user": None,  "last_time": None,
+                         "message": "STATUS OF AGENT PLATFORM ctm-em.trybmc.com CHANGED TO AVAILABLE", "run_as": None, "sub_application": None,  "application": None,  "job_name": None,  "host_id": None, "alert_type": "R", "closed_from_em": None, "ticket_number": None, "run_counter": "00000000000", "notes": None}
 
     if len(jCtmAlert) > 0:
 
@@ -845,8 +846,9 @@ if __name__ == "__main__":
                     logger.debug('CTM Alert Update Status: "%s"',
                                  ctmAlertsStatus)
             else:
+
                 ctmAlertDataFinal = analyzeAlert4Core(
-                    ctmApiClient=ctmApiClient, raw=jCtmAlertRaw, data=jCtmAlert)
+                    raw=jCtmAlertRaw, data=jCtmAlert)
                 fileStatus = writeAlertFile(
                     data=ctmAlertDataFinal, alert=ctmAlertId, type="core")
 

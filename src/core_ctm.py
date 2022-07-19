@@ -1378,6 +1378,7 @@ def trasnformtCtmAlert(data):
                 host_ip = w3rkstatt.getHostIP(hostname=host_name)
                 host_ip_fqdn = w3rkstatt.getHostFqdn(hostname=host_name)
                 host_ip_dns = w3rkstatt.getHostDomain(hostname=host_name)
+                jCtmAlert["host_id"] = host_name
                 alias = cdmclass + ":" + host_name + ":" + host_ip_dns
                 sAgentStatus = sTemp[7]
                 sAlertCat = "agent"
@@ -1940,7 +1941,7 @@ def transformCtmBHOM(data, category):
 
     if category == "infrastructure":
         event_data['severity'] = 'WARNING'
-        event_data['CLASS'] = 'CTM_EVENT'
+        event_data['CLASS'] = 'CTMX_EVENT'
         event_data['msg'] = 'This event was created using the BHOM REST API'
 
         event_data['source_identifier'] = data
@@ -1973,7 +1974,7 @@ def transformCtmBHOM(data, category):
     elif category == "job":
 
         ctmFolder = json_ctm_data["jobInfo"][0]["entries"][0]["folder"]
-        event_data['severity'] = 'WARNING'
+        event_data['severity'] = json_ctm_data["jobAlert"][0]["severity"]
         event_data['CLASS'] = 'CTM_JOB'
         event_data['msg'] = json_ctm_data["jobAlert"][0]["message_notes"]
 
@@ -2057,26 +2058,65 @@ def transformCtmBHOM(data, category):
         json_data = json.dumps(event_list)
         logger.debug('BHOM: event json payload: %s', json_data)
     else:
+        event_data['severity'] = json_ctm_data["coreAlert"][0]["severity"]
+        event_data['CLASS'] = 'CTM_EVENT'
+        event_data['msg'] = json_ctm_data["coreAlert"][0]["message_notes"]
 
-        event_data['severity'] = 'WARNING'
-        event_data['CLASS'] = 'CTMX_EVENT'
-        event_data['msg'] = 'This event was created using the BHOM REST API'
+        event_data['source_identifier'] = json_ctm_data["coreAlert"][0]["host_id"]
+        event_data['source_hostname'] = json_ctm_data["coreAlert"][0]["host_id"]
+        event_data['source_address'] = json_ctm_data["coreAlert"][0]["host_ip"]
 
-        event_data['source_identifier'] = data
-        event_data['source_hostname'] = data
-        event_data['source_address'] = data
-
-        event_data['alias'] = 'BMC_ComputerSystem:' + None + "'"
+        event_data['alias'] = json_ctm_data["coreAlert"][0]["system_class"]
         event_data['status'] = 'OPEN'
         event_data['priority'] = 'PRIORITY_3'
-        event_data['location'] = None
-        event_data['instancename'] = None
-        event_data['cdmclass'] = 'BMC_ComputerSystem'
-        event_data['componentalias'] = 'BMC_ComputerSystem:' + None + "'"
+        event_data['location'] = json_ctm_data["coreAlert"][0]["data_center"]
+        event_data['instancename'] = json_ctm_data["coreAlert"][0]["host_id"]
+        event_data['cdmclass'] = json_ctm_data["coreAlert"][0]["system_class"].split(':')[
+            0]
+        event_data['componentalias'] = json_ctm_data["coreAlert"][0]["system_class"]
+        event_data['system_category'] = json_ctm_data["coreAlert"][0]["system_category"]
+        event_data['system_status'] = json_ctm_data["coreAlert"][0]["system_status"]
 
-        event_data['ctmAlertId'] = '000000'
-        event_data['ctmDataCenter'] = 'trybmc'
-        event_data['ctmTime'] = 'epoch=' + str(epoch)
+        # Alert update type 'I' Insert - new alert 'U' Update existing alert
+        event_data['ctmUpdateType'] = json_ctm_data["coreAlert"][0]["call_type"]
+        # Alert id Unique alert identifier
+        event_data['ctmAlertId'] = json_ctm_data["coreAlert"][0]["alert_id"]
+        # Control-M server name
+        event_data['ctmDataCenter'] = json_ctm_data["coreAlert"][0]["data_center"]
+        # Job member name
+        event_data['ctmMemName'] = json_ctm_data["coreAlert"][0]["memname"]
+        # Job order id
+        event_data['ctmOrderId'] = json_ctm_data["coreAlert"][0]["order_id"]
+        # Alert severity 'R' - regular 'U' - urgent 'V' - very urgent
+        event_data['ctmSeverity'] = json_ctm_data["coreAlert"][0]["severity"]
+        # representation = date; # Alert creation time (YYYYMMDDhhmmss)
+        event_data['ctmTime'] = json_ctm_data["coreAlert"][0]["send_time"]
+        # Alert status (Not_Noticed, Noticed or Handled)
+        event_data['ctmStatus'] = json_ctm_data["coreAlert"][0]["status"]
+        # Job node id
+        event_data['ctmNodeId'] = json_ctm_data["coreAlert"][0]["host_id"]
+        # Job name
+        event_data['ctmJobName'] = json_ctm_data["coreAlert"][0]["job_name"]
+        # Alert message
+        event_data['ctmMessage'] = json_ctm_data["coreAlert"][0]["message"]
+        # Job application name
+        event_data['ctmApplication'] = json_ctm_data["coreAlert"][0]["application"]
+        # Job sub application name
+        event_data['ctmSubApplication'] = json_ctm_data["coreAlert"][0]["sub_application"]
+        # Alert type B - BIM alert type R or empty - regular alert type
+        event_data['ctmAlertType'] = json_ctm_data["coreAlert"][0]["alert_type"]
+        # Closed from Control-M/Enterprise Manager Y - yes N or empty - no
+        event_data['ctmClosedFromEM'] = json_ctm_data["coreAlert"][0]["closed_from_em"]
+        # Remedy ticket number
+        event_data['ctmTicketNumber'] = json_ctm_data["coreAlert"][0]["ticket_number"]
+        # Job's run counter
+        event_data['ctmRunCounter'] = json_ctm_data["coreAlert"][0]["run_counter"]
+        # Last updated by, user name
+        event_data['ctmUser'] = "TBD"
+        # representation = date; # Last time the alert was updated (YYYYMMDDhhmmss)
+        event_data['ctmUpdateTime'] = json_ctm_data["coreAlert"][0]["send_time"]
+        # Alert notes
+        event_data['ctmNotes'] = json_ctm_data["coreAlert"][0]["notes"]
 
         # The BHOM create event call expects a list of events,
         # even for just a single event.
