@@ -93,12 +93,13 @@ ctmCoreData = None
 ctmJobData = None
 
 # Assign module defaults
-_localDebug = False
-_localDebugAdv = False
+_localDebug = jCfgData["DEFAULT"]["debug"]["api"]
+_localDebugFunctions = jCfgData["DEFAULT"]["debug"]["functions"]
+_localDebugData = jCfgData["DEFAULT"]["debug"]["data"]
+_localDebugAdvanced = jCfgData["DEFAULT"]["debug"]["advanced"]
+_localQA = jCfgData["DEFAULT"]["debug"]["qa"]
+
 _localInfo = False
-_localQA = True
-_localQAlert = True
-_localDebugITSM = False
 _modVer = "3.0"
 _timeFormat = '%d %b %Y %H:%M:%S,%f'
 _ctmActiveApi = False
@@ -135,7 +136,8 @@ def ctmAlert2Dict(list, start, end):
 
     try:
         if w3rkstatt.sPlatform == "Linux":
-            if _localDebug:
+            if _localDebugFunctions or _localDebugData:
+                logger.debug('Function = "%s" ', "ctmAlert2Dict")
                 # logger.debug('Script Arguments for Linux ')
                 # logger.debug('Script Arguments #     = %s ', len(list))
                 # logger.debug('Script Arguments Start = %s ', start)
@@ -170,7 +172,7 @@ def ctmAlert2Dict(list, start, end):
                         value = None
 
                 res_dct[key] = value
-                if _localDebug:
+                if _localDebugFunctions or _localDebugData:
                     logger.debug('Arguments %s=%s ', key, value)
 
         else:
@@ -182,7 +184,7 @@ def ctmAlert2Dict(list, start, end):
 
                 if len(value) < 1:
                     value = None
-                if _localDebugAdv:
+                if _localDebugFunctions or _localDebugData:
                     logger.debug('%s="%s" ', param, value)
 
                 res_dct[param] = value
@@ -197,11 +199,14 @@ def getCtmJobInfo(ctmApiClient, data):
     ctmData = data
     ctmDataCenter = w3rkstatt.getJsonValue(path="$.data_center", data=ctmData)
     ctmOrderId = w3rkstatt.getJsonValue(path="$.order_id", data=ctmData)
-    if _localDebugAdv:
+    if _localDebugFunctions:
+        logger.debug('Function = "%s" ', "getCtmJobInfo")
         logger.info('CTM Get Job Info: "%s:%s"', ctmDataCenter, ctmOrderId)
     jData = ctm.getCtmJobInfo(
         ctmApiClient=ctmApiClient, ctmServer=ctmDataCenter, ctmOrderID=ctmOrderId)
 
+    if _localDebugFunctions or _localDebugData:
+        logger.debug('Data = "%s" ', "jData")
     return jData
 
 
@@ -209,11 +214,13 @@ def getCtmJobRunLog(ctmApiClient, data):
     ctmData = data
     ctmJobID = w3rkstatt.getJsonValue(path="$.job_id", data=ctmData)
     ctmJobRunCounter = w3rkstatt.getJsonValue(path="$.run_counter", data=data)
-    if _localDebugAdv:
-        logger.info('CTM Get Job Log: "%s # %s"', ctmJobID, ctmJobRunCounter)
+    if _localDebugFunctions:
+        logger.debug('Function = "%s" ', "getCtmJobRunLog")
+        logger.info('CTM Get Job Run Log: "%s # %s"',
+                    ctmJobID, ctmJobRunCounter)
 
     sLogData = ctm.getCtmJobLog(ctmApiClient=ctmApiClient, ctmJobID=ctmJobID)
-    if _localDebugAdv:
+    if _localDebugFunctions:
         logger.info('CMT QA Get Job Run Log: %s', sLogData)
 
     # Based on config, extract level of details
@@ -223,8 +230,8 @@ def getCtmJobRunLog(ctmApiClient, data):
         jCtmJobLog = ctm.transformCtmJobLogMini(
             data=sLogData, runCounter=ctmJobRunCounter)
 
-    if _localDebugAdv:
-        logger.debug('CMT Job Log Raw: %s', jCtmJobLog)
+    if _localDebugFunctions or _localDebugData:
+        logger.debug('CMT Job Run Log Raw: %s', jCtmJobLog)
 
     sCtmJobLog = str(jCtmJobLog)
 
@@ -233,19 +240,20 @@ def getCtmJobRunLog(ctmApiClient, data):
 
 def getCtmJobLog(ctmApiClient, data):
     # Get CTM job log after 30 sec - wait for archive server to have log
-    if _localDebugAdv:
+    if _localDebugFunctions:
+        logger.debug('Function = "%s" ', "getCtmJobLog")
         logger.debug('CMT Job Log: First attempt to retrieve data')
     time.sleep(2)
     sCtmJobLog = getCtmJobRunLog(ctmApiClient, data)
 
-    if _localDebugAdv:
+    if _localDebugFunctions or _localDebugData:
         logger.debug('CMT Job Log Raw: %s', sCtmJobLog)
 
     jCtmJobLog = json.loads(sCtmJobLog)
     ctmStatus = w3rkstatt.getJsonValue(path="$.status", data=jCtmJobLog)
 
     if ctmStatus != True:
-        if _localDebugAdv:
+        if _localDebugFunctions:
             logger.debug('CMT Job Log: Second attempt to retrieve data')
         time.sleep(2)
         jCtmJobLog = getCtmJobRunLog(ctmApiClient, data)
@@ -266,7 +274,8 @@ def getCtmJobConfig(ctmApiClient, data):
         jCtmJobDetail = ctmFolderInfo
         sCtmJobDetail = w3rkstatt.dTranslate4Json(data=jCtmJobDetail)
     else:
-        if _localQA:
+        if _localDebugData:
+            logger.debug('Function = "%s" ', "getCtmJobConfig")
             logger.debug('CMT Job Config: "%s"', jCtmJobInfo)
         if sStatus:
             jCtmJobName = w3rkstatt.getJsonValue(
@@ -290,7 +299,8 @@ def getCtmArchiveJobLog(ctmApiClient, data):
         path="$.run_counter", data=ctmData)
     value = ctm.getCtmArchiveJobLog(
         ctmApiClient=ctmApiClient, ctmJobID=ctmJobID, ctmJobRunCounter=ctmJobRunCounter)
-    if _localDebugAdv:
+    if _localDebugFunctions:
+        logger.debug('Function = "%s" ', "getCtmArchiveJobLog")
         logger.debug('CMT Job Log Raw: %s', value)
     return value
 
@@ -300,19 +310,20 @@ def getCtmJobRunOutput(ctmApiClient, data):
     ctmJobID = w3rkstatt.getJsonValue(path="$.job_id", data=ctmData)
     ctmJobRunCounter = w3rkstatt.getJsonValue(
         path="$.run_counter", data=ctmData)
-    if _localDebugAdv:
-        logger.info('CTM Get Job Output: "%s # %s"',
+    if _localDebugFunctions:
+        logger.debug('Function = "%s" ', "getCtmJobRunOutput")
+        logger.info('CTM Get Job Run Output: "%s # %s"',
                     ctmJobID, ctmJobRunCounter)
 
     value = ctm.getCtmJobOutput(
         ctmApiClient=ctmApiClient, ctmJobID=ctmJobID, ctmJobRunId=ctmJobRunCounter)
-    if _localDebugAdv:
+    if _localDebugFunctions:
         logger.debug('CMT Job Output Raw: %s', value)
 
     ctmJobOutput = ctm.transformCtmJobOutput(data=value)
 
-    if _localDebugAdv:
-        logger.debug('CMT Job Output: %s', ctmJobOutput)
+    if _localDebugFunctions or _localDebugData:
+        logger.debug('CMT Job Run Output: %s', ctmJobOutput)
     return ctmJobOutput
 
 
@@ -324,21 +335,23 @@ def getCtmArchiveJobRunOutput(ctmApiClient, data):
     value = ctm.getCtmArchiveJobOutput(
         ctmApiClient=ctmApiClient, ctmJobID=ctmJobID, ctmJobRunId=ctmJobRunCounter)
     ctmJobOutput = ctm.transformCtmJobOutput(data=value)
-    if _localDebugAdv:
+    if _localDebugFunctions:
+        logger.debug('Function = "%s" ', "getCtmArchiveJobRunOutput")
         logger.debug('CMT Job Output Raw: %s', ctmJobOutput)
     return ctmJobOutput
 
 
 def getCtmJobOutput(ctmApiClient, data):
     # Get CTM job log after 30 sec - wait for archive server to have log
-    if _localDebugAdv:
+    if _localDebugFunctions:
+        logger.debug('Function = "%s" ', "getCtmJobOutput")
         logger.debug('CMT Job Output: First attempt to retrieve data')
     time.sleep(2)
     jCtmJobOutput = getCtmJobRunOutput(ctmApiClient, data)
     ctmStatus = w3rkstatt.getJsonValue(path="$.status", data=jCtmJobOutput)
 
     if ctmStatus != True:
-        if _localDebugAdv:
+        if _localDebugFunctions:
             logger.debug('CMT Job Output: Second attempt to retrieve data')
         time.sleep(2)
         jCtmJobOutput = getCtmJobRunOutput(ctmApiClient, data)
@@ -411,7 +424,8 @@ def createITSM(data):
 
     incidentId = itsm.createIncident(token=authToken, data=jIncidentData)
 
-    if _localDebugITSM:
+    if _localDebugFunctions:
+        logger.debug('Function = "%s" ', "createITSM")
         sIncidentData = w3rkstatt.jsonTranslateValues(data=jIncidentData)
         logger.debug('')
         logger.debug('ITSM Integration Data = %s ', sIncidentData)
@@ -422,7 +436,7 @@ def createITSM(data):
     jWorklogData = w3rkstatt.getJsonValue(path="$.jobAlert", data=jCtmAlert)
     createWorklog(token=authToken, data=jWorklogData, incident=incidentId)
 
-    if _localDebugITSM:
+    if _localDebugFunctions:
         sIncidentData = w3rkstatt.jsonTranslateValues(data=jWorklogData)
         logger.debug('')
         logger.debug('ITSM Worklog Data = %s ', sIncidentData)
@@ -474,7 +488,8 @@ def getCtmFolder(ctmApiClient, data):
     ctmFolderID = ctmData["entries"][0]["folder_id"]
     ctmFolder = ctmData["entries"][0]["folder"]
     ctmServer = ctmData["entries"][0]["ctm"]
-    if _localDebugAdv:
+    if _localDebugFunctions:
+        logger.debug('Function = "%s" ', "getCtmFolder")
         logger.info('CTM Get Job Folder: "%s @ %s"', ctmFolder, ctmServer)
     value = ctm.getCtmDeployedFolder(
         ctmApiClient=ctmApiClient, ctmServer=ctmServer, ctmFolder=ctmFolder)
@@ -518,7 +533,8 @@ def getCtmFolder(ctmApiClient, data):
 
 
 def analyzeAlert4Job(ctmApiClient, raw, data):
-    if _localInfo:
+    if _localDebugFunctions:
+        logger.debug('Function = "%s" ', "analyzeAlert4Job")
         logger.info('CTM: Analyze Alert for Jobs - Start')
 
     jCtmAlert = data
@@ -601,13 +617,15 @@ def analyzeAlert4Job(ctmApiClient, raw, data):
             sCtmJobInfo + '],"jobConfig":[' + sCtmJobConfig + '],"jobLog":[' + \
             sCtmJobLog + '],"jobOutput":[' + sCtmJobOutput + ']}'
 
-    if _localInfo:
+    if _localDebugFunctions or _localDebugData:
+        logger.debug('Data = "%s" ', "ctmJobData")
         logger.info('CTM: Analyze Alert for Jobs - End')
     return ctmJobData
 
 
 def analyzeAlert4Core(raw, data):
-    if _localInfo:
+    if _localDebugFunctions:
+        logger.debug('Function = "%s" ', "analyzeAlert4Core")
         logger.info('CTM: Analyze Alert for Core - Start')
 
     jCtmAlert = data
@@ -615,8 +633,6 @@ def analyzeAlert4Core(raw, data):
     jCtmAlertData = json.dumps(jCtmAlert)
     jCtmAlertRaw = raw
 
-    if _localInfo:
-        logger.info('CTM: Analyze Alert - Core Info')
     # Prep for str concat
     sCtmAlertRaw = str(jCtmAlertRaw)
     sCtmAlertData = str(jCtmAlertData)
@@ -626,13 +642,15 @@ def analyzeAlert4Core(raw, data):
     ctmCoreData = w3rkstatt.jsonTranslateValues(ctmCoreData)
     ctmCoreData = w3rkstatt.jsonTranslateValuesAdv(ctmCoreData)
 
-    if _localInfo:
+    if _localDebugFunctions or _localDebugData:
+        logger.debug('Data = "%s" ', "ctmCoreData")
         logger.info('CTM: Analyze Alert for Core - End')
     return ctmCoreData
 
 
 def analyzeAlert4Infra(raw, data):
-    if _localInfo:
+    if _localDebugFunctions:
+        logger.debug('Function = "%s" ', "analyzeAlert4Infra")
         logger.info('CTM: Analyze Alert for Infra - Start')
 
     jCtmAlert = data
@@ -640,8 +658,6 @@ def analyzeAlert4Infra(raw, data):
     jCtmAlertData = json.dumps(jCtmAlert)
     jCtmAlertRaw = raw
 
-    if _localInfo:
-        logger.info('CTM: Analyze Alert - Infra Info')
     # Prep for str concat
     sCtmAlertRaw = str(jCtmAlertRaw)
     sCtmAlertData = str(jCtmAlertData)
@@ -651,7 +667,8 @@ def analyzeAlert4Infra(raw, data):
     ctmCoreData = w3rkstatt.jsonTranslateValues(ctmCoreData)
     ctmCoreData = w3rkstatt.jsonTranslateValuesAdv(ctmCoreData)
 
-    if _localInfo:
+    if _localDebugFunctions or _localDebugData:
+        logger.debug('Data = "%s" ', "ctmCoreData")
         logger.info('CTM: Analyze Alert for Infra - End')
     return ctmCoreData
 
@@ -674,7 +691,8 @@ def writeAlertFile(data, alert, type="job"):
         fileRsp = w3rkstatt.writeJsonFile(file=filePath, content=fileContent)
         fileStatus = w3rkstatt.getFileStatus(path=filePath)
 
-        if _localQA:
+        if _localDebugFunctions:
+            logger.info('Function = "%s" ', "writeAlertFile")
             logger.info('CTM QA Alert File: "%s" ', filePath)
 
     return fileStatus
@@ -705,12 +723,9 @@ if __name__ == "__main__":
         path="$.alert_id", data=jCtmAlert)).strip()
     ctmRunCounter = None
 
-    if _localDebug:
-        logger.debug('CMT Initial Alert JSON: %s', jCtmAlert)
-
-     # Test integration with sample data
+    # Test integration with sample data
     if not len(ctmAlertId) > 0:
-        if _localQAlert:
+        if _localQA:
             # jCtmAlert = {"alert_id": "166", "alert_type": "Regular", "application": None, "call_type": "New", "closed_from_em": None, "data_center": "bmcs-ctm-srv", "data_center_dns": "shytwr.net", "data_center_fqdn": "bmcs-ctm-srv.shytwr.net", "data_center_ip": "172.16.29.125", "host_id": None, "host_ip": "172.16.32.22", "host_ip_dns": "shytwr.net", "host_ip_fqdn": "bmcs-ctm-agt.shytwr.net", "job_name": None, "last_time": None, "last_user": None, "memname": None, "message": "STATUS OF AGENT PLATFORM bmcs-ctm-agt CHANGED TO AVAILABLE", "message_notes": "CTRL-M Agent on bmcs-ctm-agt.shytwr.net availabble. Managed by: bmcs-ctm-srv", "message_summary": "Agent on bmcs-ctm-agt availabble", "notes": None, "order_id": "00000", "run_as": None, "run_counter": "00000000000", "send_time": "2021-04-05 22:39:36", "severity": "OK", "status": "OPEN", "sub_application": None, "ticket_number": None}
             # jCtmAlert = {"call_type": "I", "alert_id": "168", "data_center": "bmcs-ctm-srv", "memname": None, "order_id": "00000", "severity": "R", "status": "Not_Noticed", "send_time": "20210405232831", "last_user": None, "last_time": None, "message": "STATUS OF AGENT PLATFORM bmcs-ctm-agt CHANGED TO AVAILABLE", "run_as": None, "sub_application": None, "application": None, "job_name": None, "host_id": None, "alert_type": "R", "closed_from_em": None, "ticket_number": None, "run_counter": "00000000000", "notes": None}
             # jCtmAlert = {"call_type": "I", "alert_id": "182", "data_center": "bmcs-ctm-srv", "memname": None, "order_id": None, "severity": "V", "status": "Not_Noticed", "send_time": "20210406092918", "last_user": None, "last_time": None, "message": "DATA CENTER bmcs-ctm-srv WAS DISCONNECTED", "run_as": "Gateway", "sub_application": None, "application": None, "job_name": None, "host_id": None, "alert_type": "R", "closed_from_em": None, "ticket_number": None, "run_counter": None, "notes": None}
@@ -720,8 +735,6 @@ if __name__ == "__main__":
                          "message": "Ended not OK", "run_as": "RDWDXC", "sub_application": "DCO_SORT", "application": "DCO", "job_name": "COBCOMP", "host_id": None, "alert_type": "R", "closed_from_em": None, "ticket_number": None, "run_counter": "00000", "notes": None}
             jCtmAlert = {"call_type": "I", "alert_id": "210561", "data_center": "psctm", "memname": None, "order_id": "0c4ib", "severity": "V", "status": "Not_Noticed", "send_time": "20210419103327", "last_user": None, "last_time": None, "message": "Ended not OK",
                          "run_as": "ctmagent", "sub_application": "VFS_Alert_Management", "application": "VFS_Integration", "job_name": "VFS_OS", "host_id": "vl-aus-ctm-em01.ctm.bmc.com", "alert_type": "R", "closed_from_em": None, "ticket_number": None, "run_counter": "00001", "notes": None}
-            jCtmAlert = {'call_type': 'I', 'alert_id': '212069', 'data_center': 'psctm', 'memname': None, 'order_id': '00000', 'severity': 'R', 'status': 'Not_Noticed', 'send_time': '20210420163225', 'last_user': None, 'last_time': None,
-                         'message': 'Failed to order SAP Job CHILD_1 by template job y_SAP-Childjob in Table DCO_SAP_Basic_Jobs  please verify template job definition', 'run_as': None, 'sub_application': None, 'application': None, 'job_name': None, 'host_id': None, 'alert_type': 'R', 'closed_from_em': None, 'ticket_number': None, 'run_counter': '00000000000', 'notes': None}
 
             jCtmAlert = {"call_type": "I", "alert_id": "101", "data_center": "ctm-srv.trybmc.com", "memname": None, "order_id": "00007", "severity": "V", "status": "Not_Noticed", "send_time": "20220718195539", "last_user": None, "last_time": None, "message": "Ended not OK",
                          "run_as": "ctmem", "sub_application": "Integration", "application": "ADE", "job_name": "Agent Health", "host_id": "ctm-net.trybmc.com", "alert_type": "R", "closed_from_em": None,  "ticket_number": None,  "run_counter": "00004", "notes": None}
@@ -732,7 +745,14 @@ if __name__ == "__main__":
             jCtmAlert = {"call_type": "I", "Serial": "140", "Component_type": "9", "Component_machine": "ctm-em.trybmc.com", "Component_name": "ctm-em.trybmc.com", "Message_id": "35028", "Xseverity": "2",
                          "Message": "Distributed Control-M/EM Configuration Agent on ctm-archive.trybmc.com is not responding", "Xtime": "20220719001727", "Xtime_of_last": "20220719001727", "Counter": "1", "Status": "1", "Note": None, "Key1": None, "Key2": None, "Key3": None, "Key4": None, "Key5": None}
 
+            jCtmAlert = {"call_type": "I", "alert_id": "158", "data_center": "ctm-srv.trybmc.com", "memname": None, "order_id": "00007", "severity": "V", "status": "Not_Noticed", "send_time": "20220719041448", "last_user": None, "last_time": None, "message": "Ended not OK",
+                         "run_as": "ctmem", "sub_application": "Integration", "application": "ADE", "job_name": "Agent Health", "host_id": "ctm-net.trybmc.com", "alert_type": "R", "closed_from_em": None, "ticket_number": None, "run_counter": "00021", "notes": None}
+
     if len(jCtmAlert) > 0:
+
+        if _localDebugData:
+            logger.debug('Function = "%s" ', "__main__")
+            logger.debug('CTM Initial Alert JSON: %s', jCtmAlert)
 
         # Transform CTM Alert
         jCtmAlertRaw = json.dumps(jCtmAlert)
@@ -774,7 +794,7 @@ if __name__ == "__main__":
             # logger.debug('CMT Alert JSON Raw: %s', jCtmAlertRaw)
             # logger.debug('CMT Alert JSON Formatted: %s', jCtmAlert)
 
-            if _localDebug:
+            if _localQA:
                 # sCtmAlert = w3rkstatt.jsonTranslateValues(data=jCtmAlert)
                 sCtmAlert = json.dumps(jCtmAlert)
                 logger.info('CMT QA Alert JSON Raw: %s', jCtmAlertRaw)
@@ -790,8 +810,6 @@ if __name__ == "__main__":
                 logger.info('CTM QA Job ID: %s', ctmOrderId)
                 logger.info('CTM QA Run Counter: %s', ctmRunCounter)
                 logger.info('CTM QA Alert Call: "%s"', ctmAlertCallType)
-                logger.info('CTM QA ITSM Integration: "%s"',
-                            integration_itsm_enabled)
 
             # xAlert ID
             if not ctmAlertId:
@@ -945,7 +963,7 @@ if __name__ == "__main__":
 
         # Process only 'update' alerts
         if "Update" in ctmAlertCallType:
-            if _localDebugAdv:
+            if _localDebug:
                 logger.debug('- CTM Alert Update: "%s"', "Start")
             sSysOutMsg = "Processed Update Alert: " + str(ctmAlertId)
 

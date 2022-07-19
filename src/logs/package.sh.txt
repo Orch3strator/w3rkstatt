@@ -466,3 +466,9 @@
  Host FDQN : core-docs.shytwr.net
  Host Name : core-docs
  Host IPv4 : 172.16.6.36
+ -----------------------------------------------
+ Start date: 2022-07-19 14:13:57
+ User Name : root
+ Host FDQN : core-docs.shytwr.net
+ Host Name : core-docs
+ Host IPv4 : 172.16.6.36

@@ -11,14 +11,14 @@
     "log_folder": "",
     "data_folder": "",
     "template_folder": "",
-    "demo": true,
+    "demo": false,
     "debug": {
       "api": false,
       "data": false,
       "functions": false,
       "advanced": false,
       "qa": false
-       }
+    }
   },
   "MAIL": {
     "host": "",
