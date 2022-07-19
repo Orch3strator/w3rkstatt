@@ -1294,9 +1294,26 @@ def trasnformtCtmAlert(data):
     sAlertCat = None
     sSystemStatus = None
 
+    if "data_center" not in data:
+        data.update({'data_center': None})
+
+    if "host_id" not in data:
+        data.update({'host_id': None})
+
+    if "host_ip" not in data:
+        data.update({'host_ip': None})
+
+    if "host_ip_fqdn" not in data:
+        data.update({'host_ip_fqdn': None})
+
+    if "host_ip_dns" not in data:
+        data.update({'host_ip_dns': None})
+
+    if "system_status" not in data:
+        data.update({'system_status': None})
+
     jCtmAlert = data
-    ctmDataCenter = w3rkstatt.getJsonValue(
-        path="$.data_center", data=jCtmAlert)
+    # ctmDataCenter = w3rkstatt.getJsonValue(path="$.data_center", data=jCtmAlert)
     for (key, value) in jCtmAlert.items():
 
         if key == "call_type":
@@ -1342,6 +1359,8 @@ def trasnformtCtmAlert(data):
             jCtmAlert[key] = value
         if key == "run_counter":
             if value is not None:
+                ctmDataCenter = w3rkstatt.getJsonValue(
+                    path="$.data_center", data=jCtmAlert)
                 ctmOrderId = w3rkstatt.getJsonValue(
                     path="$.order_id", data=jCtmAlert)
                 ctmJobId = ctmDataCenter + ":" + ctmOrderId
@@ -1371,6 +1390,15 @@ def trasnformtCtmAlert(data):
             host_ip_dns = w3rkstatt.getHostDomain(hostname=value)
             alias = cdmclass + ":" + value + ":" + host_ip_dns
 
+            data_center_name = jCfgData["CTM"]["datacenter"][0]["name"]
+            data_center_host = jCfgData["CTM"]["datacenter"][0]["host"]
+            jCtmAlert["data_center"] = data_center_name
+
+            data_center_ip = w3rkstatt.getHostIP(hostname=data_center_host)
+            data_center_fqdn = w3rkstatt.getHostFqdn(hostname=data_center_host)
+            data_center_dns = w3rkstatt.getHostDomain(
+                hostname=data_center_host)
+
         if key == "message":
             if "STATUS OF AGENT PLATFORM" in value:
                 sTemp = value.split()
@@ -1397,10 +1425,19 @@ def trasnformtCtmAlert(data):
                 host_ip = w3rkstatt.getHostIP(hostname=host_name)
                 host_ip_fqdn = w3rkstatt.getHostFqdn(hostname=host_name)
                 host_ip_dns = w3rkstatt.getHostDomain(hostname=host_name)
-                alias = cdmclass + ":" + host_name + ":" + host_ip_dns
+                jCtmAlert['host_id'] = host_ip_fqdn
+
+                # alias = cdmclass + ":" + host_name + ":" + host_ip_dns
                 # sCtmComponenttatus = sTemp[4]
                 sAlertCat = "infrastructure"
+                if "not responding" in value:
+                    jCtmAlert['system_status'] = "Not responding"
+                else:
+                    jCtmAlert['system_status'] = "TBD"
+
             elif "Ended not OK" in value:
+                ctmDataCenter = w3rkstatt.getJsonValue(
+                    path="$.data_center", data=jCtmAlert)
                 ctmOrderId = w3rkstatt.getJsonValue(
                     path="$.order_id", data=jCtmAlert)
                 ctmJobRunId = ctmDataCenter + ":" + ctmOrderId
@@ -1414,6 +1451,8 @@ def trasnformtCtmAlert(data):
                 sAlertCat = "job"
                 sSystemStatus = "failed"
             elif "Failed to order" in value:
+                ctmDataCenter = w3rkstatt.getJsonValue(
+                    path="$.data_center", data=jCtmAlert)
                 ctmOrderId = w3rkstatt.getJsonValue(
                     path="$.order_id", data=jCtmAlert)
                 ctmJobRunId = ctmDataCenter + ":" + ctmOrderId
@@ -1433,6 +1472,8 @@ def trasnformtCtmAlert(data):
                 sAlertCat = "job"
                 sSystemStatus = "failed"
             elif "BIM / SIM" in value:
+                ctmDataCenter = w3rkstatt.getJsonValue(
+                    path="$.data_center", data=jCtmAlert)
                 ctmOrderId = w3rkstatt.getJsonValue(
                     path="$.order_id", data=jCtmAlert)
                 ctmJobRunId = ctmDataCenter + ":" + ctmOrderId
@@ -1457,15 +1498,34 @@ def trasnformtCtmAlert(data):
 
         if key == "Message":
             summary = value
-            notes = "CTRL-M Component " + value + ". Managed by: " + host_ip_dns
+            notes = "CTRL-M Component " + value + ". Managed by: " + host_ip_fqdn
+            if "Distributed Control-M/EM Configuration Agent" in value:
+                sTemp = value.split()
+                host_name = sTemp[5]
+                host_ip = w3rkstatt.getHostIP(hostname=host_name)
+                host_ip_fqdn = w3rkstatt.getHostFqdn(hostname=host_name)
+                host_ip_dns = w3rkstatt.getHostDomain(hostname=host_name)
+                jCtmAlert['host_id'] = host_ip_fqdn
+
+                alias = cdmclass + ":" + host_name + ":" + host_ip_dns
+                # sCtmComponenttatus = sTemp[4]
+                sAlertCat = "infrastructure"
+                if "not responding" in value:
+                    sSystemStatus = "Not responding"
+                else:
+                    sSystemStatus = "TBD"
 
     if not ctmOrderId == "00000" and ctmOrderId is not None:
+        ctmDataCenter = w3rkstatt.getJsonValue(
+            path="$.data_center", data=jCtmAlert)
         job_uri = "https://" + ctm_host + ":" + ctm_port + "/ControlM/#Search:id=Search_2&search=" + \
             ctmOrderId + "&date=" + ctmUpdateDate + "&controlm=" + ctmDataCenter
         jCtmAlert["job_id"] = ctmJobId
         jCtmAlert["job_uri"] = job_uri
 
     if sAgentStatus is not None:
+        ctmDataCenter = w3rkstatt.getJsonValue(
+            path="$.data_center", data=jCtmAlert)
         if "UNAVAILABLE" in sAgentStatus:
             jCtmAlert["severity"] = "MAJOR"
             summary = "Agent on " + host_name + " not availabble"
@@ -1481,6 +1541,8 @@ def trasnformtCtmAlert(data):
             sSystemStatus = "availabble"
 
     if sDataCenterStatus is not None:
+        ctmDataCenter = w3rkstatt.getJsonValue(
+            path="$.data_center", data=jCtmAlert)
         if "DISCONNECTED" in sDataCenterStatus:
             jCtmAlert["severity"] = "CRITICAL"
             summary = "Data Center " + ctmDataCenter + " was disconnected"
@@ -1942,23 +2004,49 @@ def transformCtmBHOM(data, category):
     if category == "infrastructure":
         event_data['severity'] = 'WARNING'
         event_data['CLASS'] = 'CTMX_EVENT'
-        event_data['msg'] = 'This event was created using the BHOM REST API'
+        event_data['msg'] = json_ctm_data["infraAlert"][0]["message_summary"]
+        event_data['details'] = json_ctm_data["infraAlert"][0]["message_notes"]
 
-        event_data['source_identifier'] = data
-        event_data['source_hostname'] = data
-        event_data['source_address'] = data
+        event_data['source_identifier'] = json_ctm_data["infraAlert"][0]["host_id"]
+        event_data['source_hostname'] = json_ctm_data["infraAlert"][0]["host_id"]
+        event_data['source_address'] = json_ctm_data["infraAlert"][0]["host_ip"]
 
-        event_data['alias'] = 'BMC_ComputerSystem:' + None + "'"
+        event_data['alias'] = json_ctm_data["infraAlert"][0]["system_class"]
         event_data['status'] = 'OPEN'
         event_data['priority'] = 'PRIORITY_3'
-        event_data['location'] = None
-        event_data['instancename'] = None
-        event_data['cdmclass'] = 'BMC_ComputerSystem'
-        event_data['componentalias'] = 'BMC_ComputerSystem:' + None + "'"
+        event_data['location'] = json_ctm_data["infraAlert"][0]["data_center"]
+        event_data['instancename'] = json_ctm_data["infraAlert"][0]["host_id"]
+        event_data['cdmclass'] = json_ctm_data["infraAlert"][0]["system_class"].split(':')[
+            0]
+        event_data['componentalias'] = json_ctm_data["infraAlert"][0]["system_class"]
+        event_data['system_category'] = json_ctm_data["infraAlert"][0]["system_category"]
+        event_data['system_status'] = json_ctm_data["infraAlert"][0]["system_status"]
 
-        event_data['ctmAlertId'] = '000000'
-        event_data['ctmDataCenter'] = 'trybmc'
-        event_data['ctmTime'] = 'epoch=' + str(epoch)
+        # Control-M server name
+        event_data['ctmDataCenter'] = json_ctm_data["infraAlert"][0]["data_center"]
+        # Alert update type 'I' Insert - new alert 'U' Update existing alert
+        event_data['ctmUpdateType'] = json_ctm_data["infraAlert"][0]["call_type"]
+        # Control-M server name
+        event_data['ctmDataCenter'] = json_ctm_data["infraAlert"][0]["data_center"]
+
+        event_data['xctmCallType'] = json_ctm_data["infraAlert"][0]["call_type"]
+        event_data['xctmCompMachine'] = json_ctm_data["infraAlert"][0]["Component_machine"]
+        event_data['xctmCompName'] = json_ctm_data["infraAlert"][0]["Component_name"]
+        event_data['xctmCompType'] = json_ctm_data["infraAlert"][0]["Component_type"]
+        event_data['xctmCounter'] = json_ctm_data["infraAlert"][0]["Counter"]
+        event_data['xctmKey1'] = json_ctm_data["infraAlert"][0]["Key1"]
+        event_data['xctmKey2'] = json_ctm_data["infraAlert"][0]["Key2"]
+        event_data['xctmKey3'] = json_ctm_data["infraAlert"][0]["Key3"]
+        event_data['xctmKey4'] = json_ctm_data["infraAlert"][0]["Key4"]
+        event_data['xctmKey5'] = json_ctm_data["infraAlert"][0]["Key5"]
+        event_data['xctmMessage'] = json_ctm_data["infraAlert"][0]["Message"]
+        event_data['xctmMessageId'] = json_ctm_data["infraAlert"][0]["Message_id"]
+        event_data['xctmNote'] = json_ctm_data["infraAlert"][0]["Note"]
+        event_data['xctmSerial'] = json_ctm_data["infraAlert"][0]["Serial"]
+        event_data['xctmStatus'] = json_ctm_data["infraAlert"][0]["Status"]
+        event_data['xctmXSeverity'] = json_ctm_data["infraAlert"][0]["Xseverity"]
+        event_data['xctmXTime'] = json_ctm_data["infraAlert"][0]["Xtime"]
+        event_data['xctmXTimeOFLast'] = json_ctm_data["infraAlert"][0]["Xtime_of_last"]
 
         # The BHOM create event call expects a list of events,
         # even for just a single event.
@@ -1976,7 +2064,8 @@ def transformCtmBHOM(data, category):
         ctmFolder = json_ctm_data["jobInfo"][0]["entries"][0]["folder"]
         event_data['severity'] = json_ctm_data["jobAlert"][0]["severity"]
         event_data['CLASS'] = 'CTM_JOB'
-        event_data['msg'] = json_ctm_data["jobAlert"][0]["message_notes"]
+        event_data['msg'] = json_ctm_data["jobAlert"][0]["message_summary"]
+        event_data['details'] = json_ctm_data["jobAlert"][0]["message_notes"]
 
         event_data['source_identifier'] = json_ctm_data["jobAlert"][0]["host_id"]
         event_data['source_hostname'] = json_ctm_data["jobAlert"][0]["host_id"]
@@ -1991,6 +2080,8 @@ def transformCtmBHOM(data, category):
         event_data['cdmclass'] = 'BMC_ComputerSystem'
         event_data['componentalias'] = 'BMC_ComputerSystem:' \
             + json_ctm_data["jobAlert"][0]["host_id"]
+        event_data['system_category'] = json_ctm_data["jobAlert"][0]["system_category"]
+        event_data['system_status'] = json_ctm_data["jobAlert"][0]["system_status"]
 
         # Alert update type 'I' Insert - new alert 'U' Update existing alert
         event_data['ctmUpdateType'] = json_ctm_data["jobAlert"][0]["call_type"]
@@ -2060,7 +2151,8 @@ def transformCtmBHOM(data, category):
     else:
         event_data['severity'] = json_ctm_data["coreAlert"][0]["severity"]
         event_data['CLASS'] = 'CTM_EVENT'
-        event_data['msg'] = json_ctm_data["coreAlert"][0]["message_notes"]
+        event_data['msg'] = json_ctm_data["coreAlert"][0]["message_summary"]
+        event_data['details'] = json_ctm_data["coreAlert"][0]["message_notes"]
 
         event_data['source_identifier'] = json_ctm_data["coreAlert"][0]["host_id"]
         event_data['source_hostname'] = json_ctm_data["coreAlert"][0]["host_id"]
