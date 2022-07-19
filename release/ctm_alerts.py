@@ -30,28 +30,6 @@ Date (YMD)    Name                  What
 
 """
 
-# handle dev environment vs. production
-try:
-    import w3rkstatt as w3rkstatt
-    import core_ctm as ctm
-    import core_itsm as itsm
-    import core_tsim as tsim
-    import core_bhom as bhom
-    import core_tso as tso
-    import core_smtp as smtp
-except:
-    # fix import issues for modules
-    sys.path.append(os.path.dirname(
-        os.path.dirname(os.path.realpath(__file__))))
-    from src import w3rkstatt as w3rkstatt
-    from src import core_ctm as ctm
-    from src import core_itsm as itsm
-    from src import core_tsim as tsim
-    from src import core_bhom as bhom
-    from src import core_tso as tso
-    from src import core_smtp as smtp
-
-
 import time
 import logging
 import sys
@@ -65,8 +43,23 @@ import collections
 from xml.sax.handler import ContentHandler
 from xml.sax import make_parser
 
+# handle dev environment vs. production
+try:
+    import w3rkstatt as w3rkstatt
+    import core_ctm as ctm
+    import core_itsm as itsm
+    import core_tsim as tsim
+    import core_bhom as bhom
+except:
+    # fix import issues for modules
+    sys.path.append(os.path.dirname(
+        os.path.dirname(os.path.realpath(__file__))))
+    from src import w3rkstatt as w3rkstatt
+    from src import core_ctm as ctm
+    from src import core_itsm as itsm
+    from src import core_tsim as tsim
+    from src import core_bhom as bhom
 
-# Get configuration from bmcs_core.json
 
 # Get configuration from bmcs_core.json
 jCfgData = w3rkstatt.getProjectConfig()
@@ -100,11 +93,11 @@ ctmCoreData = None
 ctmJobData = None
 
 # Assign module defaults
-_localDebug = True
+_localDebug = False
 _localDebugAdv = False
 _localInfo = False
 _localQA = False
-_localQAlert = True
+_localQAlert = False
 _localDebugITSM = False
 _modVer = "3.0"
 _timeFormat = '%d %b %Y %H:%M:%S,%f'
@@ -478,37 +471,44 @@ def createWorklog(token, data, incident):
 
 def getCtmFolder(ctmApiClient, data):
     ctmData = data
-    ctmFolderID = w3rkstatt.getJsonValue(path="$.folder_id", data=ctmData)
-    ctmFolder = w3rkstatt.getJsonValue(path="$.folder", data=ctmData)
-    ctmServer = w3rkstatt.getJsonValue(path="$.ctm", data=ctmData)
+    ctmFolderID = ctmData["entries"][0]["folder_id"]
+    ctmFolder = ctmData["entries"][0]["folder"]
+    ctmServer = ctmData["entries"][0]["ctm"]
     if _localDebugAdv:
         logger.info('CTM Get Job Folder: "%s @ %s"', ctmFolder, ctmServer)
     value = ctm.getCtmDeployedFolder(
         ctmApiClient=ctmApiClient, ctmServer=ctmServer, ctmFolder=ctmFolder)
 
-    if w3rkstatt.jsonValidator(data=value):
-        ctmfolderInfo = w3rkstatt.dTranslate4Json(data=value)
+    # adjust new ctm aapi result
+    sCtmDeployedFolderTmp = w3rkstatt.dTranslate4Json(str(value))
+    jCtmDeployedFolderTmp = json.loads(sCtmDeployedFolderTmp)
+    jCtmDeployedFolder = jCtmDeployedFolderTmp
 
     # adjust if CTM API access failed
     sJobLogStatus = True
     # Failed to get
-    if "Failed to get" in str(value):
+    if "Failed to get" in str(sCtmDeployedFolderTmp):
         sJobLogStatus = False
-
-    i = 0
-    if "." in value:
-        xTemp = value.split(".")
-        for xLine in xTemp:
-            zValue = xLine.strip()
-            # construct json string
-            if i == 0:
-                sEntry = '"entry-' + str(i).zfill(4) + '":"' + zValue + '"'
-            else:
-                sEntry = sEntry + ',"entry-' + \
-                    str(i).zfill(4) + '":"' + zValue + '"'
-            i += 1
+        sEntry = ""
+        i = 0
     else:
-        sEntry = '"entry-0000": "' + value + '"'
+        sEntry = sCtmDeployedFolderTmp[1:-1]
+        i = 1
+
+    # Check future use?
+    # if "." in value:
+    #     xTemp = value.split(".")
+    #     for xLine in xTemp:
+    #         zValue = xLine.strip()
+    #         # construct json string
+    #         if i == 0:
+    #             sEntry = '"entry-' + str(i).zfill(4) + '":"' + zValue + '"'
+    #         else:
+    #             sEntry = sEntry + ',"entry-' + \
+    #                 str(i).zfill(4) + '":"' + zValue + '"'
+    #         i += 1
+    # else:
+    #     sEntry = '"entry-0000": "' + value + '"'
 
     jData = '{"count":' + str(i) + ',"status":' + \
         str(sJobLogStatus) + ',"entries":[{' + str(sEntry) + '}]}'
@@ -536,13 +536,25 @@ def analyzeAlert4Job(ctmApiClient, raw, data):
                 path="$.job_name", data=jCtmAlert)
 
             if _ctmActiveApi:
+                # Get job information
                 sCtmJobInfo = getCtmJobInfo(
                     ctmApiClient=ctmApiClient, data=jCtmAlert)
+
+                # Get job output
                 sCtmJobOutput = getCtmJobOutput(
                     ctmApiClient=ctmApiClient, data=jCtmAlert)
-                # sCtmJobLog = getCtmJobLog( ctmApiClient = ctmApiClient, data = jCtmAlert)
 
-                sCtmJobLog = '{"collection":"wotk in progress"}'
+                jCtmJobOutput = json.loads(sCtmJobOutput)
+                sCtmJobOutputStatus = jCtmJobOutput["status"]
+
+                # Get job log
+                # if sCtmJobOutputStatus:
+                #     sCtmJobLog = getCtmJobLog(
+                #         ctmApiClient=ctmApiClient, data=jCtmAlert)
+                # else:
+                #    sCtmJobLog = '{"collection":"no accessible"}'
+                sCtmJobLog = getCtmJobLog(
+                    ctmApiClient=ctmApiClient, data=jCtmAlert)
 
                 # Create JSON object
                 jCtmJobInfo = json.loads(sCtmJobInfo)
@@ -556,8 +568,8 @@ def analyzeAlert4Job(ctmApiClient, raw, data):
                     sCtmJobConfig = getCtmJobConfig(
                         ctmApiClient=ctmApiClient, data=jCtmJobInfo)
                 else:
-                    xData = '{"count":0,"status":' +
-                    str(None) + ',"entries":[]}'
+                    xData = '{"count":0,"status":' + \
+                        str(None) + ',"entries":[]}'
                     sCtmJobConfig = w3rkstatt.dTranslate4Json(data=xData)
             else:
                 sCtmJobInfo = '{"ctm_api":"not accessible"}'
@@ -585,16 +597,16 @@ def analyzeAlert4Job(ctmApiClient, raw, data):
             data='{"count":' + str(None) + ',"status":' + str(None) + ',"entries":[]}')
         sCtmJobConfig = w3rkstatt.dTranslate4Json(
             data='{"count":' + str(None) + ',"status":' + str(None) + ',"entries":[]}')
-        ctmJobData = '{"uuid":"' + sUuid + '","raw":[' + sCtmAlertRaw + '],"jobAlert":[' + sCtmAlertData + '],"jobInfo":[' +
-        sCtmJobInfo + '],"jobConfig":[' + sCtmJobConfig + '],"jobLog":[' +
-        sCtmJobLog + '],"jobOutput":[' + sCtmJobOutput + ']}'
+        ctmJobData = '{"uuid":"' + sUuid + '","raw":[' + sCtmAlertRaw + '],"jobAlert":[' + sCtmAlertData + '],"jobInfo":[' + \
+            sCtmJobInfo + '],"jobConfig":[' + sCtmJobConfig + '],"jobLog":[' + \
+            sCtmJobLog + '],"jobOutput":[' + sCtmJobOutput + ']}'
 
     if _localInfo:
         logger.info('CTM: Analyze Alert for Jobs - End')
     return ctmJobData
 
 
-def analyzeAlert4Core(ctmApiClient, raw, data):
+def analyzeAlert4Core(raw, data):
     if _localInfo:
         logger.info('CTM: Analyze Alert for Core - Start')
 
@@ -619,7 +631,7 @@ def analyzeAlert4Core(ctmApiClient, raw, data):
     return ctmCoreData
 
 
-def analyzeAlert4Infra(ctmApiClient, raw, data):
+def analyzeAlert4Infra(raw, data):
     if _localInfo:
         logger.info('CTM: Analyze Alert for Infra - Start')
 
@@ -714,7 +726,9 @@ if __name__ == "__main__":
                          'message': 'Ended not OK', 'run_as': 'RDWDXC', 'sub_application': 'DCO_SORT', 'application': 'DCO', 'job_name': 'COBCOMP', 'host_id': None, 'alert_type': 'R', 'closed_from_em': None, 'ticket_number': None, 'run_counter': '00002', 'notes': None}
             jCtmAlert = {"call_type": "I", "alert_id": "212721", "data_center": "psctm", "memname": None, "order_id": "00000", "severity": "R", "status": "Not_Noticed", "send_time": "20210421013938", "last_user": None, "last_time": None,
                          "message": "Failed to order SAP Job CHILD_2 by template job y_SAP-Childjob in Table DCO_SAP_Basic_Jobs  please verify template job definition", "run_as": None, "sub_application": None, "application": None, "job_name": None, "host_id": None, "alert_type": "R", "closed_from_em": None, "ticket_number": None, "run_counter": "00000000000", "notes": None}
-            # jCtmAlert = {"call_type": "I", "alert_id": "212760", "data_center": "psctm", "memname": None, "order_id": "0c5w5", "severity": "V", "status": "Not_Noticed", "send_time": "20210421020203", "last_user": None, "last_time": None, "message": "Ended not OK", "run_as": "ctmagent", "sub_application": "VFS_Alert_Management", "application": "VFS_Integration", "job_name": "VFS_OS", "host_id": "vl-aus-ctm-em01.ctm.bmc.com", "alert_type": "R", "closed_from_em": None, "ticket_number": None, "run_counter": "00001", "notes": None}
+
+            jCtmAlert = {"call_type": "I", "alert_id": "101", "data_center": "ctm-srv.trybmc.com", "memname": None, "order_id": "00007", "severity": "V", "status": "Not_Noticed", "send_time": "20220718195539", "last_user": None, "last_time": None, "message": "Ended not OK",
+                         "run_as": "ctmem", "sub_application": "Integration", "application": "ADE", "job_name": "Agent Health", "host_id": "ctm-net.trybmc.com", "alert_type": "R", "closed_from_em": None,  "ticket_number": None,  "run_counter": "00004", "notes": None}
 
     if len(jCtmAlert) > 0:
 
@@ -792,14 +806,13 @@ if __name__ == "__main__":
                 ctmApiClient = None
                 logger.error('CTM Login Status: %s', _ctmActiveApi)
 
+            # Analyze alert
+            ctmAlertDataFinal = {}
             if ctmAlertCat == "infrastructure":
-                if _ctmActiveApi:
-                    ctmCoreData = analyzeAlert4Infra(
-                        ctmApiClient=ctmApiClient, raw=jCtmAlertRaw, data=jCtmAlert)
-                    fileStatus = writeAlertFile(
-                        data=ctmCoreData, alert=ctmAlertId, type="infra")
-                else:
-                    ctmCoreData = {}
+                ctmAlertDataFinal = analyzeAlert4Infra(
+                    raw=jCtmAlertRaw, data=jCtmAlert)
+                fileStatus = writeAlertFile(
+                    data=ctmAlertDataFinal, alert=ctmAlertId, type="infra")
 
                 # Update CTM Alert staus if file is written
                 if _ctmActiveApi and fileStatus:
@@ -808,11 +821,10 @@ if __name__ == "__main__":
                     logger.debug('CTM Alert Update Status: "%s"',
                                  ctmAlertsStatus)
             elif ctmAlertCat == "job":
-                if _ctmActiveApi:
-                    ctmJobData = analyzeAlert4Job(
-                        ctmApiClient=ctmApiClient, raw=jCtmAlertRaw, data=jCtmAlert)
-                else:
-                    ctmJobData = {}
+                ctmAlertDataFinal = analyzeAlert4Job(
+                    ctmApiClient=ctmApiClient, raw=jCtmAlertRaw, data=jCtmAlert)
+                fileStatus = writeAlertFile(
+                    data=ctmAlertDataFinal, alert=ctmAlertId, type="job")
 
                 if ctmOrderId == "00000" and ctmRunCounter == 0:
                     # do not create file
@@ -825,7 +837,7 @@ if __name__ == "__main__":
                 else:
                     # Update CTM Alert staus if file is written
                     fileStatus = writeAlertFile(
-                        data=ctmJobData, alert=ctmAlertId, type="job")
+                        data=ctmAlertDataFinal, alert=ctmAlertId, type="job")
 
                 if _ctmActiveApi and fileStatus:
                     ctmAlertsStatus = ctm.updateCtmAlertStatus(
@@ -833,13 +845,11 @@ if __name__ == "__main__":
                     logger.debug('CTM Alert Update Status: "%s"',
                                  ctmAlertsStatus)
             else:
-                if _ctmActiveApi:
-                    ctmCoreData = analyzeAlert4Core(
-                        ctmApiClient=ctmApiClient, raw=jCtmAlertRaw, data=jCtmAlert)
-                    fileStatus = writeAlertFile(
-                        data=ctmCoreData, alert=ctmAlertId, type="core")
-                else:
-                    ctmCoreData = {}
+                ctmAlertDataFinal = analyzeAlert4Core(
+                    ctmApiClient=ctmApiClient, raw=jCtmAlertRaw, data=jCtmAlert)
+                fileStatus = writeAlertFile(
+                    data=ctmAlertDataFinal, alert=ctmAlertId, type="core")
+
                 # Update CTM Alert staus if file is written
                 if _ctmActiveApi and fileStatus:
                     ctmAlertsStatus = ctm.updateCtmAlertStatus(
@@ -855,7 +865,7 @@ if __name__ == "__main__":
                     if _localDebug:
                         logger.debug(
                             'CTM ITSM Integration Cyclic Job Run: "%s"', ctmRunCounter)
-                    incident = createITSM(data=ctmJobData)
+                    incident = createITSM(data=ctmAlertDataFinal)
                     sSysOutMsg = "Processed New Alert: " + \
                         str(ctmAlertId) + " Incident: " + str(incident)
                     sAlertNotes = "Processed Alert created Incident: " + incident
@@ -870,7 +880,7 @@ if __name__ == "__main__":
                     if _localDebug:
                         logger.debug(
                             'CTM ITSM Integration Normal Job Run: "%s"', ctmRunCounter)
-                    incident = createITSM(data=ctmJobData)
+                    incident = createITSM(data=ctmAlertDataFinal)
                     sSysOutMsg = "Processed New Alert: " + \
                         str(ctmAlertId) + " Incident: " + str(incident)
                     sAlertNotes = "Processed Alert created Incident: " + incident
@@ -902,82 +912,27 @@ if __name__ == "__main__":
                                  ctmAlertsStatus)
                 logger.debug('CTM ITSM Integration: "%s"', "End")
 
-            sampleJson = {
-                "uuid": "ee4bc44f-f1c2-4c3e-97d6-bbb81cbcfab0",
-                "raw": [{
-                    "call_type": "I",
-                    "Serial": "51",
-                    "Component_type": "20",
-                    "Component_machine": "ctm-archive.trybmc.com",
-                    "Component_name": "Workload Archiving Server",
-                    "Message_id": "32016",
-                    "Xseverity": "3",
-                    "Message": "Control-M/EM stopped sending jobs to Control-M Workload Archiving since server startup.",
-                    "Xtime": "20220715222434",
-                    "Xtime_of_last": "20220715222434",
-                    "Counter": "1",
-                    "Status": "1",
-                    "Note": None,
-                    "Key1": None,
-                    "Key2": None,
-                    "Key3": None,
-                    "Key4": None,
-                    "Key5": None
-                }],
-                "infraAlert": [{
-                    "Component_machine": "ctm-archive.trybmc.com",
-                    "Component_name": "Workload Archiving Server",
-                    "Component_type": "20",
-                    "Counter": "1",
-                    "Key1": None,
-                    "Key2": None,
-                    "Key3": None,
-                    "Key4": None,
-                    "Key5": None,
-                    "Message": "Control-M/EM stopped sending jobs to Control-M Workload Archiving since server startup.",
-                    "Message_id": "32016",
-                    "Note": None,
-                    "Serial": "51",
-                    "Status": "1",
-                    "Xseverity": "3",
-                    "Xtime": "2022-07-15 22:24:34",
-                    "Xtime_of_last": "2022-07-15 22:24:34",
-                    "call_type": "New",
-                    "data_center_dns": None,
-                    "data_center_fqdn": None,
-                    "data_center_ip": None,
-                    "host_ip": "192.168.100.63",
-                    "host_ip_dns": "trybmc.com",
-                    "host_ip_fqdn": "ctm-archive.trybmc.com",
-                    "job_script": None,
-                    "message_notes": "CTRL-M Component Control-M/EM stopped sending jobs to Control-M Workload Archiving since server startup.. Managed by: trybmc.com",
-                    "message_summary": "Control-M/EM stopped sending jobs to Control-M Workload Archiving since server startup.",
-                    "system_category": "infrastructure",
-                    "system_class": "BMC_ApplicationService:ctm-archive.trybmc.com:trybmc.com",
-                    "system_status": None
-                }]
-            }
             if integration_bhom_enabled:
-                ctmCoreData = sampleJson
-                ctmAlertCat == "x"
-
-                if ctmAlertCat == "infrastructure":
-                    ctm.transformCtmBHOM(
-                        data=ctmCoreData, category=ctmAlertCat)
-                elif ctmAlertCat == "job":
-                    ctm.transformCtmBHOM(
-                        data=ctmJobData, category=ctmAlertCat)
-                else:
-                    ctm.transformCtmBHOM(
-                        data=ctmCoreData, category=ctmAlertCat)
+                # translate ctm alert to BHOM format
+                # ctmAlertDataFinal = json.dumps(ctmAlertDataFinal)
+                jBhomEvent = ctm.transformCtmBHOM(
+                    data=ctmAlertDataFinal, category=ctmAlertCat)
+                authToken = w3rkstatt.getJsonValue(
+                    path="$.BHOM.api_Key", data=jCfgData)
+                bhom_event_id = None
+                if authToken != None:
+                    sBhomEventId = bhom.createEvent(
+                        token=authToken, event_data=jBhomEvent)
 
                 if _localDebug:
                     logger.debug(
                         'CTM BHOM Integration Infrastructure: "%s"', ctmCoreData)
                     logger.debug(
-                        'CTM BHOM Integration Job: "%s"', ctmJobData)
+                        'CTM BHOM Integration Job   : "%s"', ctmJobData)
                     logger.debug(
-                        'CTM BHOM Integration Alert: "%s"', jCtmAlert)
+                        'CTM BHOM Integration Alert : "%s"', jCtmAlert)
+                    logger.debug('CTM BHOM: Event   : %s', jBhomEvent)
+                    logger.debug('CTM BHOM: Event ID: %s', sBhomEventId)
 
             # Close cTM AAPI connection
             if _ctmActiveApi:
