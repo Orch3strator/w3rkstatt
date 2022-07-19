@@ -508,7 +508,10 @@ def getCtmJobOutput(ctmApiClient, ctmJobID, ctmJobRunId):
         try:
             sBody = str(exp).split("HTTP response body:")[1]
             # .replace("\\n","").replace("\n","").strip()
-            sMessage = re.findall(r"'(.*?)'", str(sBody), re.DOTALL)
+            sTemp = sBody.split("'")[1].replace(
+                "\\n", "").replace("\\", "").strip()
+            # sMessage = re.findall(r"'(.*?)'", str(sBody), re.DOTALL)
+            sMessage = sTemp
             logger.debug('CTM: AAPI Response Message: %s', str(sMessage))
 
             jMessage = json.loads(sMessage)
@@ -607,6 +610,8 @@ def getCtmJobLog(ctmApiClient, ctmJobID):
         sNote = {}
         try:
             sBody = str(exp).split("HTTP response body:")[1]
+            logger.debug('CTM: AAPI Exception Response Raw: %s', str(sBody))
+
             # .replace("\\n","").replace("\n","").strip()
             sMessage = re.findall(r"'(.*?)'", str(sBody), re.DOTALL)
             logger.debug('CTM: AAPI Response Message: %s', str(sMessage))
