@@ -98,6 +98,7 @@ _localDebugFunctions = jCfgData["DEFAULT"]["debug"]["functions"]
 _localDebugData = jCfgData["DEFAULT"]["debug"]["data"]
 _localDebugAdvanced = jCfgData["DEFAULT"]["debug"]["advanced"]
 _localQA = jCfgData["DEFAULT"]["debug"]["qa"]
+_FutureUse = False
 
 _localInfo = False
 _modVer = "3.0"
@@ -544,7 +545,13 @@ def analyzeAlert4Job(ctmApiClient, raw, data):
     sCtmAlertData = str(jCtmAlertData)
     jCtmAlertRaw = raw
 
+    sCtmJobInfo = '{"count": 0,"status": "unknown"}'
+    sCtmJobOutput = '{"count": 0,"status": "unknown"}'
+    sCtmJobLog = '{"count": 0,"status": "unknown"}'
+    sCtmJobConfig = '{"count": 0,"status": "unknown"}'
+
     if not ctmOrderId == "00000" and ctmOrderId is not None:
+
         if "New" in ctmAlertCallType:
             # Get CTM Job Info
             ctmJobId = w3rkstatt.getJsonValue(path="$.job_id", data=jCtmAlert)
@@ -556,25 +563,28 @@ def analyzeAlert4Job(ctmApiClient, raw, data):
                 sCtmJobInfo = getCtmJobInfo(
                     ctmApiClient=ctmApiClient, data=jCtmAlert)
 
-                # Get job output
-                sCtmJobOutput = getCtmJobOutput(
-                    ctmApiClient=ctmApiClient, data=jCtmAlert)
+                if _FutureUse:
+                    # Get job output
+                    sCtmJobOutput = getCtmJobOutput(
+                        ctmApiClient=ctmApiClient, data=jCtmAlert)
 
-                jCtmJobOutput = json.loads(sCtmJobOutput)
-                sCtmJobOutputStatus = jCtmJobOutput["status"]
+                    jCtmJobOutput = json.loads(sCtmJobOutput)
+                    sCtmJobOutputStatus = jCtmJobOutput["status"]
 
-                # Get job log
-                # if sCtmJobOutputStatus:
-                #     sCtmJobLog = getCtmJobLog(
-                #         ctmApiClient=ctmApiClient, data=jCtmAlert)
-                # else:
-                #    sCtmJobLog = '{"collection":"no accessible"}'
-                sCtmJobLog = getCtmJobLog(
-                    ctmApiClient=ctmApiClient, data=jCtmAlert)
+                    # Get job log
+                    # if sCtmJobOutputStatus:
+                    #     sCtmJobLog = getCtmJobLog(
+                    #         ctmApiClient=ctmApiClient, data=jCtmAlert)
+                    # else:
+                    #    sCtmJobLog = '{"collection":"no accessible"}'
+                    sCtmJobLog = getCtmJobLog(
+                        ctmApiClient=ctmApiClient, data=jCtmAlert)
+                    jCtmJobLog = json.loads(sCtmJobLog)
+                else:
+                    sCtmJobLog = '{"count": 0,"status": "experimental"}'
 
                 # Create JSON object
                 jCtmJobInfo = json.loads(sCtmJobInfo)
-                jCtmJobLog = json.loads(sCtmJobLog)
 
                 # Folder / Job Details
                 ctmJobInfoCount = w3rkstatt.getJsonValue(
@@ -587,11 +597,6 @@ def analyzeAlert4Job(ctmApiClient, raw, data):
                     xData = '{"count":0,"status":' + \
                         str(None) + ',"entries":[]}'
                     sCtmJobConfig = w3rkstatt.dTranslate4Json(data=xData)
-            else:
-                sCtmJobInfo = '{"ctm_api":"not accessible"}'
-                sCtmJobOutput = '{"ctm_api":"not accessible"}'
-                sCtmJobLog = '{"ctm_api":"not accessible"}'
-                sCtmJobConfig = '{"ctm_api":"not accessible"}'
 
             # Prep for str concat
             sCtmAlertRaw = str(jCtmAlertRaw)
@@ -748,6 +753,9 @@ if __name__ == "__main__":
             jCtmAlert = {"call_type": "I", "alert_id": "158", "data_center": "ctm-srv.trybmc.com", "memname": None, "order_id": "00007", "severity": "V", "status": "Not_Noticed", "send_time": "20220719041448", "last_user": None, "last_time": None, "message": "Ended not OK",
                          "run_as": "ctmem", "sub_application": "Integration", "application": "ADE", "job_name": "Agent Health", "host_id": "ctm-net.trybmc.com", "alert_type": "R", "closed_from_em": None, "ticket_number": None, "run_counter": "00021", "notes": None}
 
+            jCtmAlert = {"call_type": "I", "alert_id": "172", "data_center": "ctm-srv.trybmc.com", "memname": None, "order_id": "0000d", "severity": "V", "status": "Not_Noticed", "send_time": "20220719234244", "last_user": None, "last_time": None, "message": "Ended not OK",
+                         "run_as": "dbus", "sub_application": "Integration", "application": "ADE", "job_name": "Agent Health", "host_id": "ctm-net.trybmc.com", "alert_type": "R", "closed_from_em": None, "ticket_number": None, "run_counter": "00007", "notes": None}
+
     if len(jCtmAlert) > 0:
 
         if _localDebugData:
@@ -794,7 +802,7 @@ if __name__ == "__main__":
             # logger.debug('CMT Alert JSON Raw: %s', jCtmAlertRaw)
             # logger.debug('CMT Alert JSON Formatted: %s', jCtmAlert)
 
-            if _localQA:
+            if _localDebugData:
                 # sCtmAlert = w3rkstatt.jsonTranslateValues(data=jCtmAlert)
                 sCtmAlert = json.dumps(jCtmAlert)
                 logger.info('CMT QA Alert JSON Raw: %s', jCtmAlertRaw)
@@ -810,6 +818,12 @@ if __name__ == "__main__":
                 logger.info('CTM QA Job ID: %s', ctmOrderId)
                 logger.info('CTM QA Run Counter: %s', ctmRunCounter)
                 logger.info('CTM QA Alert Call: "%s"', ctmAlertCallType)
+
+                logger.info('')
+                jCtmAlertRawTemp = jCtmAlertRaw.replace('null', 'None')
+                logger.info('CMT QA Alert JSON Format 03: %s',
+                            jCtmAlertRawTemp)
+                logger.info('')
 
             # xAlert ID
             if not ctmAlertId:
