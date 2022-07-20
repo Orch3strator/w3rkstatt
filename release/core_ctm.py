@@ -94,12 +94,14 @@ ctm_server = w3rkstatt.getHostFromFQDN(ctm_host)
 ctm_agent = ctm_server
 
 # Assign module defaults
-_modVer = "20.21.05.00"
+_localDebug = jCfgData["DEFAULT"]["debug"]["api"]
+_localDebugFunctions = jCfgData["DEFAULT"]["debug"]["functions"]
+_localDebugData = jCfgData["DEFAULT"]["debug"]["data"]
+_localDebugAdvanced = jCfgData["DEFAULT"]["debug"]["advanced"]
+_localQA = jCfgData["DEFAULT"]["debug"]["qa"]
+
+_modVer = "20.22.07.00"
 _timeFormat = '%d %b %Y %H:%M:%S,%f'
-_localDebug = False
-_localDebugAdv = False
-_localQA = False
-_localSecurityDebugAdv = True
 
 logger = logging.getLogger(__name__)
 logFile = w3rkstatt.getJsonValue(path="$.DEFAULT.log_file", data=jCfgData)
@@ -167,7 +169,7 @@ class CtmConnection(object):
             self.api_client.default_headers.setdefault(
                 'Authorization', 'Bearer ' + api_token.token)
             self.logged_in = True
-            if _localDebug:
+            if _localDebugFunctions:
                 logger.debug('CTM: API Login: %s', True)
                 logger.debug('CTM: API Bearer: %s', api_token.token)
         except (NewConnectionError, MaxRetryError, ctm.rest.ApiException) as exp:
@@ -192,7 +194,7 @@ class CtmConnection(object):
             try:
                 self.session_api.do_logout()
                 self.logged_in = False
-                if _localDebug:
+                if _localDebugAdvanced:
                     logger.debug('CTM: API Logout: %s', True)
             except ctm.rest.ApiException as exp:
                 logger.error(
@@ -423,13 +425,13 @@ def getDeployedAiJobtypes(ctmApiClient, ctmAiJobDeployStatus="ready to deploy"):
                 jJobType = '{"job_type_id":"' + job_type_id + '","job_type_name":"' + \
                     job_type_name + '","status":"' + job_status + '"}'
                 jJobTypes = jJobType + "," + jJobTypes
-            if _localDebug:
+            if _localDebugAdvanced:
                 logger.debug('CTM: AI Job Type: %s', jJobType)
 
         jJobTypes = jJobTypes[:-1]
         jResult = '{"jobtypes":[' + jJobTypes + ']}'
 
-        if _localDebug:
+        if _localDebugFunctions:
             logger.debug('CTM: AI Job Types: %s', jResult)
 
         # Format for function
@@ -490,17 +492,17 @@ def getCtmJobOutput(ctmApiClient, ctmJobID, ctmJobRunId):
     """
     # Instantiate the AAPI object
     ctmCfgAapi = ctm.RunApi(api_client=ctmApiClient)
-    if _localDebugAdv:
+    if _localDebugFunctions:
         logger.debug('CTM: AAPI object: %s', ctmCfgAapi)
 
     # Call CTM AAPI
     results = ""
     try:
-        if _localDebugAdv:
+        if _localDebugFunctions:
             logger.debug('CTM: AAPI Function: %s', "get_job_output")
         results = ctmCfgAapi.get_job_output(
             job_id=ctmJobID, run_no=ctmJobRunId)
-        if _localDebugAdv:
+        if _localDebugFunctions:
             logger.debug('CTM: AAPI Result: %s', results)
     except ctm.rest.ApiException as exp:
         logger.error('CTM: AAPI Function: %s', "get_job_output")
@@ -601,7 +603,7 @@ def getCtmJobLog(ctmApiClient, ctmJobID):
     results = ""
     try:
         results = ctmCfgAapi.get_job_log(ctmJobID)
-        if _localDebugAdv:
+        if _localDebugFunctions:
             logger.debug('CTM: AAPI Function: %s', "get_job_log")
             logger.debug('CTM: AAPI Result: %s', results)
     except ctm.rest.ApiException as exp:
@@ -643,7 +645,7 @@ def getCtmJobStatus(ctmApiClient, ctmServer, ctmOrderID):
     ctmCfgAapi = ctm.api.run_api.RunApi(api_client=ctmApiClient)
     results = ""
     if ctmOrderID == "00000":
-        if _localDebugAdv:
+        if _localDebugFunctions:
             logger.debug('CTM: Order ID: %s', ctmOrderID)
     else:
         # Call the service
@@ -654,12 +656,12 @@ def getCtmJobStatus(ctmApiClient, ctmServer, ctmOrderID):
                 # Tranform to JSON, require result as dict
                 dResults = results.to_dict()
                 jResults = w3rkstatt.dTranslate4Json(data=dResults)
-                if _localDebugAdv:
+                if _localDebugFunctions:
                     logger.debug('CTM: API Function: %s', "get_job_status")
                     logger.debug('CTM: API Result: %s', results)
             else:
                 jResults = {}
-                if _localDebugAdv:
+                if _localDebugFunctions:
                     logger.debug('CTM: API Function: %s', "get_job_status")
                     logger.debug('CTM: API Result: %s', "no data")
 
@@ -694,16 +696,8 @@ def getCtmAgentStatus(ctmApiClient, ctmAgent):
 
 
 def getCtmConnection():
-    if _localSecurityDebugAdv:
-        logger.debug('CTM: AAPI EM   : %s', ctm_host)
-        logger.debug('CTM: AAPI User : %s', ctm_user)
-        logger.debug('CTM: AAPI Pwd  : %s', ctm_pwd)
-
     ctm_pwd_decrypted = w3rkstatt.decryptPwd(
         data=ctm_pwd, sKeyFileName=cryptoFile)
-
-    if _localSecurityDebugAdv:
-        logger.debug('CTM: AAPI Pwd  : %s', ctm_pwd_decrypted)
 
     ctmApiCli = CtmConnection(host=ctm_host, port=ctm_port, ssl=ctm_ssl, verify_ssl=ctm_ssl_ver,
                               user=ctm_user, password=ctm_pwd_decrypted,
@@ -895,18 +889,18 @@ def getCtmHostGroupMembers(ctmApiClient, ctmServer, ctmHostGroup):
 
     # Instantiate the AAPI object
     ctmCfgAapi = ctm.api.config_api.ConfigApi(api_client=ctmApiClient)
-    if _localDebug:
+    if _localDebugFunctions:
         logger.debug('CTM: API object: %s', ctmCfgAapi)
     results = ""
 
     # Call CTM AAPI
     try:
-        if _localDebug:
+        if _localDebugFunctions:
             logger.debug('CTM: API Function: %s', "get_hosts_in_group")
         results = ctmCfgAapi.get_hosts_in_group(
             server=ctmServer, hostgroup=ctmHostGroup, _return_http_data_only=True)
         results = str(results).replace("'", '"')
-        if _localDebug:
+        if _localDebugFunctions:
             logger.debug('CTM: API Result: %s', results)
         results = json.loads(results)
     except ctm.rest.ApiException as exp:
@@ -930,18 +924,18 @@ def getCtmHostGroups(ctmApiClient, ctmServer):
 
     # Instantiate the AAPI object
     ctmCfgAapi = ctm.api.config_api.ConfigApi(api_client=ctmApiClient)
-    if _localDebug:
+    if _localDebugFunctions:
         logger.debug('CTM: API object: %s', ctmCfgAapi)
     results = ""
 
     # Call CTM AAPI
     try:
-        if _localDebug:
+        if _localDebugFunctions:
             logger.debug('CTM: API Function: %s', "get_hosts_in_group")
         results = ctmCfgAapi.get_hostgroups(
             server=ctmServer, _return_http_data_only=True)
         results = str(results).replace("'", '"')
-        if _localDebug:
+        if _localDebugFunctions:
             logger.debug('CTM: API Result: %s', results)
         results = json.loads(results)
     except ctm.rest.ApiException as exp:
@@ -965,18 +959,18 @@ def getCtmRemoteHosts(ctmApiClient, ctmServer):
 
     # Instantiate the AAPI object
     ctmCfgAapi = ctm.api.config_api.ConfigApi(api_client=ctmApiClient)
-    if _localDebug:
+    if _localDebugFunctions:
         logger.debug('CTM: API object: %s', ctmCfgAapi)
     results = ""
 
     # Call CTM AAPI
     try:
-        if _localDebug:
+        if _localDebugFunctions:
             logger.debug('CTM: API Function: %s', "get_remote_hosts")
         results = ctmCfgAapi.get_remote_hosts(
             server=ctmServer, _return_http_data_only=True)
         results = str(results).replace("'", '"')
-        if _localDebug:
+        if _localDebugFunctions:
             logger.debug('CTM: API Result: %s', results)
         results = json.loads(results)
     except ctm.rest.ApiException as exp:
@@ -1001,19 +995,19 @@ def getRemoteHostProperties(ctmApiClient, ctmServer, ctmRemoteHost):
 
     # Instantiate the AAPI object
     ctmCfgAapi = ctm.api.config_api.ConfigApi(api_client=ctmApiClient)
-    if _localDebug:
+    if _localDebugFunctions:
         logger.debug('CTM: API object: %s', ctmCfgAapi)
     results = ""
 
     # Call CTM AAPI
     try:
-        if _localDebug:
+        if _localDebugFunctions:
             logger.debug('CTM: API Function: %s', "get_remote_host_properties")
         results = ctmCfgAapi.get_remote_host_properties(
             server=ctmServer, remotehost=ctmRemoteHost, _return_http_data_only=True)
         results = w3rkstatt.dTranslate4Json(data=results)
 
-        if _localDebug:
+        if _localDebugFunctions:
             logger.debug('CTM: API Result: %s', results)
         results = json.loads(results)
     except ctm.rest.ApiException as exp:
@@ -1080,7 +1074,7 @@ def getCtmJobInfo(ctmApiClient, ctmServer, ctmOrderID):
     sData = w3rkstatt.dTranslate4Json(data=xData)
     # jData = json.loads(sData)
 
-    if _localDebugAdv:
+    if _localDebugFunctions:
         logger.debug('CTM Job Info: %s', sData)
 
     return sData
@@ -1128,7 +1122,7 @@ def getCtmDeployedFolder(ctmApiClient, ctmServer, ctmFolder):
         """
     # Instantiate the AAPI object
     ctmCfgAapi = ctm.DeployApi(api_client=ctmApiClient)
-    if _localDebugAdv:
+    if _localDebugFunctions:
         logger.debug('CTM: AAPI object: %s', ctmCfgAapi)
 
     # Call CTM AAPI
@@ -1136,7 +1130,7 @@ def getCtmDeployedFolder(ctmApiClient, ctmServer, ctmFolder):
     try:
         results = ctmCfgAapi.get_deployed_folders_new(
             format="json", folder=ctmFolder, server=ctmServer)
-        if _localDebugAdv:
+        if _localDebugFunctions:
             logger.debug('CTM: AAPI Function: %s', "get_deployed_folders_new")
             logger.debug('CTM: AAPI Result: %s', results)
     except ctm.rest.ApiException as exp:
@@ -1574,7 +1568,7 @@ def trasnformtCtmAlert(data):
     jCtmAlert = OrderedDict(sorted(jCtmAlert.items()))
 
     for (key, value) in jCtmAlert.items():
-        if _localDebugAdv:
+        if _localDebugFunctions:
             logger.debug('CTM Alert Entry: %s=%s', key, value)
 
     # Tweak final json
@@ -1627,7 +1621,7 @@ def transformCtmJobOutput(data):
     sData = w3rkstatt.dTranslate4Json(data=xData)
     jData = json.loads(sData)
 
-    if _localDebugAdv:
+    if _localDebugFunctions:
         logger.debug('CMT Job Output Transform Raw: %s', sData)
 
     return jData
@@ -1829,7 +1823,7 @@ def updateCtmAlertCore(ctmApiClient, ctmAlertIDs, ctmAlertComment, ctmAlertUrgen
             body=sCtmAlertData, _return_http_data_only=True)
         results = str(results).replace("'", '"')
         results = str(results).replace("None", '"None"')
-        if _localDebugAdv:
+        if _localDebugFunctions:
             logger.debug('CTM: API Function: %s', "update_alert")
             logger.debug('CTM: API Result:\n%s', results)
         results = json.loads(results)
@@ -1864,7 +1858,7 @@ def updateCtmAlertStatus(ctmApiClient, ctmAlertIDs, ctmAlertStatus="Reviewed"):
             body=sCtmAlertData, _return_http_data_only=True)
         results = str(results).replace("'", '"')
         results = str(results).replace("None", '"None"')
-        if _localDebugAdv:
+        if _localDebugFunctions:
             logger.debug('CTM: API Function: %s', "update_alert_status")
             logger.debug('CTM: API Result:\n%s', results)
         results = json.loads(results)
