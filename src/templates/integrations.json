@@ -52,7 +52,8 @@
     "pwd": "",
     "cell": "",
     "routing": "CELL_NAME",
-    "tenant": "*"
+    "tenant": "*",
+    "demo": false
   },
   "TSPS": {
     "host": "",
@@ -78,6 +79,7 @@
     "api_docs_03": "https://communities.bmc.com/message/871421#871421",
     "api_docs_04": "https://bmcsites.force.com/casemgmt/sc_KnowledgeArticle?sfdcid=kA33n000000XqnpCAC&type=ProductDescription",
     "mappings_file": "helix_itsm_mappings.json",
+    "demo": false,
     "change": {
       "form_name": "CHG:ChangeInterface_Create",
       "impact": "3000",
@@ -101,7 +103,7 @@
       "status": "New",
       "reported-source": "Direct Input",
       "service-type": "User Service Request",
-      "demo": true
+      "demo": false
     },
     "worklog": {
       "form_name": "HPD:WorkLog"
@@ -145,6 +147,7 @@
     "ssl_san": "",
     "user": "",
     "pwd": "",
+    "demo": false,
     "itsm": {
       "incident": "",
       "change": ""
@@ -164,7 +167,8 @@
     "tssa_port": "8080",
     "tssa_user": "bladmin",
     "tssa_pwd": "",
-    "tssa_pwd_secure": ""
+    "tssa_pwd_secure": "",
+    "demo": false
   },
   "DISCO": {
     "host": "",
@@ -177,7 +181,8 @@
     "external_port": "443",
     "api_version": "v1.1",
     "api_search_limit": 100,
-    "token": ""
+    "token": "",
+    "demo": false
   },
   "CTM": {
     "host": "",
@@ -262,7 +267,8 @@
     "request": {
       "template_name": "",
       "template_id": ""
-    }
+    },
+    "demo": false
   },
   "TWILIO": {
     "host": "www.twilio.com",
@@ -279,7 +285,8 @@
     "api_init": false,
     "api_key": "",
     "api_key_riendly_name": "",
-    "api_search_limit": 100
+    "api_search_limit": 100,
+    "demo": false
   },
   "SLACK": {
     "host": "",
@@ -289,14 +296,16 @@
     "user": "sa",
     "pwd": "",
     "driver": "ODBC Driver 17 for SQL Server",
-    "db": "ADE"
+    "db": "ADE",
+    "demo": false
   },
   "KAFKA": {
     "host": "",
     "port": "9092",
     "topic": "",
     "replication-factor": 1,
-    "partitions": 1
+    "partitions": 1,
+    "demo": false
   },
   "ZOOKEEPER": {
     "host": "",
@@ -310,6 +319,7 @@
     "user": "sa",
     "pwd": "",
     "driver": "ODBC Driver 17 for SQL Server",
-    "db": ""
+    "db": "",
+    "demo": false
   }
 }
