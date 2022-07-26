@@ -1,3 +1,4 @@
 {
-    "restructuredtext.confPath": ""
+    "restructuredtext.confPath": "",
+    "thunder-client.saveToWorkspace": true
 }
