@@ -104,17 +104,17 @@ def testIncidentCreate(token):
             "Reported Source": w3rkstatt.getJsonValue(path="$.ITSM.incident.reported-source", data=jCfgData),
             "Service_Type": w3rkstatt.getJsonValue(path="$.ITSM.incident.service-type", data=jCfgData),
             "ServiceCI": w3rkstatt.getJsonValue(path="$.ITSM.defaults.service-ci", data=jCfgData),
-            "Assigned Group": w3rkstatt.getJsonValue(path="$.ITSM.defaults.assigned-group", data=jCfgData),
-            "Assigned Support Company": w3rkstatt.getJsonValue(path="$.ITSM.defaults.support-company", data=jCfgData),
-            "Assigned Support Organization": w3rkstatt.getJsonValue(path="$.ITSM.defaults.support-organization", data=jCfgData),
+            # "Assigned Group": w3rkstatt.getJsonValue(path="$.ITSM.defaults.assigned-group", data=jCfgData),
+            # "Assigned Support Company": w3rkstatt.getJsonValue(path="$.ITSM.defaults.support-company", data=jCfgData),
+            # "Assigned Support Organization": w3rkstatt.getJsonValue(path="$.ITSM.defaults.support-organization", data=jCfgData),
             "Categorization Tier 1": w3rkstatt.getJsonValue(path="$.ITSM.defaults.op_cat_1", data=jCfgData),
             "Categorization Tier 2": w3rkstatt.getJsonValue(path="$.ITSM.defaults.op_cat_2", data=jCfgData),
             "Categorization Tier 3": w3rkstatt.getJsonValue(path="$.ITSM.defaults.op_cat_3", data=jCfgData),
             "Product Categorization Tier 1": w3rkstatt.getJsonValue(path="$.ITSM.defaults.prod_cat_1", data=jCfgData),
             "Product Categorization Tier 2": w3rkstatt.getJsonValue(path="$.ITSM.defaults.prod_cat_2", data=jCfgData),
-            "Product Categorization Tier 3": w3rkstatt.getJsonValue(path="$.ITSM.defaults.prod_cat_3", data=jCfgData),
-            "Product Name": w3rkstatt.getJsonValue(path="$.ITSM.defaults.product_name", data=jCfgData),
-            "TemplateID": "AGGAA5V0GO2Y0APMV93LPLY5FREVV1"
+            "Product Categorization Tier 3": w3rkstatt.getJsonValue(path="$.ITSM.defaults.prod_cat_3", data=jCfgData)
+            # "Product Name": w3rkstatt.getJsonValue(path="$.ITSM.defaults.product_name", data=jCfgData),
+            # "TemplateID": "AGGAA5V0GO2Y0APMV93LPLY5FREVV1",
             # "Urgency" : "3-Medium",
             # "Vendor Ticket Number" : "INC9969625",
             # "z1D_View_Access":"Internal",
@@ -380,6 +380,7 @@ def demoITSM():
         path="$.ITSM.incident.demo", data=jCfgData)
 
     authToken = itsm.authenticate()
+    logger.info('ITSM: Auth Token : "%s"', authToken)
     if authToken != None:
         # Demo ITSM Change Integration
         if itsm_demo_crq:
@@ -397,16 +398,15 @@ def demoITSM():
             incidentID = testIncidentCreate(token=authToken)
             logger.info('ITSM: Incident ID: "%s"', incidentID)
 
-            incInfo = itsm.getIncident(token=authToken, incident=incidentID)
-            logger.info('ITSM: Incident: %s', incInfo)
+            # incInfo = itsm.getIncident(token=authToken, incident=incidentID)
+            # logger.info('ITSM: Incident: %s', incInfo)
 
-            incStatus = itsm.getIncidentStatus(
-                token=authToken, incident=incidentID)
+            incStatus = itsm.getIncidentStatus(token=authToken, incident=incidentID)
             logger.info('ITSM: Incident State: "%s"', incStatus)
 
-            incWLogStatus = testIncidentWorklog(
-                token=authToken, incident=incidentID)
-            logger.info('ITSM: Incident Worklog Status: "%s"', incWLogStatus)
+            # incWLogStatus = testIncidentWorklog(
+            #     token = authToken, incident = incidentID)
+            # logger.info('ITSM: Incident Worklog Status: "%s"', incWLogStatus)
 
         itsm.logout(token=authToken)
 
@@ -418,7 +418,8 @@ def demoTSIM():
     tsim_event_id = None
     if authToken != None:
         tsim_data = tsimDefineEvent()
-        tsim_event_id = tsim.createEvent(token=authToken, event_data=tsim_data)
+        tsim_event_id = tsim.createEvent(
+            token=authToken, event_data=tsim_data)
         logger.debug('TSIM: event id: %s', tsim_event_id)
     return tsim_event_id
 
@@ -483,7 +484,8 @@ def demoBHOM():
     bhom_event_id = None
     if authToken != None:
         bhom_data = bhomDefineEvent()
-        bhom_event_id = bhom.createEvent(token=authToken, event_data=bhom_data)
+        bhom_event_id = bhom.createEvent(
+            token=authToken, event_data=bhom_data)
         logger.debug('BHOM: event id: %s', bhom_event_id)
     return bhom_event_id
 
@@ -503,11 +505,22 @@ if __name__ == "__main__":
     logger.info('Epoch: %s', epoch)
 
     demoStatusCTM = w3rkstatt.getJsonValue(path="$.CTM.demo", data=jCfgData)
-    demoStatusITSM = w3rkstatt.getJsonValue(path="$.ITSM.demo", data=jCfgData)
-    demoStatusTSIM = w3rkstatt.getJsonValue(path="$.TSIM.demo", data=jCfgData)
+    demoStatusITSM = w3rkstatt.getJsonValue(
+        path="$.ITSM.demo", data=jCfgData)
+    demoStatusTSIM = w3rkstatt.getJsonValue(
+        path="$.TSIM.demo", data=jCfgData)
     demoStatusTSO = w3rkstatt.getJsonValue(path="$.TSO.demo", data=jCfgData)
-    demoStatusSMTP = w3rkstatt.getJsonValue(path="$.MAIL.demo", data=jCfgData)
-    demoStatusBHOM = w3rkstatt.getJsonValue(path="$.BHOM.demo", data=jCfgData)
+    demoStatusSMTP = w3rkstatt.getJsonValue(
+        path="$.MAIL.demo", data=jCfgData)
+    demoStatusBHOM = w3rkstatt.getJsonValue(
+        path="$.BHOM.demo", data=jCfgData)
+
+    logger.info('Demo CTM: %s', demoStatusCTM)
+    logger.info('Demo BHOM: %s', demoStatusBHOM)
+    logger.info('Demo TSIM: %s', demoStatusTSIM)
+    logger.info('Demo ITSM: %s', demoStatusITSM)
+    logger.info('Demo TSO: %s', demoStatusTSO)
+    logger.info('Demo SMTP: %s', demoStatusSMTP)
 
     # Demo Control-M Integration
     if demoStatusCTM:
