@@ -36,5 +36,37 @@
         "value": "{{authToken}}"
       }
     ]
+  },
+  {
+    "_id": "81caadd3-adc7-4e51-ae51-fea7cf85d033",
+    "colId": "00fff7d0-69f7-40d9-95ba-c570f917b883",
+    "containerId": "503ddf12-bd78-45d2-ada6-8927229322bd",
+    "name": "Get Servers",
+    "url": "https://{{server}}:{{port}}/automation-api/config/servers",
+    "method": "GET",
+    "sortNum": 20000,
+    "created": "2022-07-27T17:15:41.484Z",
+    "modified": "2022-07-27T17:18:51.731Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{authToken}}"
+      }
+    ],
+    "params": [],
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
   }
 ]

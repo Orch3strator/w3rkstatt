@@ -4,7 +4,15 @@
     "colName": "Control-M",
     "created": "2022-07-27T17:09:23.032Z",
     "sortNum": 10000,
-    "folders": [],
+    "folders": [
+      {
+        "_id": "503ddf12-bd78-45d2-ada6-8927229322bd",
+        "name": "config",
+        "containerId": "",
+        "created": "2022-07-27T17:15:32.532Z",
+        "sortNum": 10000
+      }
+    ],
     "settings": {
       "headers": [
         {
