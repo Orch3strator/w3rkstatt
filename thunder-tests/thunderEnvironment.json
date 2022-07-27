@@ -5,7 +5,7 @@
     "default": true,
     "sortNum": 10000,
     "created": "2022-07-27T17:08:13.356Z",
-    "modified": "2022-07-27T17:08:55.428Z",
+    "modified": "2022-07-27T17:14:29.905Z",
     "data": [
       {
         "name": "server",
@@ -18,6 +18,14 @@
       {
         "name": "password",
         "value": "ctmPr3Zales"
+      },
+      {
+        "name": "port",
+        "value": "443"
+      },
+      {
+        "name": "authToken",
+        "value": "A5E2015BFFD3682662050AC4BAD0865FA64E30715C72BA2A0F01C538C7A297C72BAEE597F3FA63442768F032471DC8A49124868817EA773015D6D6FE8AB35389"
       }
     ]
   }
