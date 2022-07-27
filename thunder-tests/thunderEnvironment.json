@@ -1,0 +1,24 @@
+[
+  {
+    "_id": "31d4482e-4bab-4942-96c7-2ba39f35ff09",
+    "name": "Control-M",
+    "default": true,
+    "sortNum": 10000,
+    "created": "2022-07-27T17:08:13.356Z",
+    "modified": "2022-07-27T17:08:55.428Z",
+    "data": [
+      {
+        "name": "server",
+        "value": "ctm-em.trybmc.com"
+      },
+      {
+        "name": "user",
+        "value": "ctmem"
+      },
+      {
+        "name": "password",
+        "value": "ctmPr3Zales"
+      }
+    ]
+  }
+]
