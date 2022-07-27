@@ -4,16 +4,16 @@
     "colId": "00fff7d0-69f7-40d9-95ba-c570f917b883",
     "containerId": "",
     "name": "Login",
-    "url": "https://{{server}}:{{port}}/automation-api/session/login",
+    "url": "https://{{ctm}}:{{port}}/automation-api/session/login",
     "method": "POST",
     "sortNum": 10000,
     "created": "2022-07-27T17:11:25.456Z",
-    "modified": "2022-07-27T17:14:29.907Z",
+    "modified": "2022-07-27T17:28:00.798Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\r\n  \"username\": \"{{user}}\",\r\n  \"password\": \"{{password}}\"\r\n}",
+      "raw": "{\n  \"username\": \"{{user}}\",\n  \"password\": \"{{password}}\"\n}",
       "form": []
     },
     "tests": [
@@ -42,11 +42,49 @@
     "colId": "00fff7d0-69f7-40d9-95ba-c570f917b883",
     "containerId": "503ddf12-bd78-45d2-ada6-8927229322bd",
     "name": "Get Servers",
-    "url": "https://{{server}}:{{port}}/automation-api/config/servers",
+    "url": "https://{{ctm}}:{{port}}/automation-api/config/servers",
     "method": "GET",
     "sortNum": 20000,
     "created": "2022-07-27T17:15:41.484Z",
-    "modified": "2022-07-27T17:18:51.731Z",
+    "modified": "2022-07-27T17:31:47.519Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{authToken}}"
+      }
+    ],
+    "params": [],
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.[0].name",
+        "action": "setto",
+        "value": "{{server}}"
+      }
+    ]
+  },
+  {
+    "_id": "0a96d2af-14a2-441c-9261-e4fef6b9ddf0",
+    "colId": "00fff7d0-69f7-40d9-95ba-c570f917b883",
+    "containerId": "503ddf12-bd78-45d2-ada6-8927229322bd",
+    "name": "Get Authorization Users",
+    "url": "https://{{ctm}}:{{port}}/automation-api/config/authorization/users",
+    "method": "GET",
+    "sortNum": 30000,
+    "created": "2022-07-27T17:24:29.410Z",
+    "modified": "2022-07-27T17:28:08.844Z",
     "headers": [
       {
         "name": "Authorization",
@@ -67,6 +105,40 @@
         "action": "equal",
         "value": "application/json"
       }
-    ]
+    ],
+    "docs": "List of authorization users"
+  },
+  {
+    "_id": "9fe8802f-468f-4240-a407-c1e8c828ce35",
+    "colId": "00fff7d0-69f7-40d9-95ba-c570f917b883",
+    "containerId": "503ddf12-bd78-45d2-ada6-8927229322bd",
+    "name": "Get Agents",
+    "url": "https://{{ctm}}:{{port}}/automation-api/config/server/{{server}}/agents",
+    "method": "GET",
+    "sortNum": 40000,
+    "created": "2022-07-27T17:32:16.137Z",
+    "modified": "2022-07-27T17:33:31.675Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{authToken}}"
+      }
+    ],
+    "params": [],
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ],
+    "docs": "Get all the agents of the specified Server."
   }
 ]
