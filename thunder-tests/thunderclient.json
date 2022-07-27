@@ -146,11 +146,42 @@
     "colId": "4353b247-e4a0-4f89-bc37-91bb0a65964e",
     "containerId": "b5a76697-9dc6-4432-887c-f8d48e6d9294",
     "name": "Create Event",
-    "url": "",
-    "method": "GET",
+    "url": "https://{{server}}:{{port}}/tsws/api/v1.0/events",
+    "method": "POST",
     "sortNum": 10000,
     "created": "2022-07-27T18:30:01.708Z",
-    "modified": "2022-07-27T18:30:01.708Z",
-    "headers": []
+    "modified": "2022-07-27T18:41:43.594Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "apiKey {{authToken}}"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "[\n  {\n    \"class\": \"CTMX_EVENT\",\n    \"severity\": \"MAJOR\",\n    \"object\": \"test\",\n    \"msg\": \"CREATE TIME TEST error message4\",\n    \"source_identifier\": \"thunder.trybmc.com:3181\",\n    \"source_hostname\": \"thunder.trybmc.com\",\n    \"status\": \"OPEN\",\n    \"priority\": \"PRIORITY_3\"\n  }\n]",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.resourceId[0]",
+        "action": "setto",
+        "value": "{{resourceId}}"
+      }
+    ]
   }
 ]

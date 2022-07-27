@@ -39,7 +39,7 @@
     "default": false,
     "sortNum": 20000,
     "created": "2022-07-27T18:23:00.933Z",
-    "modified": "2022-07-27T18:27:23.721Z",
+    "modified": "2022-07-27T18:43:10.419Z",
     "data": [
       {
         "name": "server",
@@ -51,7 +51,11 @@
       },
       {
         "name": "authToken",
-        "value": "399a343b-7df6-4a72-bc83-09bb81876f4"
+        "value": "399a343b-7df6-4a72-bc83-09bb81876f4b"
+      },
+      {
+        "name": "resourceId",
+        "value": "eps.1266486857.726548496749971.4c2f0530-f486-48a6-9fc5-119fe35bf48e"
       }
     ]
   }
