@@ -1,0 +1,835 @@
+{
+  "client": "Thunder Client",
+  "collectionName": "Control-M Automation API",
+  "dateExported": "2022-07-27T19:20:05.979Z",
+  "version": "1.1",
+  "folders": [
+    {
+      "_id": "0461c854-de73-4c37-b2be-8fd71c142854",
+      "name": "Config",
+      "containerId": "",
+      "created": "2022-07-27T19:09:38.087Z",
+      "sortNum": 10000
+    },
+    {
+      "_id": "be80d13a-27a4-4073-8b55-198d362060bd",
+      "name": "Provision",
+      "containerId": "",
+      "created": "2022-07-27T19:09:38.088Z",
+      "sortNum": 20000
+    },
+    {
+      "_id": "e6368e21-73e3-4ff6-b41e-69ae1c8afcc5",
+      "name": "Session",
+      "containerId": "",
+      "created": "2022-07-27T19:09:38.089Z",
+      "sortNum": 30000
+    },
+    {
+      "_id": "5bc20bc9-57c7-4917-bf5a-bd079992df7a",
+      "name": "Run",
+      "containerId": "",
+      "created": "2022-07-27T19:09:38.090Z",
+      "sortNum": 40000
+    }
+  ],
+  "requests": [
+    {
+      "_id": "305df027-a633-4aac-a516-25a997317360",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "0461c854-de73-4c37-b2be-8fd71c142854",
+      "name": "Get Servers (ctm config servers::get)",
+      "url": "https://{{ctm}}:{{port}}/automation-api/config/servers",
+      "method": "GET",
+      "sortNum": 10000,
+      "created": "2022-07-27T19:09:38.088Z",
+      "modified": "2022-07-27T19:18:28.340Z",
+      "headers": [],
+      "params": [],
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "089167e9-6c26-446d-8050-83982494ecc5",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "0461c854-de73-4c37-b2be-8fd71c142854",
+      "name": "Get Hostgroups",
+      "url": "https://{{ctm}}:{{port}}/automation-api/config/server/{{server}}/hostgroups",
+      "method": "GET",
+      "sortNum": 20000,
+      "created": "2022-07-27T19:09:38.089Z",
+      "modified": "2022-07-27T19:19:22.508Z",
+      "headers": [],
+      "params": [],
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "d4f411e9-9e87-4fcf-9a6f-7600a50bab4a",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "0461c854-de73-4c37-b2be-8fd71c142854",
+      "name": "Get RunAs",
+      "url": "https://{{ctm}}:{{port}}/automation-api/config/server/{{server}}/runasusers?agent=*&user=domain%5Caaron7",
+      "method": "GET",
+      "sortNum": 30000,
+      "created": "2022-07-27T19:09:38.090Z",
+      "modified": "2022-07-27T19:09:38.090Z",
+      "headers": [],
+      "params": [
+        { "name": "agent", "value": "*", "isPath": false },
+        { "name": "user", "value": "domain%5Caaron7", "isPath": false }
+      ],
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "6d54937f-1429-420d-bddc-4a0db43d1833",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "0461c854-de73-4c37-b2be-8fd71c142854",
+      "name": "RunAs Add",
+      "url": "https://{{ctm}}:{{port}}/config/server/{{server}}/runasuser/{{agent}}/{{user}}",
+      "method": "POST",
+      "sortNum": 40000,
+      "created": "2022-07-27T19:09:38.091Z",
+      "modified": "2022-07-27T19:09:38.091Z",
+      "headers": [],
+      "body": { "type": "json", "raw": "{\r\n\"password\":\"fred\"\r\n}" },
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "85c50e4e-bd66-43fc-a7ef-867d0996c4e3",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "0461c854-de73-4c37-b2be-8fd71c142854",
+      "name": "RunAs Update",
+      "url": "https://ctm-aws-sandbox.bmcdemo.com:8443/automation-api/config/server/Sandbox/runasuser/zzz-gcp-linux-1.bmcdemo.com/domain%5Caaron7",
+      "method": "POST",
+      "sortNum": 50000,
+      "created": "2022-07-27T19:09:38.092Z",
+      "modified": "2022-07-27T19:09:38.092Z",
+      "headers": [],
+      "body": { "type": "json", "raw": "{\r\n\"password\":\"fred\"\r\n}" },
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "8d55ca3c-bb06-42f0-9b4a-b3e3d517e374",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "0461c854-de73-4c37-b2be-8fd71c142854",
+      "name": "Get RunAs All",
+      "url": "https://{{ctm}}:{{port}}/automation-api/config/server/{{server}}/runasuser/zzz-gcp-linux-1.bmcdemo.com/%5Caaron7",
+      "method": "GET",
+      "sortNum": 60000,
+      "created": "2022-07-27T19:09:38.093Z",
+      "modified": "2022-07-27T19:09:38.093Z",
+      "headers": [],
+      "params": [],
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "1d1f4808-ed58-4310-9a2a-4d8360221106",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "0461c854-de73-4c37-b2be-8fd71c142854",
+      "name": "Get RunAs Test All",
+      "url": "https://{{ctm}}:{{port}}/automation-api/config/server/{{server}}/hostgroups",
+      "method": "GET",
+      "sortNum": 70000,
+      "created": "2022-07-27T19:09:38.094Z",
+      "modified": "2022-07-27T19:09:38.094Z",
+      "headers": [],
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "f5b0eca9-ece8-46a0-9eb9-0e8213158fd9",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "0461c854-de73-4c37-b2be-8fd71c142854",
+      "name": "Get Remote Hosts",
+      "url": "https://{{ctm}}:{{port}}/automation-api/config/servers",
+      "method": "GET",
+      "sortNum": 80000,
+      "created": "2022-07-27T19:09:38.095Z",
+      "modified": "2022-07-27T19:09:38.095Z",
+      "headers": [],
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "3d24c6eb-1eba-4b92-8e4d-742c1fee86fa",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "0461c854-de73-4c37-b2be-8fd71c142854",
+      "name": "Get Server Parameters",
+      "url": "https://{{ctm}}:{{port}}/automation-api/config/server/{{server}}/params",
+      "method": "GET",
+      "sortNum": 90000,
+      "created": "2022-07-27T19:09:38.096Z",
+      "modified": "2022-07-27T19:09:38.096Z",
+      "headers": [],
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "a91b6d4d-a41a-4acb-953b-bf40ea9edc07",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "0461c854-de73-4c37-b2be-8fd71c142854",
+      "name": "Get Agent Parameters",
+      "url": "https://{{ctm}}:{{port}}/automation-api/config/server/{{server}}/agent/acb-centos/params",
+      "method": "GET",
+      "sortNum": 100000,
+      "created": "2022-07-27T19:09:38.097Z",
+      "modified": "2022-07-27T19:09:38.097Z",
+      "headers": [],
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "86780a11-2aaf-4e60-b117-c8eb4492184a",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "0461c854-de73-4c37-b2be-8fd71c142854",
+      "name": "Get AI JobTypes",
+      "url": "https://{{ctm}}:{{port}}/automation-api/deploy/jobs",
+      "method": "GET",
+      "sortNum": 110000,
+      "created": "2022-07-27T19:09:38.098Z",
+      "modified": "2022-07-27T19:09:38.098Z",
+      "headers": [],
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "9cf3e196-c191-4d23-948e-81c3b70420f4",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "0461c854-de73-4c37-b2be-8fd71c142854",
+      "name": "Delete Agent (ctm config config server:agent::delete <ctm> <agent>)",
+      "url": "https://{{ctm}}:{{port}}/automation-api/config/server/{{server}}/agent/{{agent}}",
+      "method": "DELETE",
+      "sortNum": 120000,
+      "created": "2022-07-27T19:09:38.099Z",
+      "modified": "2022-07-27T19:09:38.099Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer 6271FC9BF881FA3E2FCACC73B0AF830CCBFC8CF0AF42B382F1677B85711434DA7B211F856A140F32AE90CE351F46D91247CF4D6274D2BA88D28B1DF91A839134_C3F62EBFC4A9692559E32EC5125AF45E30B35EE3782D41C8DAA2AA786AA6262E6A51D2575A756F4E996BCFDD2BB6418A25250260CD2A311557B91FEB95CB5CDE"
+        }
+      ],
+      "body": { "type": "json", "raw": "" },
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "047fd53a-fe09-408f-b434-db4fb18989ac",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "0461c854-de73-4c37-b2be-8fd71c142854",
+      "name": "Get Agents (ctm config server:agents::get)",
+      "url": "https://{{ctm}}:{{port}}/automation-api/config/server/{{server}}/agents",
+      "method": "GET",
+      "sortNum": 130000,
+      "created": "2022-07-27T19:09:38.100Z",
+      "modified": "2022-07-27T19:09:38.100Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer 6271FC9BF881FA3E2FCACC73B0AF830CCBFC8CF0AF42B382F1677B85711434DA7B211F856A140F32AE90CE351F46D91247CF4D6274D2BA88D28B1DF91A839134_C3F62EBFC4A9692559E32EC5125AF45E30B35EE3782D41C8DAA2AA786AA6262E6A51D2575A756F4E996BCFDD2BB6418A25250260CD2A311557B91FEB95CB5CDE"
+        }
+      ],
+      "params": [],
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "e8791929-4083-41dc-a0eb-a3c0c10b798b",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "be80d13a-27a4-4073-8b55-198d362060bd",
+      "name": "Images Linux",
+      "url": "https://{{ctm}}:{{port}}/automation-api/provision/images/Linux",
+      "method": "GET",
+      "sortNum": 140000,
+      "created": "2022-07-27T19:09:38.101Z",
+      "modified": "2022-07-27T19:09:38.101Z",
+      "headers": [],
+      "params": [],
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "8d1efecf-6c16-4b15-aaa0-e750405823b3",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "be80d13a-27a4-4073-8b55-198d362060bd",
+      "name": "Images Windows",
+      "url": "https://{{ctm}}:{{port}}/automation-api/provision/images/Windows",
+      "method": "GET",
+      "sortNum": 150000,
+      "created": "2022-07-27T19:09:38.102Z",
+      "modified": "2022-07-27T19:09:38.102Z",
+      "headers": [],
+      "params": [],
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "c4c361c6-eae2-4f96-8afb-3c10d350ce49",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "be80d13a-27a4-4073-8b55-198d362060bd",
+      "name": "Completed Upgrades",
+      "url": "https://{{ctm}}:{{port}}/automation-api/provision/upgrades",
+      "method": "GET",
+      "sortNum": 160000,
+      "created": "2022-07-27T19:09:38.103Z",
+      "modified": "2022-07-27T19:09:38.103Z",
+      "headers": [],
+      "params": [],
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "25dcd2e3-d48b-4a82-9f4e-b6001d08f6f0",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "be80d13a-27a4-4073-8b55-198d362060bd",
+      "name": "Available Upgrades",
+      "url": "https://{{ctm}}:{{port}}/automation-api/provision/upgrades/versions",
+      "method": "GET",
+      "sortNum": 170000,
+      "created": "2022-07-27T19:09:38.104Z",
+      "modified": "2022-07-27T19:09:38.104Z",
+      "headers": [],
+      "params": [],
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "de83c7a8-05fc-4ceb-835e-4bf22c7bd67b",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "be80d13a-27a4-4073-8b55-198d362060bd",
+      "name": "Available Agent Upgrades",
+      "url": "https://{{ctm}}:{{port}}/automation-api/provision/upgrades/agents?type=Agent&Version=9.0.20.100",
+      "method": "GET",
+      "sortNum": 180000,
+      "created": "2022-07-27T19:09:38.105Z",
+      "modified": "2022-07-27T19:09:38.105Z",
+      "headers": [],
+      "params": [
+        { "name": "type", "value": "Agent", "isPath": false },
+        { "name": "Version", "value": "9.0.20.100", "isPath": false }
+      ],
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "be0d1720-10a2-475c-9c6c-ab727c6e1b1c",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "be80d13a-27a4-4073-8b55-198d362060bd",
+      "name": "Provision Status",
+      "url": "https://{{ctm}}:{{port}}/automation-api/provision/upgrade/Sandbox:22",
+      "method": "GET",
+      "sortNum": 190000,
+      "created": "2022-07-27T19:09:38.106Z",
+      "modified": "2022-07-27T19:09:38.106Z",
+      "headers": [],
+      "params": [],
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "0ffd54d7-e90e-4b37-9f5e-125d55a9470b",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "be80d13a-27a4-4073-8b55-198d362060bd",
+      "name": "Provision Output",
+      "url": "https://{{ctm}}:{{port}}/automation-api/provision/upgrade/$upgradeID/output",
+      "method": "GET",
+      "sortNum": 200000,
+      "created": "2022-07-27T19:09:38.107Z",
+      "modified": "2022-07-27T19:09:38.107Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer 6271FC9BF881FA3E2FCACC73B0AF830CCBFC8CF0AF42B382F1677B85711434DA7B211F856A140F32AE90CE351F46D91247CF4D6274D2BA88D28B1DF91A839134_C3F62EBFC4A9692559E32EC5125AF45E30B35EE3782D41C8DAA2AA786AA6262E6A51D2575A756F4E996BCFDD2BB6418A25250260CD2A311557B91FEB95CB5CDE"
+        }
+      ],
+      "body": { "type": "json", "raw": "" },
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "4894e77c-adf4-42d7-bc4d-221a7ae8db29",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "be80d13a-27a4-4073-8b55-198d362060bd",
+      "name": "Get Agents (ctm config server:agents::get)",
+      "url": "https://{{ctm}}:{{port}}/automation-api/config/server/{{server}}/agents",
+      "method": "GET",
+      "sortNum": 210000,
+      "created": "2022-07-27T19:09:38.108Z",
+      "modified": "2022-07-27T19:09:38.108Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer 6271FC9BF881FA3E2FCACC73B0AF830CCBFC8CF0AF42B382F1677B85711434DA7B211F856A140F32AE90CE351F46D91247CF4D6274D2BA88D28B1DF91A839134_C3F62EBFC4A9692559E32EC5125AF45E30B35EE3782D41C8DAA2AA786AA6262E6A51D2575A756F4E996BCFDD2BB6418A25250260CD2A311557B91FEB95CB5CDE"
+        }
+      ],
+      "params": [],
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "d0946107-4059-4d1b-ac14-6a295efe9d1a",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "e6368e21-73e3-4ff6-b41e-69ae1c8afcc5",
+      "name": "Login",
+      "url": "https://{{ctm}}:{{port}}/automation-api/session/login",
+      "method": "POST",
+      "sortNum": 220000,
+      "created": "2022-07-27T19:09:38.109Z",
+      "modified": "2022-07-27T19:17:30.071Z",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"username\": \"{{user}}\",\n  \"password\": \"{{password}}\"\n}",
+        "form": []
+      },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        },
+        {
+          "type": "set-env-var",
+          "custom": "json.token",
+          "action": "setto",
+          "value": "{{authToken}}"
+        }
+      ]
+    },
+    {
+      "_id": "b4293e52-1ac7-425f-b287-c1d44cdfb77b",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "e6368e21-73e3-4ff6-b41e-69ae1c8afcc5",
+      "name": "Logout",
+      "url": "https://{{ctm}}:{{port}}/automation-api/session/logout?token={{token}}",
+      "method": "POST",
+      "sortNum": 230000,
+      "created": "2022-07-27T19:09:38.110Z",
+      "modified": "2022-07-27T19:09:38.110Z",
+      "headers": [],
+      "params": [{ "name": "token", "value": "{{authToken}}" }],
+      "body": { "type": "json", "raw": "" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "31607481-9a16-4a6f-897b-dfa5a8f8c0c2",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "5bc20bc9-57c7-4917-bf5a-bd079992df7a",
+      "name": "Build from file",
+      "url": "https://{{ctm}}:{{port}}/automation-api/build",
+      "method": "POST",
+      "sortNum": 240000,
+      "created": "2022-07-27T19:09:38.111Z",
+      "modified": "2022-07-27T19:09:38.111Z",
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        {
+          "name": "Authorization",
+          "value": "bearer 085478306FC998ED75C867BFD561078C2B05E9F8D6D824FDC4F496862CD6417381F6D8FF06120B89516A4BE2B685FE4019C47404ED012B458A8729F310F6A74F",
+          "isDisabled": true
+        }
+      ],
+      "body": {
+        "form": [],
+        "files": [{ "name": "definitionsFile" }],
+        "type": "formdata"
+      },
+      "auth": {
+        "type": "bearer",
+        "bearer": "889FE4BAFE320C84325D5282E5E4C1815DCB6F1ABD4CAAD2E2C734E3296EE7BDAB0719A00F1A9F95FEC8846134FB5012A5D38C0865AAFF75A33B68F6124836CE"
+      }
+    },
+    {
+      "_id": "2654a3c5-5b46-49c4-b5c6-c842efe6933b",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "5bc20bc9-57c7-4917-bf5a-bd079992df7a",
+      "name": "Deploy from file",
+      "url": "https://{{ctm}}:{{port}}/automation-api/deploy",
+      "method": "POST",
+      "sortNum": 250000,
+      "created": "2022-07-27T19:09:38.112Z",
+      "modified": "2022-07-27T19:09:38.112Z",
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        {
+          "name": "Authorization",
+          "value": "bearer 085478306FC998ED75C867BFD561078C2B05E9F8D6D824FDC4F496862CD6417381F6D8FF06120B89516A4BE2B685FE4019C47404ED012B458A8729F310F6A74F",
+          "isDisabled": true
+        }
+      ],
+      "body": {
+        "form": [],
+        "files": [{ "name": "definitionsFile" }],
+        "type": "formdata"
+      },
+      "auth": {
+        "type": "bearer",
+        "bearer": "889FE4BAFE320C84325D5282E5E4C1815DCB6F1ABD4CAAD2E2C734E3296EE7BDAB0719A00F1A9F95FEC8846134FB5012A5D38C0865AAFF75A33B68F6124836CE"
+      }
+    },
+    {
+      "_id": "71d26046-bec2-4d1a-a345-dfa96a8ff9c6",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "5bc20bc9-57c7-4917-bf5a-bd079992df7a",
+      "name": "Run from file",
+      "url": "https://{{ctm}}:{{port}}/automation-api/run",
+      "method": "POST",
+      "sortNum": 260000,
+      "created": "2022-07-27T19:09:38.113Z",
+      "modified": "2022-07-27T19:09:38.113Z",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "body": {
+        "form": [],
+        "files": [{ "name": "jobDefinitionsFile" }],
+        "type": "formdata"
+      },
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "7cab6d5a-ec59-4666-8557-8bd548a5ee33",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "5bc20bc9-57c7-4917-bf5a-bd079992df7a",
+      "name": "Status",
+      "url": "https://{{ctm}}:{{port}}/automation-api/run/status/{{runId}}?token={{token}}&runId={{runId}}",
+      "method": "GET",
+      "sortNum": 270000,
+      "created": "2022-07-27T19:09:38.114Z",
+      "modified": "2022-07-27T19:09:38.114Z",
+      "headers": [],
+      "params": [
+        { "name": "token", "value": "{{authToken}}", "isPath": false },
+        { "name": "runId", "value": "{{runId}}", "isPath": false }
+      ],
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "54252197-46fa-440d-87df-2937e3e916ac",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "5bc20bc9-57c7-4917-bf5a-bd079992df7a",
+      "name": "Get Job Status",
+      "url": "https://{{ctm}}:{{port}}/automation-api/run/job/{{jobId}}/status",
+      "method": "GET",
+      "sortNum": 280000,
+      "created": "2022-07-27T19:09:38.115Z",
+      "modified": "2022-07-27T19:09:38.115Z",
+      "headers": [],
+      "params": [],
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "9cdb259d-2194-4c65-86bd-7ed9beb1b806",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "5bc20bc9-57c7-4917-bf5a-bd079992df7a",
+      "name": "Get Job Output",
+      "url": "https://{{ctm}}:{{port}}/automation-api/run/job/{{jobId}}/output",
+      "method": "GET",
+      "sortNum": 290000,
+      "created": "2022-07-27T19:09:38.116Z",
+      "modified": "2022-07-27T19:09:38.116Z",
+      "headers": [],
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "2a4ba3a5-d25c-4353-995f-4c283a32c886",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "5bc20bc9-57c7-4917-bf5a-bd079992df7a",
+      "name": "Get Job Log",
+      "url": "https://{{ctm}}:{{port}}/automation-api/run/job/{{jobId}}/log",
+      "method": "GET",
+      "sortNum": 300000,
+      "created": "2022-07-27T19:09:38.117Z",
+      "modified": "2022-07-27T19:09:38.117Z",
+      "headers": [],
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "09b38048-c329-4ff6-a5e4-5ff90cdf9c49",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "5bc20bc9-57c7-4917-bf5a-bd079992df7a",
+      "name": "Order from folder",
+      "url": "https://{{ctm}}:{{port}}/automation-api/run/order?ctm=acb-rhctmv20&folder=ACB-Slack",
+      "method": "POST",
+      "sortNum": 310000,
+      "created": "2022-07-27T19:09:38.118Z",
+      "modified": "2022-07-27T19:09:38.118Z",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "params": [
+        { "name": "ctm", "value": "acb-rhctmv20" },
+        { "name": "folder", "value": "ACB-Slack" }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\"ctm\": \"{{ctm}}\", \"folder\": \"{{folder}}\"}"
+      },
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "a97ecd82-d2e2-4e82-bf65-38940bde3856",
+      "colId": "6fc437dc-5808-4079-bfa7-9f3ce7dda83a",
+      "containerId": "5bc20bc9-57c7-4917-bf5a-bd079992df7a",
+      "name": "Add New Event",
+      "url": "https://{{ctm}}:{{port}}/automation-api/run/order",
+      "method": "POST",
+      "sortNum": 320000,
+      "created": "2022-07-27T19:09:38.119Z",
+      "modified": "2022-07-27T19:09:38.119Z",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "body": {
+        "type": "json",
+        "raw": "{\"ctm\": \"{{ctm}}\", \"folder\": \"WZA_AAPI_STUFF\"}"
+      },
+      "auth": { "type": "bearer", "bearer": "{{authToken}}" },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        {
+          "type": "Content-Type",
+          "custom": "",
+          "action": "equal",
+          "value": "application/json"
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "headers": [],
+    "tests": [],
+    "envId": "31d4482e-4bab-4942-96c7-2ba39f35ff09"
+  }
+}

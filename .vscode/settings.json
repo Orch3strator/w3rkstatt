@@ -1,4 +1,5 @@
 {
     "restructuredtext.confPath": "",
-    "thunder-client.saveToWorkspace": true
+    "thunder-client.saveToWorkspace": true,
+    "python.formatting.provider": "yapf"
 }

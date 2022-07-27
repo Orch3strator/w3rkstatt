@@ -41,6 +41,8 @@
     "api_docs": "",
     "api_namespace": "tsws",
     "api_Key": "",
+    "api_secret": "",
+    "tennant": "",
     "demo": false
   },
   "TSIM": {

@@ -146,21 +146,21 @@
     "colId": "4353b247-e4a0-4f89-bc37-91bb0a65964e",
     "containerId": "b5a76697-9dc6-4432-887c-f8d48e6d9294",
     "name": "Create Event",
-    "url": "https://{{server}}:{{port}}/tsws/api/v1.0/events",
+    "url": "https://{{server}}:{{port}}/events-service/api/v1.0/events",
     "method": "POST",
     "sortNum": 10000,
     "created": "2022-07-27T18:30:01.708Z",
-    "modified": "2022-07-27T18:41:43.594Z",
+    "modified": "2022-07-27T21:09:50.088Z",
     "headers": [
       {
         "name": "Authorization",
-        "value": "apiKey {{authToken}}"
+        "value": "Bearer eyJraWQiOiI1ZjU1YTU2My1kNGFjLTQ3MzMtOTdiMy1jMDMwYzE2ZWE2YWUiLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzUxMiJ9.eyJzdWIiOiIxMjY2NDg2ODU3OjozMzc0NzU2MzUzNzY1NTEiLCJhdWQiOiJibWNfYWRlX2Nsb3VkX3NlcnZpY2VzIiwiYW1yIjpbImV5SjFjMlZ5WDJsa0lqb2lNek0zTkRjMU5qTTFNemMyTlRVeElpd2lZV05qWlhOelgydGxlU0k2SWpsTU9FSlNNMHRWUVVOUU9FWkdTRUphVFU1VlFqRXhSVVkxT1ZSR1RTSXNJbkJ5YVc1amFYQmhiRjlwWkNJNklqbE1PRUpTTTB0VlFVTlFPRVpHU0VKYVRVNVZRakV4UlVZMU9WUkdUU0lzSW5WelpYSmZjM1JoZEhWeklqb2lSVTVCUWt4Rklpd2lkSGx3WlNJNklrRlFTU0lzSW5SbGJtRnVkRjlwWkNJNklqRXlOalkwT0RZNE5UY2lMQ0p5YjJ4bGN5STZXeUk1TVRVNE1UVTBPVFU0TXpJNE9UWWlMQ0kxTWpVMk56azNOekUyTmpRME1EUWlMQ0l6T1Rnd01EazFNRFF6TlRFek9Ea2lMQ0kzTkRJMU56Z3dOamc1TnpFNE1ETWlMQ0l5TURneU9UYzNPVFkyTlRJNU56RWlMQ0kxTWpJMk5qVXdOVGd6T0RZek1qa2lMQ0l4TWpFM09EVXdPVGM0T0RjeU1qa2lMQ0k0TmpJM01EQXlNakk0TnpJMk1UUWlMQ0l6TnpFMU9UWXpOelUxTURneE1EQWlMQ0l5TXpRM09EUTFOakEyT0RNeU9EVWlMQ0kwT0Rrek1UQXpORGM1TURZd01qUWlMQ0l5T1RRNU5EYzJOelV3TlRNME16Y2lMQ0l5TXpRek1UWTFNVEUyTWpnME1qWWlMQ0l5TVRrd05EUXpPVGt3T0RrMU5qY2lMQ0l4TkRBeE5UVTROamszT1Rjek9UUWlMQ0l5TWpFMk9EY3pNREUxTmpBM05Ua2lMQ0kxTXpRek9UQXpOREF5TnpneE1EUWlMQ0kxTmpFM05Ua3hPVFV4Tnpjd05qSWlMQ0kwTVRJNU1qSXpOVFF3TXpFeE5EVWlMQ0k0TURFNU9EWTJOREl3TnpjME1URWlMQ0l6T0RReU1ESTRORGN6T1RFMU1ESWlMQ0l4T0RZMU9EWXpPVEF6T0RRMU9UY2lMQ0l4TVRrd09UVTVNVFkxTkRnMU9UVWlMQ0l6TXpVM016VXpPRGc1TURVNE5qWWlYU3dpWjNKdmRYQnpJanBiSWpRNE1EQXhPVGMxTWpNM01qY3hNaUpkTENKd1pYSnRhWE56YVc5dWN5STZXeUlxSWwxOSJdLCJpc3MiOiJodHRwczovL2hlbGl4dHJpYWxzamMxMDUtb3IxLWRldi5vbmJtYy5jb20iLCJ0eXBlIjoiQUNDRVNTX1RPS0VOIiwiZXhwIjoxNjU4OTU2ODgxLCJpYXQiOjE2NTg5NTU5ODEsImp0aSI6IjFkMTRjZDY2LWMxZDUtNGNkZi04NjUxLTExZDcwMDE4Nzg5NiJ9.WuyMiUeQj2cGQD5crvuCQzGutyyokJM91uLVXaewt1oGPWYEK66CfCZMD6NRZuVeuYY6EqTcKOh45qIzpfyR4yGYVIC7PqQK8-Xz8gN9VhH16RrP2aZnH-hfDx6mIaqJlW_ZgysvmpcyOiD5oP81Gufl7NulSwDoPpg3WycV_pfPVH6OM3bxtHW4BUkn5j5CWywYsB4eM4XXNkXVLA7ID_VKLBPd_BmEZs-PbYdCQwll5k7O-cVB65czHGwLF0dLyYtgdTbdEFrlG1fqYWvGKNw9h32DdVogHTHbs1-IUuGxinYMcOz9B-izGwviNBLloV_yTVyGuNr5zbx_e8nl_w"
       }
     ],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "[\n  {\n    \"class\": \"CTMX_EVENT\",\n    \"severity\": \"MAJOR\",\n    \"object\": \"test\",\n    \"msg\": \"CREATE TIME TEST error message4\",\n    \"source_identifier\": \"thunder.trybmc.com:3181\",\n    \"source_hostname\": \"thunder.trybmc.com\",\n    \"status\": \"OPEN\",\n    \"priority\": \"PRIORITY_3\"\n  }\n]",
+      "raw": "[\n  {\n    \"class\": \"CTMX_EVENT\",\n    \"severity\": \"MAJOR\",\n    \"msg\": \"For Linda - Thunder Client REST Test 1326\",\n    \"source_identifier\": \"thunder.trybmc.com:\",\n    \"status\": \"OPEN\",\n    \"category\": \"TEST\",\n    \"priority\": \"PRIORITY_3\",\n    \"details\": \"Thunder Client REST Test Detail Message\",\n    \"source_attributes\": {\n      \"source_hostname\": \"thunder.trybmc.com\",\n      \"source_port\": \"3181\",\n      \"source_address\": \"172.16.6.10\"\n    },\n    \"class_slots\": {\n      \"<custom_slot1>\": \"<slotValue1>\",\n      \"<custom_slot2>\": \"<slotValue2>\"\n    }\n  }\n]",
       "form": []
     },
     "tests": [
@@ -181,6 +181,1311 @@
         "custom": "json.resourceId[0]",
         "action": "setto",
         "value": "{{resourceId}}"
+      }
+    ]
+  },
+  {
+    "_id": "77216e23-0433-4bed-8db8-fae429defd49",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "fd75fa94-362b-447f-aedc-52b197e7e3d9",
+    "name": "Get Servers (ctm config servers::get)",
+    "url": "https://{{ctm}}:{{port}}/automation-api/config/servers",
+    "method": "GET",
+    "sortNum": 10000,
+    "created": "2022-07-27T19:41:02.117Z",
+    "modified": "2022-07-27T19:41:02.117Z",
+    "headers": [],
+    "params": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "99ac8a96-3869-482c-83e1-7728544eff5d",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "fd75fa94-362b-447f-aedc-52b197e7e3d9",
+    "name": "Get Hostgroups",
+    "url": "https://{{ctm}}:{{port}}/automation-api/config/server/{{server}}/hostgroups",
+    "method": "GET",
+    "sortNum": 20000,
+    "created": "2022-07-27T19:41:02.118Z",
+    "modified": "2022-07-27T19:41:02.118Z",
+    "headers": [],
+    "params": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "42998142-92de-4272-a106-b3317fb460a5",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "fd75fa94-362b-447f-aedc-52b197e7e3d9",
+    "name": "Get RunAs",
+    "url": "https://{{ctm}}:{{port}}/automation-api/config/server/{{server}}/runasusers?agent=*&user=domain%5Caaron7",
+    "method": "GET",
+    "sortNum": 30000,
+    "created": "2022-07-27T19:41:02.119Z",
+    "modified": "2022-07-27T19:41:02.119Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "agent",
+        "value": "*",
+        "isPath": false
+      },
+      {
+        "name": "user",
+        "value": "domain%5Caaron7",
+        "isPath": false
+      }
+    ],
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "4020b1fe-5265-40e6-923f-62c7414464b9",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "fd75fa94-362b-447f-aedc-52b197e7e3d9",
+    "name": "RunAs Add",
+    "url": "https://{{ctm}}:{{port}}/config/server/{{server}}/runasuser/{{agent}}/{{user}}",
+    "method": "POST",
+    "sortNum": 40000,
+    "created": "2022-07-27T19:41:02.120Z",
+    "modified": "2022-07-27T19:41:02.120Z",
+    "headers": [],
+    "body": {
+      "type": "json",
+      "raw": "{\r\n\"password\":\"fred\"\r\n}"
+    },
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "d5923c20-0cc4-49e8-93a7-9cf0ec035f5c",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "fd75fa94-362b-447f-aedc-52b197e7e3d9",
+    "name": "RunAs Update",
+    "url": "https://ctm-aws-sandbox.bmcdemo.com:8443/automation-api/config/server/Sandbox/runasuser/zzz-gcp-linux-1.bmcdemo.com/domain%5Caaron7",
+    "method": "POST",
+    "sortNum": 50000,
+    "created": "2022-07-27T19:41:02.121Z",
+    "modified": "2022-07-27T19:41:02.121Z",
+    "headers": [],
+    "body": {
+      "type": "json",
+      "raw": "{\r\n\"password\":\"fred\"\r\n}"
+    },
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "40fdbd40-323a-486e-8c3c-e602c126dab7",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "fd75fa94-362b-447f-aedc-52b197e7e3d9",
+    "name": "Get RunAs All",
+    "url": "https://{{ctm}}:{{port}}/automation-api/config/server/{{server}}/runasuser/zzz-gcp-linux-1.bmcdemo.com/%5Caaron7",
+    "method": "GET",
+    "sortNum": 60000,
+    "created": "2022-07-27T19:41:02.122Z",
+    "modified": "2022-07-27T19:41:02.122Z",
+    "headers": [],
+    "params": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "33aef42e-e1e8-4cc9-b25f-a5b4eb3394d3",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "fd75fa94-362b-447f-aedc-52b197e7e3d9",
+    "name": "Get RunAs Test All",
+    "url": "https://{{ctm}}:{{port}}/automation-api/config/server/{{server}}/hostgroups",
+    "method": "GET",
+    "sortNum": 70000,
+    "created": "2022-07-27T19:41:02.123Z",
+    "modified": "2022-07-27T19:41:02.123Z",
+    "headers": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "cc6ffb6f-ad06-4f31-895f-2028ed16a6ca",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "fd75fa94-362b-447f-aedc-52b197e7e3d9",
+    "name": "Get Remote Hosts",
+    "url": "https://{{ctm}}:{{port}}/automation-api/config/servers",
+    "method": "GET",
+    "sortNum": 80000,
+    "created": "2022-07-27T19:41:02.124Z",
+    "modified": "2022-07-27T19:41:02.124Z",
+    "headers": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "25e0f22d-29c9-4f48-9ab2-8b5c15ac899e",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "fd75fa94-362b-447f-aedc-52b197e7e3d9",
+    "name": "Get Server Parameters",
+    "url": "https://{{ctm}}:{{port}}/automation-api/config/server/{{server}}/params",
+    "method": "GET",
+    "sortNum": 90000,
+    "created": "2022-07-27T19:41:02.125Z",
+    "modified": "2022-07-27T19:41:02.125Z",
+    "headers": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "08deefcf-de8b-4d30-a5e2-63e2affa15eb",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "fd75fa94-362b-447f-aedc-52b197e7e3d9",
+    "name": "Get Agent Parameters",
+    "url": "https://{{ctm}}:{{port}}/automation-api/config/server/{{server}}/agent/acb-centos/params",
+    "method": "GET",
+    "sortNum": 100000,
+    "created": "2022-07-27T19:41:02.126Z",
+    "modified": "2022-07-27T19:41:02.126Z",
+    "headers": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "418d24b6-e235-45df-83a1-483743761a51",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "fd75fa94-362b-447f-aedc-52b197e7e3d9",
+    "name": "Get AI JobTypes",
+    "url": "https://{{ctm}}:{{port}}/automation-api/deploy/jobs",
+    "method": "GET",
+    "sortNum": 110000,
+    "created": "2022-07-27T19:41:02.127Z",
+    "modified": "2022-07-27T19:41:02.127Z",
+    "headers": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "99ccf952-9fec-4702-907e-8693f6259744",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "fd75fa94-362b-447f-aedc-52b197e7e3d9",
+    "name": "Delete Agent (ctm config config server:agent::delete <ctm> <agent>)",
+    "url": "https://{{ctm}}:{{port}}/automation-api/config/server/{{server}}/agent/{{agent}}",
+    "method": "DELETE",
+    "sortNum": 120000,
+    "created": "2022-07-27T19:41:02.128Z",
+    "modified": "2022-07-27T19:41:02.128Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer 6271FC9BF881FA3E2FCACC73B0AF830CCBFC8CF0AF42B382F1677B85711434DA7B211F856A140F32AE90CE351F46D91247CF4D6274D2BA88D28B1DF91A839134_C3F62EBFC4A9692559E32EC5125AF45E30B35EE3782D41C8DAA2AA786AA6262E6A51D2575A756F4E996BCFDD2BB6418A25250260CD2A311557B91FEB95CB5CDE"
+      }
+    ],
+    "body": {
+      "type": "json",
+      "raw": ""
+    },
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "721a8439-c168-45e8-aeae-692c162626c0",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "fd75fa94-362b-447f-aedc-52b197e7e3d9",
+    "name": "Get Agents (ctm config server:agents::get)",
+    "url": "https://{{ctm}}:{{port}}/automation-api/config/server/{{server}}/agents",
+    "method": "GET",
+    "sortNum": 130000,
+    "created": "2022-07-27T19:41:02.129Z",
+    "modified": "2022-07-27T19:41:02.129Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer 6271FC9BF881FA3E2FCACC73B0AF830CCBFC8CF0AF42B382F1677B85711434DA7B211F856A140F32AE90CE351F46D91247CF4D6274D2BA88D28B1DF91A839134_C3F62EBFC4A9692559E32EC5125AF45E30B35EE3782D41C8DAA2AA786AA6262E6A51D2575A756F4E996BCFDD2BB6418A25250260CD2A311557B91FEB95CB5CDE"
+      }
+    ],
+    "params": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "7ed37a20-6cfd-4722-ad74-5ceb3391454f",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "15a7b7c0-2346-40a5-87b1-5157a7459906",
+    "name": "Images Linux",
+    "url": "https://{{ctm}}:{{port}}/automation-api/provision/images/Linux",
+    "method": "GET",
+    "sortNum": 140000,
+    "created": "2022-07-27T19:41:02.130Z",
+    "modified": "2022-07-27T19:41:02.130Z",
+    "headers": [],
+    "params": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "b79acae4-5aa1-45fe-932a-2232402bed89",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "15a7b7c0-2346-40a5-87b1-5157a7459906",
+    "name": "Images Windows",
+    "url": "https://{{ctm}}:{{port}}/automation-api/provision/images/Windows",
+    "method": "GET",
+    "sortNum": 150000,
+    "created": "2022-07-27T19:41:02.131Z",
+    "modified": "2022-07-27T19:41:02.131Z",
+    "headers": [],
+    "params": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "aadca397-33fa-4fc3-9c8e-5ef4548b5887",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "15a7b7c0-2346-40a5-87b1-5157a7459906",
+    "name": "Completed Upgrades",
+    "url": "https://{{ctm}}:{{port}}/automation-api/provision/upgrades",
+    "method": "GET",
+    "sortNum": 160000,
+    "created": "2022-07-27T19:41:02.132Z",
+    "modified": "2022-07-27T19:41:02.132Z",
+    "headers": [],
+    "params": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "ca94d62e-5130-4ad7-b668-d5eb02b1d44a",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "15a7b7c0-2346-40a5-87b1-5157a7459906",
+    "name": "Available Upgrades",
+    "url": "https://{{ctm}}:{{port}}/automation-api/provision/upgrades/versions",
+    "method": "GET",
+    "sortNum": 170000,
+    "created": "2022-07-27T19:41:02.133Z",
+    "modified": "2022-07-27T19:41:02.133Z",
+    "headers": [],
+    "params": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "176b0bbd-9fc7-4a67-a13c-7f20cc4dd9f9",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "15a7b7c0-2346-40a5-87b1-5157a7459906",
+    "name": "Available Agent Upgrades",
+    "url": "https://{{ctm}}:{{port}}/automation-api/provision/upgrades/agents?type=Agent&Version=9.0.20.100",
+    "method": "GET",
+    "sortNum": 180000,
+    "created": "2022-07-27T19:41:02.134Z",
+    "modified": "2022-07-27T19:41:02.134Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "type",
+        "value": "Agent",
+        "isPath": false
+      },
+      {
+        "name": "Version",
+        "value": "9.0.20.100",
+        "isPath": false
+      }
+    ],
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "65fd8b35-4470-41de-8d49-e60032d34ea1",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "15a7b7c0-2346-40a5-87b1-5157a7459906",
+    "name": "Provision Status",
+    "url": "https://{{ctm}}:{{port}}/automation-api/provision/upgrade/Sandbox:22",
+    "method": "GET",
+    "sortNum": 190000,
+    "created": "2022-07-27T19:41:02.135Z",
+    "modified": "2022-07-27T19:41:02.135Z",
+    "headers": [],
+    "params": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "d2260ea9-87de-4bb0-8989-29a0c40e7237",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "15a7b7c0-2346-40a5-87b1-5157a7459906",
+    "name": "Provision Output",
+    "url": "https://{{ctm}}:{{port}}/automation-api/provision/upgrade/$upgradeID/output",
+    "method": "GET",
+    "sortNum": 200000,
+    "created": "2022-07-27T19:41:02.136Z",
+    "modified": "2022-07-27T19:41:02.136Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer 6271FC9BF881FA3E2FCACC73B0AF830CCBFC8CF0AF42B382F1677B85711434DA7B211F856A140F32AE90CE351F46D91247CF4D6274D2BA88D28B1DF91A839134_C3F62EBFC4A9692559E32EC5125AF45E30B35EE3782D41C8DAA2AA786AA6262E6A51D2575A756F4E996BCFDD2BB6418A25250260CD2A311557B91FEB95CB5CDE"
+      }
+    ],
+    "body": {
+      "type": "json",
+      "raw": ""
+    },
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "67af9a87-3177-487d-b521-c87668fa8d74",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "15a7b7c0-2346-40a5-87b1-5157a7459906",
+    "name": "Get Agents (ctm config server:agents::get)",
+    "url": "https://{{ctm}}:{{port}}/automation-api/config/server/{{server}}/agents",
+    "method": "GET",
+    "sortNum": 210000,
+    "created": "2022-07-27T19:41:02.137Z",
+    "modified": "2022-07-27T19:41:02.137Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer 6271FC9BF881FA3E2FCACC73B0AF830CCBFC8CF0AF42B382F1677B85711434DA7B211F856A140F32AE90CE351F46D91247CF4D6274D2BA88D28B1DF91A839134_C3F62EBFC4A9692559E32EC5125AF45E30B35EE3782D41C8DAA2AA786AA6262E6A51D2575A756F4E996BCFDD2BB6418A25250260CD2A311557B91FEB95CB5CDE"
+      }
+    ],
+    "params": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "b1956459-224c-4326-9294-075c4c2c04ce",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "4e762c11-7001-44ee-bf83-5c29ca3fa713",
+    "name": "Login",
+    "url": "https://{{ctm}}:{{port}}/automation-api/session/login",
+    "method": "POST",
+    "sortNum": 220000,
+    "created": "2022-07-27T19:41:02.138Z",
+    "modified": "2022-07-27T19:41:02.138Z",
+    "headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"username\": \"{{user}}\",\n  \"password\": \"{{password}}\"\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.token",
+        "action": "setto",
+        "value": "{{authToken}}"
+      }
+    ]
+  },
+  {
+    "_id": "51701b7a-de43-4ded-a908-f16fbe7f05dc",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "4e762c11-7001-44ee-bf83-5c29ca3fa713",
+    "name": "Logout",
+    "url": "https://{{ctm}}:{{port}}/automation-api/session/logout?token={{authToken}}",
+    "method": "POST",
+    "sortNum": 230000,
+    "created": "2022-07-27T19:41:02.139Z",
+    "modified": "2022-07-27T19:46:19.071Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "token",
+        "value": "{{authToken}}",
+        "isPath": false
+      }
+    ],
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "488b2382-02c6-4442-b46a-900835349386",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "95392145-6aaa-4115-95a1-4690b8718e86",
+    "name": "Build from file",
+    "url": "https://{{ctm}}:{{port}}/automation-api/build",
+    "method": "POST",
+    "sortNum": 240000,
+    "created": "2022-07-27T19:41:02.141Z",
+    "modified": "2022-07-27T19:41:02.141Z",
+    "headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "name": "Authorization",
+        "value": "bearer 085478306FC998ED75C867BFD561078C2B05E9F8D6D824FDC4F496862CD6417381F6D8FF06120B89516A4BE2B685FE4019C47404ED012B458A8729F310F6A74F",
+        "isDisabled": true
+      }
+    ],
+    "body": {
+      "form": [],
+      "files": [
+        {
+          "name": "definitionsFile"
+        }
+      ],
+      "type": "formdata"
+    },
+    "auth": {
+      "type": "bearer",
+      "bearer": "889FE4BAFE320C84325D5282E5E4C1815DCB6F1ABD4CAAD2E2C734E3296EE7BDAB0719A00F1A9F95FEC8846134FB5012A5D38C0865AAFF75A33B68F6124836CE"
+    }
+  },
+  {
+    "_id": "a900dcf0-2896-4ab7-bf09-6f6878220392",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "95392145-6aaa-4115-95a1-4690b8718e86",
+    "name": "Deploy from file",
+    "url": "https://{{ctm}}:{{port}}/automation-api/deploy",
+    "method": "POST",
+    "sortNum": 250000,
+    "created": "2022-07-27T19:41:02.142Z",
+    "modified": "2022-07-27T19:41:02.142Z",
+    "headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "name": "Authorization",
+        "value": "bearer 085478306FC998ED75C867BFD561078C2B05E9F8D6D824FDC4F496862CD6417381F6D8FF06120B89516A4BE2B685FE4019C47404ED012B458A8729F310F6A74F",
+        "isDisabled": true
+      }
+    ],
+    "body": {
+      "form": [],
+      "files": [
+        {
+          "name": "definitionsFile"
+        }
+      ],
+      "type": "formdata"
+    },
+    "auth": {
+      "type": "bearer",
+      "bearer": "889FE4BAFE320C84325D5282E5E4C1815DCB6F1ABD4CAAD2E2C734E3296EE7BDAB0719A00F1A9F95FEC8846134FB5012A5D38C0865AAFF75A33B68F6124836CE"
+    }
+  },
+  {
+    "_id": "6288fb1a-e654-4ee5-b3a0-6977f81c3f59",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "95392145-6aaa-4115-95a1-4690b8718e86",
+    "name": "Run from file",
+    "url": "https://{{ctm}}:{{port}}/automation-api/run",
+    "method": "POST",
+    "sortNum": 260000,
+    "created": "2022-07-27T19:41:02.143Z",
+    "modified": "2022-07-27T19:41:02.143Z",
+    "headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "body": {
+      "form": [],
+      "files": [
+        {
+          "name": "jobDefinitionsFile"
+        }
+      ],
+      "type": "formdata"
+    },
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "f207b372-5d47-4175-b624-876dc13c6074",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "95392145-6aaa-4115-95a1-4690b8718e86",
+    "name": "Status",
+    "url": "https://{{ctm}}:{{port}}/automation-api/run/status/{{runId}}?token={{token}}&runId={{runId}}",
+    "method": "GET",
+    "sortNum": 270000,
+    "created": "2022-07-27T19:41:02.144Z",
+    "modified": "2022-07-27T19:41:02.144Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "token",
+        "value": "{{authToken}}",
+        "isPath": false
+      },
+      {
+        "name": "runId",
+        "value": "{{runId}}",
+        "isPath": false
+      }
+    ],
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "6d28dea0-80a8-4656-a28a-be37aca549c0",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "95392145-6aaa-4115-95a1-4690b8718e86",
+    "name": "Get Job Status",
+    "url": "https://{{ctm}}:{{port}}/automation-api/run/job/{{jobId}}/status",
+    "method": "GET",
+    "sortNum": 280000,
+    "created": "2022-07-27T19:41:02.145Z",
+    "modified": "2022-07-27T19:41:02.145Z",
+    "headers": [],
+    "params": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "765787c0-f939-4a3d-8b06-a4835e2efab1",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "95392145-6aaa-4115-95a1-4690b8718e86",
+    "name": "Get Job Output",
+    "url": "https://{{ctm}}:{{port}}/automation-api/run/job/{{jobId}}/output",
+    "method": "GET",
+    "sortNum": 290000,
+    "created": "2022-07-27T19:41:02.146Z",
+    "modified": "2022-07-27T19:41:02.146Z",
+    "headers": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "6bbdd8c0-8b2a-42e0-8dab-d1065a325be9",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "95392145-6aaa-4115-95a1-4690b8718e86",
+    "name": "Get Job Log",
+    "url": "https://{{ctm}}:{{port}}/automation-api/run/job/{{jobId}}/log",
+    "method": "GET",
+    "sortNum": 300000,
+    "created": "2022-07-27T19:41:02.147Z",
+    "modified": "2022-07-27T19:41:02.147Z",
+    "headers": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "8c96f7f3-e239-4bb9-a163-34cfa55f2da0",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "95392145-6aaa-4115-95a1-4690b8718e86",
+    "name": "Order from folder",
+    "url": "https://{{ctm}}:{{port}}/automation-api/run/order?ctm=acb-rhctmv20&folder=ACB-Slack",
+    "method": "POST",
+    "sortNum": 310000,
+    "created": "2022-07-27T19:41:02.148Z",
+    "modified": "2022-07-27T19:41:02.148Z",
+    "headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "params": [
+      {
+        "name": "ctm",
+        "value": "acb-rhctmv20"
+      },
+      {
+        "name": "folder",
+        "value": "ACB-Slack"
+      }
+    ],
+    "body": {
+      "type": "json",
+      "raw": "{\"ctm\": \"{{ctm}}\", \"folder\": \"{{folder}}\"}"
+    },
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "8b71b59f-3ecf-4262-94af-09d530a581ae",
+    "colId": "06b62f44-1c98-4dd2-8787-def6f11cddc8",
+    "containerId": "95392145-6aaa-4115-95a1-4690b8718e86",
+    "name": "Add New Event",
+    "url": "https://{{ctm}}:{{port}}/automation-api/run/order",
+    "method": "POST",
+    "sortNum": 320000,
+    "created": "2022-07-27T19:41:02.149Z",
+    "modified": "2022-07-27T19:41:02.149Z",
+    "headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "body": {
+      "type": "json",
+      "raw": "{\"ctm\": \"{{ctm}}\", \"folder\": \"WZA_AAPI_STUFF\"}"
+    },
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{authToken}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "e1fccbfa-b9d3-4692-b397-012d14d1b40a",
+    "colId": "4353b247-e4a0-4f89-bc37-91bb0a65964e",
+    "containerId": "b5a76697-9dc6-4432-887c-f8d48e6d9294",
+    "name": "Close Event",
+    "url": "https://{{server}}:{{port}}/events-service/api/v1.0/events/operations/close",
+    "method": "POST",
+    "sortNum": 15000,
+    "created": "2022-07-27T20:16:48.279Z",
+    "modified": "2022-07-27T21:06:37.040Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer eyJraWQiOiI1ZjU1YTU2My1kNGFjLTQ3MzMtOTdiMy1jMDMwYzE2ZWE2YWUiLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzUxMiJ9.eyJzdWIiOiIxMjY2NDg2ODU3OjozMzc0NzU2MzUzNzY1NTEiLCJhdWQiOiJibWNfYWRlX2Nsb3VkX3NlcnZpY2VzIiwiYW1yIjpbImV5SjFjMlZ5WDJsa0lqb2lNek0zTkRjMU5qTTFNemMyTlRVeElpd2lZV05qWlhOelgydGxlU0k2SWpsTU9FSlNNMHRWUVVOUU9FWkdTRUphVFU1VlFqRXhSVVkxT1ZSR1RTSXNJbkJ5YVc1amFYQmhiRjlwWkNJNklqbE1PRUpTTTB0VlFVTlFPRVpHU0VKYVRVNVZRakV4UlVZMU9WUkdUU0lzSW5WelpYSmZjM1JoZEhWeklqb2lSVTVCUWt4Rklpd2lkSGx3WlNJNklrRlFTU0lzSW5SbGJtRnVkRjlwWkNJNklqRXlOalkwT0RZNE5UY2lMQ0p5YjJ4bGN5STZXeUk1TVRVNE1UVTBPVFU0TXpJNE9UWWlMQ0kxTWpVMk56azNOekUyTmpRME1EUWlMQ0l6T1Rnd01EazFNRFF6TlRFek9Ea2lMQ0kzTkRJMU56Z3dOamc1TnpFNE1ETWlMQ0l5TURneU9UYzNPVFkyTlRJNU56RWlMQ0kxTWpJMk5qVXdOVGd6T0RZek1qa2lMQ0l4TWpFM09EVXdPVGM0T0RjeU1qa2lMQ0k0TmpJM01EQXlNakk0TnpJMk1UUWlMQ0l6TnpFMU9UWXpOelUxTURneE1EQWlMQ0l5TXpRM09EUTFOakEyT0RNeU9EVWlMQ0kwT0Rrek1UQXpORGM1TURZd01qUWlMQ0l5T1RRNU5EYzJOelV3TlRNME16Y2lMQ0l5TXpRek1UWTFNVEUyTWpnME1qWWlMQ0l5TVRrd05EUXpPVGt3T0RrMU5qY2lMQ0l4TkRBeE5UVTROamszT1Rjek9UUWlMQ0l5TWpFMk9EY3pNREUxTmpBM05Ua2lMQ0kxTXpRek9UQXpOREF5TnpneE1EUWlMQ0kxTmpFM05Ua3hPVFV4Tnpjd05qSWlMQ0kwTVRJNU1qSXpOVFF3TXpFeE5EVWlMQ0k0TURFNU9EWTJOREl3TnpjME1URWlMQ0l6T0RReU1ESTRORGN6T1RFMU1ESWlMQ0l4T0RZMU9EWXpPVEF6T0RRMU9UY2lMQ0l4TVRrd09UVTVNVFkxTkRnMU9UVWlMQ0l6TXpVM016VXpPRGc1TURVNE5qWWlYU3dpWjNKdmRYQnpJanBiSWpRNE1EQXhPVGMxTWpNM01qY3hNaUpkTENKd1pYSnRhWE56YVc5dWN5STZXeUlxSWwxOSJdLCJpc3MiOiJodHRwczovL2hlbGl4dHJpYWxzamMxMDUtb3IxLWRldi5vbmJtYy5jb20iLCJ0eXBlIjoiQUNDRVNTX1RPS0VOIiwiZXhwIjoxNjU4OTU2ODgxLCJpYXQiOjE2NTg5NTU5ODEsImp0aSI6IjFkMTRjZDY2LWMxZDUtNGNkZi04NjUxLTExZDcwMDE4Nzg5NiJ9.WuyMiUeQj2cGQD5crvuCQzGutyyokJM91uLVXaewt1oGPWYEK66CfCZMD6NRZuVeuYY6EqTcKOh45qIzpfyR4yGYVIC7PqQK8-Xz8gN9VhH16RrP2aZnH-hfDx6mIaqJlW_ZgysvmpcyOiD5oP81Gufl7NulSwDoPpg3WycV_pfPVH6OM3bxtHW4BUkn5j5CWywYsB4eM4XXNkXVLA7ID_VKLBPd_BmEZs-PbYdCQwll5k7O-cVB65czHGwLF0dLyYtgdTbdEFrlG1fqYWvGKNw9h32DdVogHTHbs1-IUuGxinYMcOz9B-izGwviNBLloV_yTVyGuNr5zbx_e8nl_w"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"eventIds\": [\n    \"eps.1266486857.734546456355767.fb8afae8-6caf-44fe-9ee9-bf80cd889e61\"\n  ],\n  \"slots\": {\n    \"notes\": \"Thunder REST Test Close\"\n  }\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "8f757c2d-02a4-493e-a1e3-58fdea311565",
+    "colId": "4353b247-e4a0-4f89-bc37-91bb0a65964e",
+    "containerId": "b5a76697-9dc6-4432-887c-f8d48e6d9294",
+    "name": "Login",
+    "url": "https://{{server}}:{{port}}/ims/api/v1/access_keys/login",
+    "method": "POST",
+    "sortNum": 12500,
+    "created": "2022-07-27T20:50:26.811Z",
+    "modified": "2022-07-27T21:06:21.409Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "apiKey {{authToken}}"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\r\n\"access_key\": \"9L8BR3KUACP8FFHBZMNUB11EF59TFM\",\r\n\"access_secret_key\": \"xLW8xKpfNe0sh6hoK6NtCb1sTdw6NzHi34EfPROGchACgB6Afb\",\r\n\"tenant_id\": \"1266486857\"\r\n           }",
+      "form": []
+    },
+    "auth": {
+      "type": "bearer"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.token",
+        "action": "setto",
+        "value": "{{authToken}}"
+      }
+    ]
+  },
+  {
+    "_id": "711aa4ce-8251-4074-bfd9-ac29f3c61645",
+    "colId": "4353b247-e4a0-4f89-bc37-91bb0a65964e",
+    "containerId": "b5a76697-9dc6-4432-887c-f8d48e6d9294",
+    "name": "Acknowldege Event",
+    "url": "https://{{server}}:{{port}}/events-service/api/v1.0/events/operations/acknowledge",
+    "method": "POST",
+    "sortNum": 17500,
+    "created": "2022-07-27T21:07:20.033Z",
+    "modified": "2022-07-27T21:10:03.458Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer eyJraWQiOiI1ZjU1YTU2My1kNGFjLTQ3MzMtOTdiMy1jMDMwYzE2ZWE2YWUiLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzUxMiJ9.eyJzdWIiOiIxMjY2NDg2ODU3OjozMzc0NzU2MzUzNzY1NTEiLCJhdWQiOiJibWNfYWRlX2Nsb3VkX3NlcnZpY2VzIiwiYW1yIjpbImV5SjFjMlZ5WDJsa0lqb2lNek0zTkRjMU5qTTFNemMyTlRVeElpd2lZV05qWlhOelgydGxlU0k2SWpsTU9FSlNNMHRWUVVOUU9FWkdTRUphVFU1VlFqRXhSVVkxT1ZSR1RTSXNJbkJ5YVc1amFYQmhiRjlwWkNJNklqbE1PRUpTTTB0VlFVTlFPRVpHU0VKYVRVNVZRakV4UlVZMU9WUkdUU0lzSW5WelpYSmZjM1JoZEhWeklqb2lSVTVCUWt4Rklpd2lkSGx3WlNJNklrRlFTU0lzSW5SbGJtRnVkRjlwWkNJNklqRXlOalkwT0RZNE5UY2lMQ0p5YjJ4bGN5STZXeUk1TVRVNE1UVTBPVFU0TXpJNE9UWWlMQ0kxTWpVMk56azNOekUyTmpRME1EUWlMQ0l6T1Rnd01EazFNRFF6TlRFek9Ea2lMQ0kzTkRJMU56Z3dOamc1TnpFNE1ETWlMQ0l5TURneU9UYzNPVFkyTlRJNU56RWlMQ0kxTWpJMk5qVXdOVGd6T0RZek1qa2lMQ0l4TWpFM09EVXdPVGM0T0RjeU1qa2lMQ0k0TmpJM01EQXlNakk0TnpJMk1UUWlMQ0l6TnpFMU9UWXpOelUxTURneE1EQWlMQ0l5TXpRM09EUTFOakEyT0RNeU9EVWlMQ0kwT0Rrek1UQXpORGM1TURZd01qUWlMQ0l5T1RRNU5EYzJOelV3TlRNME16Y2lMQ0l5TXpRek1UWTFNVEUyTWpnME1qWWlMQ0l5TVRrd05EUXpPVGt3T0RrMU5qY2lMQ0l4TkRBeE5UVTROamszT1Rjek9UUWlMQ0l5TWpFMk9EY3pNREUxTmpBM05Ua2lMQ0kxTXpRek9UQXpOREF5TnpneE1EUWlMQ0kxTmpFM05Ua3hPVFV4Tnpjd05qSWlMQ0kwTVRJNU1qSXpOVFF3TXpFeE5EVWlMQ0k0TURFNU9EWTJOREl3TnpjME1URWlMQ0l6T0RReU1ESTRORGN6T1RFMU1ESWlMQ0l4T0RZMU9EWXpPVEF6T0RRMU9UY2lMQ0l4TVRrd09UVTVNVFkxTkRnMU9UVWlMQ0l6TXpVM016VXpPRGc1TURVNE5qWWlYU3dpWjNKdmRYQnpJanBiSWpRNE1EQXhPVGMxTWpNM01qY3hNaUpkTENKd1pYSnRhWE56YVc5dWN5STZXeUlxSWwxOSJdLCJpc3MiOiJodHRwczovL2hlbGl4dHJpYWxzamMxMDUtb3IxLWRldi5vbmJtYy5jb20iLCJ0eXBlIjoiQUNDRVNTX1RPS0VOIiwiZXhwIjoxNjU4OTU2ODgxLCJpYXQiOjE2NTg5NTU5ODEsImp0aSI6IjFkMTRjZDY2LWMxZDUtNGNkZi04NjUxLTExZDcwMDE4Nzg5NiJ9.WuyMiUeQj2cGQD5crvuCQzGutyyokJM91uLVXaewt1oGPWYEK66CfCZMD6NRZuVeuYY6EqTcKOh45qIzpfyR4yGYVIC7PqQK8-Xz8gN9VhH16RrP2aZnH-hfDx6mIaqJlW_ZgysvmpcyOiD5oP81Gufl7NulSwDoPpg3WycV_pfPVH6OM3bxtHW4BUkn5j5CWywYsB4eM4XXNkXVLA7ID_VKLBPd_BmEZs-PbYdCQwll5k7O-cVB65czHGwLF0dLyYtgdTbdEFrlG1fqYWvGKNw9h32DdVogHTHbs1-IUuGxinYMcOz9B-izGwviNBLloV_yTVyGuNr5zbx_e8nl_w"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"eventIds\": [\n    \"eps.1266486857.739357104741753.d876bd14-426e-4dcc-9a16-c9ec6ce8f84f\"\n  ],\n  \"slots\": {\n    \"notes\": \"Thunder REST Test Close\"\n  }\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "58d0e27c-a491-4a60-8429-eec6fdc2c34f",
+    "colId": "4353b247-e4a0-4f89-bc37-91bb0a65964e",
+    "containerId": "b5a76697-9dc6-4432-887c-f8d48e6d9294",
+    "name": "Add Note",
+    "url": "https://{{server}}:{{port}}/events-service/api/v1.0/events/operations/addNote",
+    "method": "POST",
+    "sortNum": 18750,
+    "created": "2022-07-27T21:11:59.188Z",
+    "modified": "2022-07-27T21:12:32.002Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer eyJraWQiOiI1ZjU1YTU2My1kNGFjLTQ3MzMtOTdiMy1jMDMwYzE2ZWE2YWUiLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzUxMiJ9.eyJzdWIiOiIxMjY2NDg2ODU3OjozMzc0NzU2MzUzNzY1NTEiLCJhdWQiOiJibWNfYWRlX2Nsb3VkX3NlcnZpY2VzIiwiYW1yIjpbImV5SjFjMlZ5WDJsa0lqb2lNek0zTkRjMU5qTTFNemMyTlRVeElpd2lZV05qWlhOelgydGxlU0k2SWpsTU9FSlNNMHRWUVVOUU9FWkdTRUphVFU1VlFqRXhSVVkxT1ZSR1RTSXNJbkJ5YVc1amFYQmhiRjlwWkNJNklqbE1PRUpTTTB0VlFVTlFPRVpHU0VKYVRVNVZRakV4UlVZMU9WUkdUU0lzSW5WelpYSmZjM1JoZEhWeklqb2lSVTVCUWt4Rklpd2lkSGx3WlNJNklrRlFTU0lzSW5SbGJtRnVkRjlwWkNJNklqRXlOalkwT0RZNE5UY2lMQ0p5YjJ4bGN5STZXeUk1TVRVNE1UVTBPVFU0TXpJNE9UWWlMQ0kxTWpVMk56azNOekUyTmpRME1EUWlMQ0l6T1Rnd01EazFNRFF6TlRFek9Ea2lMQ0kzTkRJMU56Z3dOamc1TnpFNE1ETWlMQ0l5TURneU9UYzNPVFkyTlRJNU56RWlMQ0kxTWpJMk5qVXdOVGd6T0RZek1qa2lMQ0l4TWpFM09EVXdPVGM0T0RjeU1qa2lMQ0k0TmpJM01EQXlNakk0TnpJMk1UUWlMQ0l6TnpFMU9UWXpOelUxTURneE1EQWlMQ0l5TXpRM09EUTFOakEyT0RNeU9EVWlMQ0kwT0Rrek1UQXpORGM1TURZd01qUWlMQ0l5T1RRNU5EYzJOelV3TlRNME16Y2lMQ0l5TXpRek1UWTFNVEUyTWpnME1qWWlMQ0l5TVRrd05EUXpPVGt3T0RrMU5qY2lMQ0l4TkRBeE5UVTROamszT1Rjek9UUWlMQ0l5TWpFMk9EY3pNREUxTmpBM05Ua2lMQ0kxTXpRek9UQXpOREF5TnpneE1EUWlMQ0kxTmpFM05Ua3hPVFV4Tnpjd05qSWlMQ0kwTVRJNU1qSXpOVFF3TXpFeE5EVWlMQ0k0TURFNU9EWTJOREl3TnpjME1URWlMQ0l6T0RReU1ESTRORGN6T1RFMU1ESWlMQ0l4T0RZMU9EWXpPVEF6T0RRMU9UY2lMQ0l4TVRrd09UVTVNVFkxTkRnMU9UVWlMQ0l6TXpVM016VXpPRGc1TURVNE5qWWlYU3dpWjNKdmRYQnpJanBiSWpRNE1EQXhPVGMxTWpNM01qY3hNaUpkTENKd1pYSnRhWE56YVc5dWN5STZXeUlxSWwxOSJdLCJpc3MiOiJodHRwczovL2hlbGl4dHJpYWxzamMxMDUtb3IxLWRldi5vbmJtYy5jb20iLCJ0eXBlIjoiQUNDRVNTX1RPS0VOIiwiZXhwIjoxNjU4OTU2ODgxLCJpYXQiOjE2NTg5NTU5ODEsImp0aSI6IjFkMTRjZDY2LWMxZDUtNGNkZi04NjUxLTExZDcwMDE4Nzg5NiJ9.WuyMiUeQj2cGQD5crvuCQzGutyyokJM91uLVXaewt1oGPWYEK66CfCZMD6NRZuVeuYY6EqTcKOh45qIzpfyR4yGYVIC7PqQK8-Xz8gN9VhH16RrP2aZnH-hfDx6mIaqJlW_ZgysvmpcyOiD5oP81Gufl7NulSwDoPpg3WycV_pfPVH6OM3bxtHW4BUkn5j5CWywYsB4eM4XXNkXVLA7ID_VKLBPd_BmEZs-PbYdCQwll5k7O-cVB65czHGwLF0dLyYtgdTbdEFrlG1fqYWvGKNw9h32DdVogHTHbs1-IUuGxinYMcOz9B-izGwviNBLloV_yTVyGuNr5zbx_e8nl_w"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"eventIds\": [\n    \"eps.1266486857.739357104741753.d876bd14-426e-4dcc-9a16-c9ec6ce8f84f\"\n  ],\n  \"slots\": {\n    \"notes\": \"Thunder REST Test Close\"\n  }\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
+      }
+    ]
+  },
+  {
+    "_id": "415a4c72-10f7-4cf7-a409-ab95a855c52c",
+    "colId": "4353b247-e4a0-4f89-bc37-91bb0a65964e",
+    "containerId": "b5a76697-9dc6-4432-887c-f8d48e6d9294",
+    "name": "Create Incident",
+    "url": "https://{{server}}:{{port}}/events-service/api/v1.0/events/operations/incident",
+    "method": "POST",
+    "sortNum": 18125,
+    "created": "2022-07-27T21:15:21.961Z",
+    "modified": "2022-07-27T21:15:49.655Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer eyJraWQiOiI1ZjU1YTU2My1kNGFjLTQ3MzMtOTdiMy1jMDMwYzE2ZWE2YWUiLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzUxMiJ9.eyJzdWIiOiIxMjY2NDg2ODU3OjozMzc0NzU2MzUzNzY1NTEiLCJhdWQiOiJibWNfYWRlX2Nsb3VkX3NlcnZpY2VzIiwiYW1yIjpbImV5SjFjMlZ5WDJsa0lqb2lNek0zTkRjMU5qTTFNemMyTlRVeElpd2lZV05qWlhOelgydGxlU0k2SWpsTU9FSlNNMHRWUVVOUU9FWkdTRUphVFU1VlFqRXhSVVkxT1ZSR1RTSXNJbkJ5YVc1amFYQmhiRjlwWkNJNklqbE1PRUpTTTB0VlFVTlFPRVpHU0VKYVRVNVZRakV4UlVZMU9WUkdUU0lzSW5WelpYSmZjM1JoZEhWeklqb2lSVTVCUWt4Rklpd2lkSGx3WlNJNklrRlFTU0lzSW5SbGJtRnVkRjlwWkNJNklqRXlOalkwT0RZNE5UY2lMQ0p5YjJ4bGN5STZXeUk1TVRVNE1UVTBPVFU0TXpJNE9UWWlMQ0kxTWpVMk56azNOekUyTmpRME1EUWlMQ0l6T1Rnd01EazFNRFF6TlRFek9Ea2lMQ0kzTkRJMU56Z3dOamc1TnpFNE1ETWlMQ0l5TURneU9UYzNPVFkyTlRJNU56RWlMQ0kxTWpJMk5qVXdOVGd6T0RZek1qa2lMQ0l4TWpFM09EVXdPVGM0T0RjeU1qa2lMQ0k0TmpJM01EQXlNakk0TnpJMk1UUWlMQ0l6TnpFMU9UWXpOelUxTURneE1EQWlMQ0l5TXpRM09EUTFOakEyT0RNeU9EVWlMQ0kwT0Rrek1UQXpORGM1TURZd01qUWlMQ0l5T1RRNU5EYzJOelV3TlRNME16Y2lMQ0l5TXpRek1UWTFNVEUyTWpnME1qWWlMQ0l5TVRrd05EUXpPVGt3T0RrMU5qY2lMQ0l4TkRBeE5UVTROamszT1Rjek9UUWlMQ0l5TWpFMk9EY3pNREUxTmpBM05Ua2lMQ0kxTXpRek9UQXpOREF5TnpneE1EUWlMQ0kxTmpFM05Ua3hPVFV4Tnpjd05qSWlMQ0kwTVRJNU1qSXpOVFF3TXpFeE5EVWlMQ0k0TURFNU9EWTJOREl3TnpjME1URWlMQ0l6T0RReU1ESTRORGN6T1RFMU1ESWlMQ0l4T0RZMU9EWXpPVEF6T0RRMU9UY2lMQ0l4TVRrd09UVTVNVFkxTkRnMU9UVWlMQ0l6TXpVM016VXpPRGc1TURVNE5qWWlYU3dpWjNKdmRYQnpJanBiSWpRNE1EQXhPVGMxTWpNM01qY3hNaUpkTENKd1pYSnRhWE56YVc5dWN5STZXeUlxSWwxOSJdLCJpc3MiOiJodHRwczovL2hlbGl4dHJpYWxzamMxMDUtb3IxLWRldi5vbmJtYy5jb20iLCJ0eXBlIjoiQUNDRVNTX1RPS0VOIiwiZXhwIjoxNjU4OTU2ODgxLCJpYXQiOjE2NTg5NTU5ODEsImp0aSI6IjFkMTRjZDY2LWMxZDUtNGNkZi04NjUxLTExZDcwMDE4Nzg5NiJ9.WuyMiUeQj2cGQD5crvuCQzGutyyokJM91uLVXaewt1oGPWYEK66CfCZMD6NRZuVeuYY6EqTcKOh45qIzpfyR4yGYVIC7PqQK8-Xz8gN9VhH16RrP2aZnH-hfDx6mIaqJlW_ZgysvmpcyOiD5oP81Gufl7NulSwDoPpg3WycV_pfPVH6OM3bxtHW4BUkn5j5CWywYsB4eM4XXNkXVLA7ID_VKLBPd_BmEZs-PbYdCQwll5k7O-cVB65czHGwLF0dLyYtgdTbdEFrlG1fqYWvGKNw9h32DdVogHTHbs1-IUuGxinYMcOz9B-izGwviNBLloV_yTVyGuNr5zbx_e8nl_w"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"eventIds\": [\n    \"eps.1266486857.739357104741753.d876bd14-426e-4dcc-9a16-c9ec6ce8f84f\"\n  ],\n  \"slots\": {\n    \"notes\": \"Thunder REST Test Close\"\n  }\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "equal",
+        "value": "application/json"
       }
     ]
   }

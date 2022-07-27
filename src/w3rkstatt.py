@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 #Filename: w3rkstatt.py
-
 """
 (c) 2020 Volker Scheithauer
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
@@ -31,7 +30,6 @@ Date (YMD)    Name                  What
 
 """
 
-
 import logging
 import os
 import json
@@ -55,7 +53,6 @@ from urllib.parse import urlparse
 import pandas as pd
 from jsonpath_ng import jsonpath
 from jsonpath_ng.ext import parse
-
 
 try:
     # Cryptodome
@@ -320,8 +317,8 @@ def addTimeDelta(date, delta, timeFormat=""):
     dtTH = int(time.strftime('%H', time.localtime(epoch)))
     dtTM = int(time.strftime('%M', time.localtime(epoch)))
     dtTS = int(time.strftime('%S', time.localtime(epoch)))
-    dltDt = datetime.datetime(dtDY, dtDM, dtDD, dtTH,
-                              dtTM, dtTS) + datetime.timedelta(days=delta)
+    dltDt = datetime.datetime(dtDY, dtDM, dtDD, dtTH, dtTM,
+                              dtTS) + datetime.timedelta(days=delta)
     value = dltDt.strftime(tf)
 
     return value
@@ -639,7 +636,7 @@ def jsonExtractSimpleValue(data, key):
     return value
 
 
-def jsonMergeObjects(* argv):
+def jsonMergeObjects(*argv):
     '''
     Merge json content
 
@@ -836,7 +833,12 @@ def getCryptoKeyFile():
     :raises ValueError: N/A
     :raises TypeError: N/A    
     '''
-    sCryptoKeyFileName = checkCustomCryptoFile(folder=pFolder)
+
+    # Custom Crypto File
+    # checkCustomCryptoFile(folder=pFolder)
+    sCryptoFileName = sHostname + ".bin"
+    sProjectryptoFileName = os.path.join(cfgFolder, sCryptoFileName)
+    sCryptoKeyFileName = sProjectryptoFileName
     return sCryptoKeyFileName
 
 
@@ -861,8 +863,10 @@ def encrypt(data, sKeyFileName=""):
     key = getCryptoKey(sCryptoKeyFile)
     # cipher = AES.new(key.encode(), AES.MODE_CBC)
     cipher = AES.new(key, AES.MODE_CBC)
-    value = b64encode(cipher.iv).decode('utf-8') + b64encode(cipher.encrypt(pad(sPwd.encode(),
-                                                                                AES.block_size))).decode('utf-8') + str(len(b64encode(cipher.iv).decode('utf-8')))
+    value = b64encode(cipher.iv).decode('utf-8') + b64encode(
+        cipher.encrypt(pad(sPwd.encode(),
+                           AES.block_size))).decode('utf-8') + str(
+                               len(b64encode(cipher.iv).decode('utf-8')))
     sPwd = "ENC[" + value + "]"
 
     return sPwd
@@ -894,8 +898,8 @@ def decrypt(data, sKeyFileName=""):
 
     key = getCryptoKey(sCryptoKeyFile)
     cipher = AES.new(key, AES.MODE_CBC, b64decode(sPwd[0:int(sPwd[-2:]):1]))
-    value = unpad(cipher.decrypt(
-        b64decode(sPwd[int(sPwd[-2:]):len(sPwd):1])), AES.block_size).decode('utf-8')
+    value = unpad(cipher.decrypt(b64decode(sPwd[int(sPwd[-2:]):len(sPwd):1])),
+                  AES.block_size).decode('utf-8')
 
     return value
 
@@ -1074,6 +1078,7 @@ def copyFolder(srcFolker, dstFolder, override=False):
             dstname = os.path.join(dst, file)
             copyFile(srcname, dstname, override=override)
 
+
 # Project Core Folder
 
 
@@ -1091,6 +1096,7 @@ def getProjectFolder():
     projectFolder = getCurrentFolder()
 
     return projectFolder
+
 
 # User Home Folder
 
@@ -1112,6 +1118,7 @@ def getHomeFolder():
         userHomeFolder = expanduser("~")
     return userHomeFolder
 
+
 # Security functions
 
 
@@ -1130,7 +1137,8 @@ def secureCredentials(data):
     cryptoFile = getJsonValue(path="$.DEFAULT.crypto_file", data=jCfgData)
 
     # Crypto Support
-    sCfgData = encryptPwds(file=cfgFile, data=jCfgData,
+    sCfgData = encryptPwds(file=cfgFile,
+                           data=jCfgData,
                            sKeyFileName=cryptoFile)
     return sCfgData
 
@@ -1161,10 +1169,12 @@ def encryptPwds(file, data, sKeyFileName=""):
         vPath = "$." + pItem + ".pwd"
         jPath = "$." + pItem + ".jks_pwd"
         aPath = "$." + pItem + ".api_Key"
+        sPath = "$." + pItem + ".api_secret"
 
         unSecPwd = getJsonValue(path=vPath, data=sCfgData)
         ujSecPwd = getJsonValue(path=jPath, data=sCfgData)
         uaSecPwd = getJsonValue(path=aPath, data=sCfgData)
+        usSecPwd = getJsonValue(path=sPath, data=sCfgData)
 
         if len(unSecPwd) > 0:
             if "ENC[" in unSecPwd:
@@ -1195,14 +1205,15 @@ def encryptPwds(file, data, sKeyFileName=""):
                 logger.info('Crypto Encrypt JKS Password for: "%s"', pItem)
                 if _localDebug:
                     print(
-                        f"Encrypted user JKS password for {pItem}: {securePwd}")
+                        f"Encrypted user JKS password for {pItem}: {securePwd}"
+                    )
 
                 sCfgData[pItem]["jks_secure"] = securePwd
                 sCfgData[pItem]["jks_pwd"] = securePwd
 
         # API Keys
         # disabled, need further testing
-        uaSecPwd = ""
+        # uaSecPwd = ""
         if len(uaSecPwd) > 0:
             if "ENC[" in uaSecPwd:
                 start = uaSecPwd.find('ENC[') + 4
@@ -1214,10 +1225,25 @@ def encryptPwds(file, data, sKeyFileName=""):
                 securePwd = encryptPwd(data=sPwd, sKeyFileName=sKeyFileName)
                 logger.info('Crypto Encrypt API Key for: "%s"', pItem)
                 if _localDebug:
-                    print(
-                        f"Encrypted user API Key for {pItem}: {securePwd}")
+                    print(f"Encrypted user API Key for {pItem}: {securePwd}")
 
                 sCfgData[pItem]["api_Key"] = securePwd
+
+        # API Secret Keys
+        if len(usSecPwd) > 0:
+            if "ENC[" in usSecPwd:
+                start = usSecPwd.find('ENC[') + 4
+                end = usSecPwd.find(']', start)
+                sPwd = usSecPwd[start:end]
+
+            else:
+                sPwd = usSecPwd
+                securePwd = encryptPwd(data=sPwd, sKeyFileName=sKeyFileName)
+                logger.info('Crypto Encrypt API Key for: "%s"', pItem)
+                if _localDebug:
+                    print(f"Encrypted user API Key for {pItem}: {securePwd}")
+
+                sCfgData[pItem]["api_secret"] = securePwd
 
         if _localDebug:
             logger.debug('Core: Security Function: "%s" ', "Encrypt")
@@ -1251,7 +1277,22 @@ def decryptPwds(data):
         sPwd = getJsonValue(path=vPath, data=sCfgData)
         if len(sPwd) > 0:
             unSecPwd = decryptPwd(data=sPwd)
-            print(f"Decrypted password for {pItem}: {unSecPwd}")
+            print(f"Decrypted Password for {pItem}: {unSecPwd}")
+
+        # API Key
+        vPath = "$." + pItem + ".api_Key"
+        sPwd = getJsonValue(path=vPath, data=sCfgData)
+        if len(sPwd) > 0:
+            unSecPwd = decryptPwd(data=sPwd)
+            print(f"Decrypted API Key for {pItem}: {unSecPwd}")
+
+        # API Secret
+        vPath = "$." + pItem + ".api_secret"
+        sPwd = getJsonValue(path=vPath, data=sCfgData)
+        if len(sPwd) > 0:
+            unSecPwd = decryptPwd(data=sPwd)
+            print(f"Decrypted API Secret for {pItem}: {unSecPwd}")
+
         if _localDebug:
             logger.debug('Core: Security Function: "%s" ', "Decrypt")
             logger.debug('Core: Security Solution: "%s" ', pItem)
@@ -1303,12 +1344,12 @@ def createProjecConfig(data):
     '''
     jLocalCfgData = data
 
-    cfgFolder = getJsonValue(
-        path="$.DEFAULT.config_folder", data=jLocalCfgData)
+    cfgFolder = getJsonValue(path="$.DEFAULT.config_folder",
+                             data=jLocalCfgData)
     logFolder = getJsonValue(path="$.DEFAULT.log_folder", data=jLocalCfgData)
     datFolder = getJsonValue(path="$.DEFAULT.data_folder", data=jLocalCfgData)
-    tmpFolder = getJsonValue(
-        path="$.DEFAULT.template_folder", data=jLocalCfgData)
+    tmpFolder = getJsonValue(path="$.DEFAULT.template_folder",
+                             data=jLocalCfgData)
 
     # Custom Crypto File
     sCryptoFileName = sHostname + ".bin"
@@ -1363,8 +1404,8 @@ def getProjectDefaultConfigFileName():
     '''
 
     sLocalFolder = getCurrentFolder()
-    sLocalCfgFileName = os.path.join(
-        sLocalFolder, "templates", "integrations.json")
+    sLocalCfgFileName = os.path.join(sLocalFolder, "templates",
+                                     "integrations.json")
     return sLocalCfgFileName
 
 
@@ -1401,8 +1442,8 @@ def getProjectConfig():
 
     # Get Custom Config File & Content
     sConfigFileName = sHostname + ".json"
-    sProjectConfigFileName = os.path.join(
-        coreProjecConfigFolder, sConfigFileName)
+    sProjectConfigFileName = os.path.join(coreProjecConfigFolder,
+                                          sConfigFileName)
     sCfgFilesConfigFileStatus = getFileStatus(sProjectConfigFileName)
 
     if sCfgFilesConfigFileStatus:
@@ -1424,8 +1465,11 @@ logger = logging.getLogger(__name__)
 if __name__ == "__main__":
     # Setup log file
     logFile = os.path.join(pFolder, "w3rkstatt.log")
-    logging.basicConfig(filename=logFile, filemode='w', level=logging.DEBUG,
-                        format='%(asctime)s - %(levelname)s # %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+    logging.basicConfig(filename=logFile,
+                        filemode='w',
+                        level=logging.DEBUG,
+                        format='%(asctime)s - %(levelname)s # %(message)s',
+                        datefmt='%d-%b-%y %H:%M:%S')
     logger.info('Werkstatt Python Core Script "Start"')
     logger.info('Version: %s ', _modVer)
     logger.info('System Platform: "%s" ', sPlatform)
@@ -1441,16 +1485,16 @@ if __name__ == "__main__":
     jUpdatedCfgData = createProjecConfig(data=jUpdatedCfgfolders)
 
     loglevel = getJsonValue(path="$.DEFAULT.loglevel", data=jUpdatedCfgData)
-    cfgFolder = getJsonValue(
-        path="$.DEFAULT.config_folder", data=jUpdatedCfgData)
+    cfgFolder = getJsonValue(path="$.DEFAULT.config_folder",
+                             data=jUpdatedCfgData)
     logFolder = getJsonValue(path="$.DEFAULT.log_folder", data=jUpdatedCfgData)
-    datFolder = getJsonValue(
-        path="$.DEFAULT.data_folder", data=jUpdatedCfgData)
-    tmpFolder = getJsonValue(
-        path="$.DEFAULT.template_folder", data=jUpdatedCfgData)
+    datFolder = getJsonValue(path="$.DEFAULT.data_folder",
+                             data=jUpdatedCfgData)
+    tmpFolder = getJsonValue(path="$.DEFAULT.template_folder",
+                             data=jUpdatedCfgData)
     cfgFile = getJsonValue(path="$.DEFAULT.config_file", data=jUpdatedCfgData)
-    cryptoFile = getJsonValue(
-        path="$.DEFAULT.crypto_file", data=jUpdatedCfgData)
+    cryptoFile = getJsonValue(path="$.DEFAULT.crypto_file",
+                              data=jUpdatedCfgData)
 
     logger.info('System Config JSON File: "%s" ', jCfgFile)
     logger.info('Log Folder: "%s" ', logFolder)
