@@ -140,5 +140,17 @@
       }
     ],
     "docs": "Get all the agents of the specified Server."
+  },
+  {
+    "_id": "b756b434-8183-4405-95af-c96a8e95e35c",
+    "colId": "4353b247-e4a0-4f89-bc37-91bb0a65964e",
+    "containerId": "b5a76697-9dc6-4432-887c-f8d48e6d9294",
+    "name": "Create Event",
+    "url": "",
+    "method": "GET",
+    "sortNum": 10000,
+    "created": "2022-07-27T18:30:01.708Z",
+    "modified": "2022-07-27T18:30:01.708Z",
+    "headers": []
   }
 ]

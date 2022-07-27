@@ -32,5 +32,27 @@
         "value": "ctm-srv.trybmc.com"
       }
     ]
+  },
+  {
+    "_id": "ad584773-1812-4417-b4c2-d00502bc0ffc",
+    "name": "Helix OM",
+    "default": false,
+    "sortNum": 20000,
+    "created": "2022-07-27T18:23:00.933Z",
+    "modified": "2022-07-27T18:27:23.721Z",
+    "data": [
+      {
+        "name": "server",
+        "value": "helixtrialsjc105-or1-dev.onbmc.com"
+      },
+      {
+        "name": "port",
+        "value": "443"
+      },
+      {
+        "name": "authToken",
+        "value": "399a343b-7df6-4a72-bc83-09bb81876f4"
+      }
+    ]
   }
 ]
