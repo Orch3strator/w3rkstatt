@@ -372,9 +372,6 @@ def createITSM(data):
 
     jCtmAlert = json.loads(data)
 
-    # ITSM Login
-    authToken = itsm.authenticate()
-
     # ToDO: Update Incident data
     # Add Logic to map CTM Alerts to Incident Support Groups
 
@@ -444,6 +441,13 @@ def createITSM(data):
     if _localDebugITSM:
         sIncidentData = w3rkstatt.jsonTranslateValues(data=jIncidentData)
         logger.debug('ITSM Integration Data = %s ', sIncidentData)
+        logger.debug('')
+
+    # ITSM Login
+    authToken = itsm.authenticate()
+
+    if _localDebugITSM:
+        logger.debug('ITSM Login Token = %s ', authToken)
         logger.debug('')
 
     incidentId = itsm.createIncident(token=authToken, data=jIncidentData)
@@ -819,7 +823,7 @@ if __name__ == "__main__":
         # Process only 'new' alerts
         if "New" in ctmAlertCallType:
             logger.info('')
-            logger.info('CMT New Alert: %s', jCtmAlertRaw)
+            logger.info('CMT New Alert Processing: %s', jCtmAlertRaw)
             logger.info('')
             if ctmAlertCat == "infrastructure":
                 pass
@@ -1017,10 +1021,18 @@ if __name__ == "__main__":
                     ctmAlertIDs=ctmAlertId,
                     ctmAlertComment=sAlertNotes,
                     ctmAlertUrgency=ctmAlertSev)
+                if _localDebugITSM or _localDebugBHOM or _localDebugData:
+                    logger.debug('- CTM Alert Update %s: "%s"', ctmAlertId,
+                                 sAlertNotes)
+                    logger.debug('- CTM Alert Status: %s', ctmAlertsStatus)
 
             # Close cTM AAPI connection
             if _ctmActiveApi:
                 ctm.delCtmConnection(ctmApiObj)
+
+            logger.info('')
+            logger.info('CMT New Alert Processing: %s', "Done")
+            logger.info('')
 
             sSysOutMsg = "Processed New Alert: #" + str(
                 ctmAlertId) + "#" + incident + "#" + bhom_event_id + "#"
@@ -1030,6 +1042,10 @@ if __name__ == "__main__":
             if _localDebugData:
                 logger.debug('- CTM Alert Update: "%s"', "Start")
                 logger.debug('- CTM Alert Notes : "%s"', "ctmAlertNotes")
+
+            logger.info('')
+            logger.info('CMT Update Alert Processing: "%s"', "Nothing To do")
+            logger.info('')
 
             sSysOutMsg = "Processed Update Alert: " + str(ctmAlertId)
 
