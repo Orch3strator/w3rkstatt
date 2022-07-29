@@ -1,6 +1,5 @@
 #!/usr/bin/python
 #Filename: core_itsm.py
-
 """
 (c) 2020 Volker Scheithauer
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
@@ -29,7 +28,6 @@ Date (YMD)    Name                  What
 20210527      Volker Scheithauer    Update UAT
 """
 
-
 import os
 import json
 import logging
@@ -51,8 +49,8 @@ try:
     import w3rkstatt as w3rkstatt
 except:
     # fix import issues for modules
-    sys.path.append(os.path.dirname(
-        os.path.dirname(os.path.realpath(__file__))))
+    sys.path.append(
+        os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
     from src import w3rkstatt as w3rkstat
 
 # Get configuration from bmcs_core.json
@@ -61,47 +59,46 @@ except:
 
 # Get configuration from json
 jCfgData = w3rkstatt.getProjectConfig()
-cfgFolder = w3rkstatt.getJsonValue(
-    path="$.DEFAULT.config_folder", data=jCfgData)
+cfgFolder = w3rkstatt.getJsonValue(path="$.DEFAULT.config_folder",
+                                   data=jCfgData)
 logFolder = w3rkstatt.getJsonValue(path="$.DEFAULT.log_folder", data=jCfgData)
-tmpFolder = w3rkstatt.getJsonValue(
-    path="$.DEFAULT.template_folder", data=jCfgData)
-cryptoFile = w3rkstatt.getJsonValue(
-    path="$.DEFAULT.crypto_file", data=jCfgData)
+tmpFolder = w3rkstatt.getJsonValue(path="$.DEFAULT.template_folder",
+                                   data=jCfgData)
+cryptoFile = w3rkstatt.getJsonValue(path="$.DEFAULT.crypto_file",
+                                    data=jCfgData)
 
 itsm_host = w3rkstatt.getJsonValue(path="$.ITSM.host", data=jCfgData)
 itsm_port = w3rkstatt.getJsonValue(path="$.ITSM.port", data=jCfgData)
 itsm_ssl = w3rkstatt.getJsonValue(path="$.ITSM.ssl", data=jCfgData)
-itsm_ssl_ver = w3rkstatt.getJsonValue(
-    path="$.ITSM.ssl_verification", data=jCfgData)
+itsm_ssl_ver = w3rkstatt.getJsonValue(path="$.ITSM.ssl_verification",
+                                      data=jCfgData)
 itsm_user = w3rkstatt.getJsonValue(path="$.ITSM.user", data=jCfgData)
 itsm_pwd = w3rkstatt.getJsonValue(path="$.ITSM.pwd", data=jCfgData)
-itsm_api_ns = w3rkstatt.getJsonValue(
-    path="$.ITSM.api_namespace", data=jCfgData)
+itsm_api_ns = w3rkstatt.getJsonValue(path="$.ITSM.api_namespace",
+                                     data=jCfgData)
 itsm_api_ver = w3rkstatt.getJsonValue(path="$.ITSM.api_version", data=jCfgData)
 
 # ITSM form names
-itsm_form_crq = w3rkstatt.getJsonValue(
-    path="$.ITSM.change.form_name", data=jCfgData)
-itsm_form_inc = w3rkstatt.getJsonValue(
-    path="$.ITSM.incident.form_name", data=jCfgData)
-itsm_form_wlog = w3rkstatt.getJsonValue(
-    path="$.ITSM.worklog.form_name", data=jCfgData)
-itsm_search_inc = w3rkstatt.getJsonValue(
-    path="$.ITSM.incident.form_search", data=jCfgData)
-itsm_form_ci = w3rkstatt.getJsonValue(
-    path="$.ITSM.cmdb.form_name", data=jCfgData)
+itsm_form_crq = w3rkstatt.getJsonValue(path="$.ITSM.change.form_name",
+                                       data=jCfgData)
+itsm_form_inc = w3rkstatt.getJsonValue(path="$.ITSM.incident.form_name",
+                                       data=jCfgData)
+itsm_form_wlog = w3rkstatt.getJsonValue(path="$.ITSM.worklog.form_name",
+                                        data=jCfgData)
+itsm_search_inc = w3rkstatt.getJsonValue(path="$.ITSM.incident.form_search",
+                                         data=jCfgData)
+itsm_form_ci = w3rkstatt.getJsonValue(path="$.ITSM.cmdb.form_name",
+                                      data=jCfgData)
 
 # ITSM template IDs
-itsm_tmpl_crq = w3rkstatt.getJsonValue(
-    path="$.ITSM.change.template_id", data=jCfgData)
-itsm_tmpl_inc = w3rkstatt.getJsonValue(
-    path="$.ITSM.incident.template_id", data=jCfgData)
+itsm_tmpl_crq = w3rkstatt.getJsonValue(path="$.ITSM.change.template_id",
+                                       data=jCfgData)
+itsm_tmpl_inc = w3rkstatt.getJsonValue(path="$.ITSM.incident.template_id",
+                                       data=jCfgData)
 
 # ITSM field mappings
-itsm_map_file = w3rkstatt.getJsonValue(
-    path="$.ITSM.mappings_file", data=jCfgData)
-
+itsm_map_file = w3rkstatt.getJsonValue(path="$.ITSM.mappings_file",
+                                       data=jCfgData)
 
 # ITSM REST API
 # https://<localhost>:<port>/api/{namespace}/{version}
@@ -130,7 +127,6 @@ epoch = time.time()
 hostName = w3rkstatt.getHostName()
 hostIP = w3rkstatt.getHostIP(hostName)
 
-
 # Ignore HTTPS Insecure Request Warnings
 if itsm_ssl_ver == False:
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -148,8 +144,8 @@ def authenticate():
 
     authToken = None
     url = itsm_jwt + '/login'
-    itsm_pwd_decrypted = w3rkstatt.decryptPwd(
-        data=itsm_pwd, sKeyFileName=cryptoFile)
+    itsm_pwd_decrypted = w3rkstatt.decryptPwd(data=itsm_pwd,
+                                              sKeyFileName=cryptoFile)
     response = ""
 
     # Create a dictionary for the request body
@@ -177,8 +173,10 @@ def authenticate():
 
     # Execute the API call.
     try:
-        response = requests.post(
-            url, data=payload, headers=headers, verify=False)
+        response = requests.post(url,
+                                 data=payload,
+                                 headers=headers,
+                                 verify=False)
     except requests.RequestException as e:
         logger.error('HTTP Response Error: %s', e)
 
@@ -223,8 +221,10 @@ def logout(token):
 
     # Execute the API call.
     try:
-        response = requests.post(
-            url, data=payload, headers=headers, verify=False)
+        response = requests.post(url,
+                                 data=payload,
+                                 headers=headers,
+                                 verify=False)
     except requests.RequestException as e:
         logger.error('HTTP Response Error: %s', e)
 
@@ -250,6 +250,7 @@ def logout(token):
 
 # http://serverName:port/api/arsys/v1/entry/HPD:IncidentInterface_Create?fields=values(Incident Number)
 # https://docs.bmc.com/docs/ars2008/date-and-time-formats-929628201.html
+
 
 def apiGet(form, headers, entry=""):
     '''
@@ -352,8 +353,10 @@ def apiPost(form, headers, body="", fields=""):
         if len(request_body) < 0:
             response = requests.get(url, headers=headers, verify=False)
         else:
-            response = requests.post(
-                url, data=payload, headers=headers, verify=False)
+            response = requests.post(url,
+                                     data=payload,
+                                     headers=headers,
+                                     verify=False)
     except requests.RequestException as e:
         logger.error('HTTP Response Error: %s', e)
 
@@ -413,12 +416,15 @@ def createIncident(token, data):
     }
 
     entryFields = "fields=values(Incident Number)"
-    entryRespone = apiPost(form=itsm_form_inc, headers=headers,
-                           body=data, fields=entryFields).replace(" ", "")
+    entryRespone = apiPost(form=itsm_form_inc,
+                           headers=headers,
+                           body=data,
+                           fields=entryFields).replace(" ", "")
     entryJson = json.loads(entryRespone)
     entryID = w3rkstatt.getJsonValue(path="$.*.IncidentNumber", data=entryJson)
 
     return entryID
+
 
 # http://<server_name>:<port>/api/arsys/v1/entry/HPD:IncidentInterface_Create/Incident Number
 
@@ -434,6 +440,7 @@ def getIncident(token, incident):
     :raises ValueError: N/A
     :raises TypeError: N/A    
     '''
+    # http://serverName:port/api/arsys/v1/entry/HPD:IncidentInterface_Create/incidentNumber.
 
     entryJson = {}
     authToken = "AR-JWT " + token
@@ -462,7 +469,8 @@ def getIncidentStatus(token, incident):
     :raises TypeError: N/A    
     '''
 
-    incInfo = json.loads(getIncident(token=token, incident=incident))
+    incInfoTemp = getIncident(token=token, incident=incident)
+    incInfo = json.loads(incInfoTemp)
     status = w3rkstatt.getJsonValue(path="$.values.Status", data=incInfo)
 
     return status
@@ -487,16 +495,18 @@ def createChange(token, data):
         'Authorization': authToken
     }
     entryFields = "fields=values(Infrastructure Change Id)"
-    entryRespone = apiPost(
-        form=itsm_form_crq, headers=headers, body=data, fields=entryFields)
+    entryRespone = apiPost(form=itsm_form_crq,
+                           headers=headers,
+                           body=data,
+                           fields=entryFields)
 
     entryRespone = entryRespone.replace(" ", "")
     if entryRespone == "Error":
         entryID = "0"
     else:
         entryJson = json.loads(entryRespone)
-        entryID = w3rkstatt.getJsonValue(
-            path="$.*.InfrastructureChangeId", data=entryJson)
+        entryID = w3rkstatt.getJsonValue(path="$.*.InfrastructureChangeId",
+                                         data=entryJson)
     return entryID
 
 
@@ -519,11 +529,13 @@ def createChangeWorklog(token, data):
         'Authorization': authToken
     }
     entryFields = "fields=values(Infrastructure Change Id)"
-    entryRespone = apiPost(form=itsm_form_crq, headers=headers,
-                           body=data, fields=entryFields).replace(" ", "")
+    entryRespone = apiPost(form=itsm_form_crq,
+                           headers=headers,
+                           body=data,
+                           fields=entryFields).replace(" ", "")
     entryJson = json.loads(entryRespone)
-    entryID = w3rkstatt.getJsonValue(
-        path="$.*.InfrastructureChangeId", data=entryJson)
+    entryID = w3rkstatt.getJsonValue(path="$.*.InfrastructureChangeId",
+                                     data=entryJson)
     return entryID
 
 
@@ -594,37 +606,38 @@ def extractChangeState(change):
     crqInfo = w3rkstatt.getJsonValue(path="$.entries..values", data=jData)
 
     if len(crqInfo) > 1:
-        stateId = int(w3rkstatt.getJsonValue(
-            path="$.ChangeRequestStatusString", data=crqInfo))
+        stateId = int(
+            w3rkstatt.getJsonValue(path="$.ChangeRequestStatusString",
+                                   data=crqInfo))
     else:
         stateId = 99
 
     # jQl    = "$.*.change-request-status.mapping.[?id='" + stateId + "')].name"
-    if(stateId == 0):
+    if (stateId == 0):
         status = "Draft"
-    elif(stateId == 1):
+    elif (stateId == 1):
         status = "Request For Authorization"
-    elif(stateId == 2):
+    elif (stateId == 2):
         status = "Request For Change"
-    elif(stateId == 3):
+    elif (stateId == 3):
         status = "Planning In Progress"
-    elif(stateId == 4):
+    elif (stateId == 4):
         status = "Scheduled For Review"
-    elif(stateId == 5):
+    elif (stateId == 5):
         status = "Scheduled For Approval"
-    elif(stateId == 6):
+    elif (stateId == 6):
         status = "Scheduled"
-    elif(stateId == 7):
+    elif (stateId == 7):
         status = "Implementation In Progress"
-    elif(stateId == 8):
+    elif (stateId == 8):
         status = "Pending"
-    elif(stateId == 9):
+    elif (stateId == 9):
         status = "Rejected"
-    elif(stateId == 10):
+    elif (stateId == 10):
         status = "Completed"
-    elif(stateId == 11):
+    elif (stateId == 11):
         status = "Closed"
-    elif(stateId == 12):
+    elif (stateId == 12):
         status = "Cancelled"
     else:
         status = "Unknown"
@@ -633,8 +646,11 @@ def extractChangeState(change):
 
 
 if __name__ == "__main__":
-    logging.basicConfig(filename=logFile, filemode='w', level=logging.DEBUG,
-                        format='%(asctime)s - %(levelname)s # %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+    logging.basicConfig(filename=logFile,
+                        filemode='w',
+                        level=logging.DEBUG,
+                        format='%(asctime)s - %(levelname)s # %(message)s',
+                        datefmt='%d-%b-%y %H:%M:%S')
     logger.info('Helix: ITSM Management Start')
     logger.info('Version: %s ', _modVer)
     logger.info('System Platform: "%s" ', w3rkstatt.platform.system())

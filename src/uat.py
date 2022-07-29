@@ -487,9 +487,9 @@ def demoITSM():
             # incInfo = itsm.getIncident(token=authToken, incident=incidentID)
             # logger.info('ITSM: Incident: %s', incInfo)
 
-            incStatus = itsm.getIncidentStatus(token=authToken,
-                                               incident=incidentID)
-            logger.info('ITSM: Incident State: "%s"', incStatus)
+            # incStatus = itsm.getIncidentStatus(token=authToken,
+            #                                    incident=incidentID)
+            # logger.info('ITSM: Incident State: "%s"', incStatus)
 
             # incWLogStatus = testIncidentWorklog(
             #     token = authToken, incident = incidentID)

@@ -837,6 +837,8 @@ if __name__ == "__main__":
                                              data=jCtmAlert).strip()
         sCtmJobCyclic = w3rkstatt.getJsonValue(path="$.jobInfo.[0].cyclic",
                                                data=jCtmAlert).strip()
+        ctmAlertNotes = w3rkstatt.getJsonValue(path="$.notes",
+                                               data=jCtmAlert).strip()
 
         # Process only 'new' alerts
         if "New" in ctmAlertCallType:
@@ -971,59 +973,25 @@ if __name__ == "__main__":
                             'CTM ITSM Integration Cyclic Job Run: "%s"',
                             ctmRunCounter)
                     incident = createITSM(data=ctmAlertDataFinal)
-                    sSysOutMsg = "Processed New Alert: " + \
-                        str(ctmAlertId) + " Incident: " + str(incident)
-                    sAlertNotes = "Processed Alert created Incident: " + incident
-                    ctmAlertSev = "Normal"
                 elif ctmRunCounter >= 1 and sCtmJobCyclic:
                     if _localDebug:
                         logger.debug(
                             'CTM ITSM Integration Cyclic Job Run: "%s"',
                             ctmRunCounter)
                     # Update Incident Worklog only
-                    pass
+                    incident = "WRK-0000"
                 elif ctmRunCounter >= 1 and not sCtmJobCyclic:
                     if _localDebug:
                         logger.debug(
                             'CTM ITSM Integration Normal Job Run: "%s"',
                             ctmRunCounter)
                     incident = createITSM(data=ctmAlertDataFinal)
-                    sSysOutMsg = "Processed New Alert: " + \
-                        str(ctmAlertId) + " Incident: " + str(incident)
-                    sAlertNotes = "Processed Alert created Incident: " + incident
-                    ctmAlertSev = "Normal"
-                    ctmAlertsStatus = ctm.updateCtmAlertStatus(
-                        ctmApiClient=ctmApiClient,
-                        ctmAlertIDs=ctmAlertId,
-                        ctmAlertStatus="Closed")
                 elif ctmRunCounter == 0 and not sCtmJobCyclic:
-                    if _localDebug:
-                        logger.debug(
-                            'CTM ITSM Integration Skipped Job Run: "%s"',
-                            ctmRunCounter)
-                    SysOutMsg = "Processed New Alert: " + \
-                        str(ctmAlertId) + " Incident: None"
-                    sAlertNotes = "Processed Alert without Incident"
-                    ctmAlertSev = "Normal"
+                    incident = "INC-9999"
+
                 else:
-                    if _localDebug:
-                        logger.debug(
-                            'CTM ITSM Integration Skipped Job Run: "%s"',
-                            ctmRunCounter)
-                    SysOutMsg = "Processed New Alert: " + str(ctmAlertId)
-                    sAlertNotes = "Processed Alert"
-                    ctmAlertSev = "Normal"
-                # Update CTM Alert
-                if _localDebug:
-                    logger.debug('CTM ITSM Integration: "%s"', "Not Specified")
-                if _ctmActiveApi:
-                    ctmAlertsStatus = ctm.updateCtmAlertCore(
-                        ctmApiClient=ctmApiClient,
-                        ctmAlertIDs=ctmAlertId,
-                        ctmAlertComment=sAlertNotes,
-                        ctmAlertUrgency=ctmAlertSev)
-                    logger.debug('CTM Alert Update Status: "%s"',
-                                 ctmAlertsStatus)
+                    incident = "INC-0000"
+
                 logger.debug('CTM ITSM Integration: "%s"', "End")
 
             bhom_event_id = "BHOM-0000"
@@ -1080,8 +1048,10 @@ if __name__ == "__main__":
 
         # Process only 'update' alerts
         if "Update" in ctmAlertCallType:
-            if _localDebug:
+            if _localDebugData:
                 logger.debug('- CTM Alert Update: "%s"', "Start")
+                logger.debug('- CTM Alert Notes : "%s"', "ctmAlertNotes")
+
             sSysOutMsg = "Processed Update Alert: " + str(ctmAlertId)
 
     if _localInfo:
