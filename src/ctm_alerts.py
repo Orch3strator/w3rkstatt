@@ -96,7 +96,7 @@ _localDebugFunctions = jCfgData["DEFAULT"]["debug"]["functions"]
 _localDebugData = jCfgData["DEFAULT"]["debug"]["data"]
 _localDebugAdvanced = jCfgData["DEFAULT"]["debug"]["advanced"]
 _localQA = jCfgData["DEFAULT"]["debug"]["qa"]
-_localDebugBhom = jCfgData["BHOM"]["debug"]
+_localDebugBHOM = jCfgData["BHOM"]["debug"]
 _localDebugITSM = jCfgData["ITSM"]["debug"]
 
 _FutureUse = False
@@ -369,9 +369,13 @@ def getCtmJobOutput(ctmApiClient, data):
 
 
 def createITSM(data):
+
+    data = '{"uuid":"22365c5e-6f18-4412-95a9-38c708661fee","raw":[{"call_type": "I", "alert_id": "280", "data_center": "ctm-srv.trybmc.com", "memname": null, "order_id": "0000q", "severity": "V", "status": "Not_Noticed", "send_time": "20220729164416", "last_user": null, "last_time": null, "message": "Ended not OK", "run_as": "dbus", "sub_application": "Integration", "application": "ADE", "job_name": "Agent Health", "host_id": "ctm-net.trybmc.com", "alert_type": "R", "closed_from_em": null, "ticket_number": null, "run_counter": "00015", "notes": null}],"jobAlert":[{"alert_id": "280", "alert_type": "Regular", "application": "ADE", "call_type": "New", "closed_from_em": null, "data_center": "ctm-srv.trybmc.com", "data_center_dns": "trybmc.com", "data_center_fqdn": "ctm-srv.trybmc.com", "data_center_ip": "192.168.100.62", "host_id": "ctm-net.trybmc.com", "host_ip": "192.168.100.39", "host_ip_dns": "trybmc.com", "host_ip_fqdn": "ctm-net.trybmc.com", "job_id": "ctm-srv.trybmc.com:0000q", "job_name": "Agent Health", "job_script": null, "job_uri": "https://ctm-em.trybmc.com:8443/ControlM/#Search:id=Search_2&search=0000q&date=20220729&controlm=ctm-srv.trybmc.com", "last_time": null, "last_user": null, "memname": null, "message": "Ended not OK", "message_notes": "CTRL-M Job Agent Health failed. Job ID: ctm-srv.trybmc.com:0000q with Job Run Count: 00015", "message_summary": "Job Agent Health failed", "notes": null, "order_id": "0000q", "run_as": "dbus", "run_counter": "00015", "send_time": "2022-07-29 16:44:16", "severity": "CRITICAL", "status": "OPEN", "sub_application": "Integration", "system_category": "job", "system_class": null, "system_status": "failed", "ticket_number": null}],"jobInfo":[{"count":2,"status":true,"entries":[{"job_id": "ctm-srv.trybmc.com:0000q", "folder_id": "ctm-srv.trybmc.com:0000p", "number_of_runs": 15, "name": "Agent Health", "folder": "BHOM", "type": "Command", "status": "Ended Not OK", "held": false, "deleted": false, "cyclic": false, "start_time": "2022-07-29 16:44:14", "end_time": "2022-07-29 16:44:14", "estimated_start_time": "2022-07-29 16:44:14", "estimated_end_time": "2022-07-29 16:44:24", "order_date": "2022-07-28", "ctm": "ctm-srv.trybmc.com", "description": "ADE Integration Test: Agent Health", "host": "ctm-net.trybmc.com", "library": null, "application": "ADE", "sub_application": "Integration", "job_json": null, "output_uri": "https://ctm-em.trybmc.com:8443/automation-api/run/job/ctm-srv.trybmc.com:0000q/output", "log_uri": "https://ctm-em.trybmc.com:8443/automation-api/run/job/ctm-srv.trybmc.com:0000q/log", "count": 24}]}],"jobConfig":[{"count":1,"status":true,"entries":[{"BHOM": {"Type": "Folder", "ControlmServer": "ctm-srv.trybmc.com", "Description": "ADE Integration Test", "ActiveRetentionPolicy": "CleanEndedOK", "RunAs": "ctmem", "SubApplication": "Integration", "CreatedBy": "ctmem", "Application": "ADE", "When": {"RuleBasedCalendars": {"Included": ["EVERYDAY"], "EVERYDAY": {"Type": "Calendar:RuleBased", "When": {"DaysRelation": "OR", "WeekDays": ["NONE"], "MonthDays": ["ALL"]}}}}, "Agent Health": {"Type": "Job:Command", "SubApplication": "Integration", "Host": "ctm-net.trybmc.com", "CreatedBy": "ctmem", "Description": "ADE Integration Test: Agent Health", "RunAs": "dbus", "Application": "ADE", "Command": "ls -latr /", "When": {"WeekDays": ["NONE"], "MonthDays": ["NONE"], "DaysRelation": "OR"}}}}]}],"jobLog":[{"count": 0,"status": "experimental"}],"jobOutput":[{"count": 0,"status": "unknown"}]}'
+    jCtmAlert = json.loads(data)
+
     # ITSM Login
     authToken = itsm.authenticate()
-    jCtmAlert = json.loads(data)
+
     # ToDO: Update Incident data
     # Add Logic to map CTM Alerts to Incident Support Groups
 
@@ -469,9 +473,13 @@ def createITSM(data):
         }
     }
 
+    if _localDebugITSM:
+        sIncidentData = w3rkstatt.jsonTranslateValues(data=jIncidentData)
+        logger.debug('')
+
     incidentId = itsm.createIncident(token=authToken, data=jIncidentData)
 
-    if _localDebugFunctions:
+    if _localDebugITSM:
         logger.debug('Function = "%s" ', "createITSM")
         sIncidentData = w3rkstatt.jsonTranslateValues(data=jIncidentData)
         logger.debug('')
@@ -483,7 +491,7 @@ def createITSM(data):
     jWorklogData = w3rkstatt.getJsonValue(path="$.jobAlert", data=jCtmAlert)
     createWorklog(token=authToken, data=jWorklogData, incident=incidentId)
 
-    if _localDebugFunctions:
+    if _localDebugITSM:
         sIncidentData = w3rkstatt.jsonTranslateValues(data=jWorklogData)
         logger.debug('')
         logger.debug('ITSM Worklog Data = %s ', sIncidentData)
@@ -788,13 +796,13 @@ if __name__ == "__main__":
         if _localQA:
             jCtmAlert = {
                 "call_type": "I",
-                "alert_id": "269",
+                "alert_id": "279",
                 "data_center": "ctm-srv.trybmc.com",
                 "memname": None,
-                "order_id": "0000d",
+                "order_id": "0000q",
                 "severity": "V",
                 "status": "Not_Noticed",
-                "send_time": "20220729141238",
+                "send_time": "20220729163544",
                 "last_user": None,
                 "last_time": None,
                 "message": "Ended not OK",
@@ -806,7 +814,7 @@ if __name__ == "__main__":
                 "alert_type": "R",
                 "closed_from_em": None,
                 "ticket_number": None,
-                "run_counter": "00004",
+                "run_counter": "00014",
                 "notes": None
             }
 
@@ -964,6 +972,7 @@ if __name__ == "__main__":
             incident = "INC-0000"
             if integration_itsm_enabled:
                 logger.debug('CTM ITSM Integration: "%s"', "Start")
+                logger.debug('CTM ITSM Debug: "%s"', _localDebugITSM)
                 # Create Incident only once
                 # Catch Cyclic Jobs
                 if ctmRunCounter == 1 and sCtmJobCyclic:
