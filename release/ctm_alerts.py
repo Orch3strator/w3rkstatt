@@ -785,165 +785,19 @@ if __name__ == "__main__":
     # Test integration with sample data
     if not len(ctmAlertId) > 0:
         if _localQA:
-            # jCtmAlert = {"alert_id": "166", "alert_type": "Regular", "application": None, "call_type": "New", "closed_from_em": None, "data_center": "bmcs-ctm-srv", "data_center_dns": "shytwr.net", "data_center_fqdn": "bmcs-ctm-srv.shytwr.net", "data_center_ip": "172.16.29.125", "host_id": None, "host_ip": "172.16.32.22", "host_ip_dns": "shytwr.net", "host_ip_fqdn": "bmcs-ctm-agt.shytwr.net", "job_name": None, "last_time": None, "last_user": None, "memname": None, "message": "STATUS OF AGENT PLATFORM bmcs-ctm-agt CHANGED TO AVAILABLE", "message_notes": "CTRL-M Agent on bmcs-ctm-agt.shytwr.net availabble. Managed by: bmcs-ctm-srv", "message_summary": "Agent on bmcs-ctm-agt availabble", "notes": None, "order_id": "00000", "run_as": None, "run_counter": "00000000000", "send_time": "2021-04-05 22:39:36", "severity": "OK", "status": "OPEN", "sub_application": None, "ticket_number": None}
-            # jCtmAlert = {"call_type": "I", "alert_id": "168", "data_center": "bmcs-ctm-srv", "memname": None, "order_id": "00000", "severity": "R", "status": "Not_Noticed", "send_time": "20210405232831", "last_user": None, "last_time": None, "message": "STATUS OF AGENT PLATFORM bmcs-ctm-agt CHANGED TO AVAILABLE", "run_as": None, "sub_application": None, "application": None, "job_name": None, "host_id": None, "alert_type": "R", "closed_from_em": None, "ticket_number": None, "run_counter": "00000000000", "notes": None}
-            # jCtmAlert = {"call_type": "I", "alert_id": "182", "data_center": "bmcs-ctm-srv", "memname": None, "order_id": None, "severity": "V", "status": "Not_Noticed", "send_time": "20210406092918", "last_user": None, "last_time": None, "message": "DATA CENTER bmcs-ctm-srv WAS DISCONNECTED", "run_as": "Gateway", "sub_application": None, "application": None, "job_name": None, "host_id": None, "alert_type": "R", "closed_from_em": None, "ticket_number": None, "run_counter": None, "notes": None}
-            # jCtmAlert = {"call_type": "I", "Serial": "46", "Component_type": "9", "Component_machine": "bmcs-ctm-em", "Component_name": "bmcs-ctm-em", "Message_id": "20004", "Xseverity": "3", "Message": "Failed to send e-mail notification to <undefined> from sender <undefined> via e-mail server <undefined> Error: : Empty mail server : Empty mail from : Empty destination mail address .", "Xtime": "20210406165204", "Xtime_of_last": "20210406165204", "Counter": "1", "Status": "1", "Note": None, "Key1": "<undefined>", "Key2": "<undefined>", "Key3": "<undefined>", "Key4": ": Empty mail server : Empty mail from : Empty destination mail address", "Key5": None}
-            # Mainframe Alert
             jCtmAlert = {
                 "call_type": "I",
-                "alert_id": "209525",
-                "data_center": "bmcbzos",
-                "memname": "COBCOMP",
-                "order_id": "0314Y",
-                "severity": "V",
-                "status": "Not_Noticed",
-                "send_time": "20210416120024",
-                "last_user": None,
-                "last_time": None,
-                "message": "Ended not OK",
-                "run_as": "RDWDXC",
-                "sub_application": "DCO_SORT",
-                "application": "DCO",
-                "job_name": "COBCOMP",
-                "host_id": None,
-                "alert_type": "R",
-                "closed_from_em": None,
-                "ticket_number": None,
-                "run_counter": "00000",
-                "notes": None
-            }
-            jCtmAlert = {
-                "call_type": "I",
-                "alert_id": "210561",
-                "data_center": "psctm",
-                "memname": None,
-                "order_id": "0c4ib",
-                "severity": "V",
-                "status": "Not_Noticed",
-                "send_time": "20210419103327",
-                "last_user": None,
-                "last_time": None,
-                "message": "Ended not OK",
-                "run_as": "ctmagent",
-                "sub_application": "VFS_Alert_Management",
-                "application": "VFS_Integration",
-                "job_name": "VFS_OS",
-                "host_id": "vl-aus-ctm-em01.ctm.bmc.com",
-                "alert_type": "R",
-                "closed_from_em": None,
-                "ticket_number": None,
-                "run_counter": "00001",
-                "notes": None
-            }
-
-            jCtmAlert = {
-                "call_type": "I",
-                "alert_id": "101",
-                "data_center": "ctm-srv.trybmc.com",
-                "memname": None,
-                "order_id": "00007",
-                "severity": "V",
-                "status": "Not_Noticed",
-                "send_time": "20220718195539",
-                "last_user": None,
-                "last_time": None,
-                "message": "Ended not OK",
-                "run_as": "ctmem",
-                "sub_application": "Integration",
-                "application": "ADE",
-                "job_name": "Agent Health",
-                "host_id": "ctm-net.trybmc.com",
-                "alert_type": "R",
-                "closed_from_em": None,
-                "ticket_number": None,
-                "run_counter": "00004",
-                "notes": None
-            }
-
-            jCtmAlert = {
-                "call_type": "I",
-                "alert_id": "113",
-                "data_center": "ctm-srv.trybmc.com",
-                "memname": None,
-                "order_id": "00000",
-                "severity": "R",
-                "status": "Not_Noticed",
-                "send_time": "20220718230035",
-                "last_user": None,
-                "last_time": None,
-                "message":
-                "STATUS OF AGENT PLATFORM ctm-em.trybmc.com CHANGED TO AVAILABLE",
-                "run_as": None,
-                "sub_application": None,
-                "application": None,
-                "job_name": None,
-                "host_id": None,
-                "alert_type": "R",
-                "closed_from_em": None,
-                "ticket_number": None,
-                "run_counter": "00000000000",
-                "notes": None
-            }
-
-            jCtmAlert = {
-                "call_type": "I",
-                "Serial": "140",
-                "Component_type": "9",
-                "Component_machine": "ctm-em.trybmc.com",
-                "Component_name": "ctm-em.trybmc.com",
-                "Message_id": "35028",
-                "Xseverity": "2",
-                "Message":
-                "Distributed Control-M/EM Configuration Agent on ctm-archive.trybmc.com is not responding",
-                "Xtime": "20220719001727",
-                "Xtime_of_last": "20220719001727",
-                "Counter": "1",
-                "Status": "1",
-                "Note": None,
-                "Key1": None,
-                "Key2": None,
-                "Key3": None,
-                "Key4": None,
-                "Key5": None
-            }
-
-            jCtmAlert = {
-                "call_type": "I",
-                "alert_id": "158",
-                "data_center": "ctm-srv.trybmc.com",
-                "memname": None,
-                "order_id": "00007",
-                "severity": "V",
-                "status": "Not_Noticed",
-                "send_time": "20220719041448",
-                "last_user": None,
-                "last_time": None,
-                "message": "Ended not OK",
-                "run_as": "ctmem",
-                "sub_application": "Integration",
-                "application": "ADE",
-                "job_name": "Agent Health",
-                "host_id": "ctm-net.trybmc.com",
-                "alert_type": "R",
-                "closed_from_em": None,
-                "ticket_number": None,
-                "run_counter": "00021",
-                "notes": None
-            }
-
-            jCtmAlert = {
-                "call_type": "I",
-                "alert_id": "172",
+                "alert_id": "251",
                 "data_center": "ctm-srv.trybmc.com",
                 "memname": None,
                 "order_id": "0000d",
-                "severity": "V",
+                "severity": "R",
                 "status": "Not_Noticed",
-                "send_time": "20220719234244",
+                "send_time": "20220729010149",
                 "last_user": None,
                 "last_time": None,
-                "message": "Ended not OK",
+                "message":
+                "STATUS OF AGENT PLATFORM ctm-em.trybmc.com CHANGED TO UNAVAILABLE",
                 "run_as": "dbus",
                 "sub_application": "Integration",
                 "application": "ADE",
@@ -952,7 +806,7 @@ if __name__ == "__main__":
                 "alert_type": "R",
                 "closed_from_em": None,
                 "ticket_number": None,
-                "run_counter": "00007",
+                "run_counter": "00000000000",
                 "notes": None
             }
 
@@ -1204,7 +1058,7 @@ if __name__ == "__main__":
                     logger.debug('CTM BHOM: Event      : %s', jBhomEvent)
                     logger.debug('CTM BHOM: Event Note : "%s"',
                                  bhom_event_note)
-                    logger.debug('CTM BHOM: Event ID   : %s', sBhomEventId)
+                    logger.debug('CTM BHOM: Event ID   : %s', bhom_event_id)
                     logger.debug('CTM BHOM: Auth Token : %s', authToken)
 
             # update CTM Alert
