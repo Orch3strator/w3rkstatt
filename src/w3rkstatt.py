@@ -1168,7 +1168,7 @@ def encryptPwds(file, data, sKeyFileName=""):
         # unSecPwd = werkstatt.jsonExtractValues(jCfgData,pItem)[0]
         vPath = "$." + pItem + ".pwd"
         jPath = "$." + pItem + ".jks_pwd"
-        aPath = "$." + pItem + ".api_Key"
+        aPath = "$." + pItem + ".api_key"
         sPath = "$." + pItem + ".api_secret"
 
         unSecPwd = getJsonValue(path=vPath, data=sCfgData)
@@ -1227,7 +1227,7 @@ def encryptPwds(file, data, sKeyFileName=""):
                 if _localDebug:
                     print(f"Encrypted user API Key for {pItem}: {securePwd}")
 
-                sCfgData[pItem]["api_Key"] = securePwd
+                sCfgData[pItem]["api_key"] = securePwd
 
         # API Secret Keys
         if len(usSecPwd) > 0:
@@ -1280,7 +1280,7 @@ def decryptPwds(data):
             print(f"Decrypted Password for {pItem}: {unSecPwd}")
 
         # API Key
-        vPath = "$." + pItem + ".api_Key"
+        vPath = "$." + pItem + ".api_key"
         sPwd = getJsonValue(path=vPath, data=sCfgData)
         if len(sPwd) > 0:
             unSecPwd = decryptPwd(data=sPwd)
