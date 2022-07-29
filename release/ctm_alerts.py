@@ -96,6 +96,8 @@ _localDebugFunctions = jCfgData["DEFAULT"]["debug"]["functions"]
 _localDebugData = jCfgData["DEFAULT"]["debug"]["data"]
 _localDebugAdvanced = jCfgData["DEFAULT"]["debug"]["advanced"]
 _localQA = jCfgData["DEFAULT"]["debug"]["qa"]
+_localDebugBhom = jCfgData["BHOM"]["debug"]
+
 _FutureUse = False
 
 _localInfo = False
@@ -1179,34 +1181,31 @@ if __name__ == "__main__":
 
                 # future enhancements -> keep token for 24 hours
                 authToken = bhom.authenticate()
-
                 if authToken != None:
-                    sBhomEventId = bhom.createEvent(token=authToken,
-                                                    event_data=jBhomEvent)
-                time.sleep(10)
-                bhom_assigned_user = w3rkstatt.getJsonValue(path="$.BHOM.user",
-                                                            data=jCfgData)
-                bhom.assignEvent(
-                    token=authToken,
-                    event_id=bhom_event_id,
-                    assigned_user=bhom_assigned_user,
-                    event_note="Control-M Alert Integration via: " + hostFqdn)
+                    bhom_event_id = bhom.createEvent(token=authToken,
+                                                     event_data=jBhomEvent)
+                    time.sleep(10)
+                    bhom_assigned_user = w3rkstatt.getJsonValue(
+                        path="$.BHOM.user", data=jCfgData)
+                    bhom.assignEvent(
+                        token=authToken,
+                        event_id=bhom_event_id,
+                        assigned_user=bhom_assigned_user,
+                        event_note="Control-M Alert Integration via: " +
+                        hostFqdn)
 
-                time.sleep(10)
-                bhom_event_note = ctmAlertDataFinal
-                bhom.addNoteEvent(token=authToken,
-                                  event_id=bhom_event_id,
-                                  event_note=bhom_event_note)
+                    time.sleep(10)
+                    bhom_event_note = ctmAlertDataFinal
+                    bhom.addNoteEvent(token=authToken,
+                                      event_id=bhom_event_id,
+                                      event_note=bhom_event_note)
 
-                if _localDebug:
-                    logger.debug('CTM BHOM Integration Infrastructure: "%s"',
-                                 ctmCoreData)
-                    logger.debug('CTM BHOM Integration Job   : "%s"',
-                                 ctmJobData)
-                    logger.debug('CTM BHOM Integration Alert : "%s"',
-                                 jCtmAlert)
-                    logger.debug('CTM BHOM: Event   : %s', jBhomEvent)
-                    logger.debug('CTM BHOM: Event ID: %s', sBhomEventId)
+                if _localDebugBhom:
+                    logger.debug('CTM BHOM: Event      : %s', jBhomEvent)
+                    logger.debug('CTM BHOM: Event Note : "%s"',
+                                 bhom_event_note)
+                    logger.debug('CTM BHOM: Event ID   : %s', sBhomEventId)
+                    logger.debug('CTM BHOM: Auth Token : %s', authToken)
 
             # update CTM Alert
             if _ctmActiveApi:

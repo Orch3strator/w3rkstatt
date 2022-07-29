@@ -93,11 +93,7 @@ if bhom_ssl_ver:
 # Assign module defaults
 _modVer = "20.22.07.00"
 _timeFormat = '%d %b %Y %H:%M:%S,%f'
-_localDebug = jCfgData["DEFAULT"]["debug"]["api"]
-_localDebugFunctions = jCfgData["DEFAULT"]["debug"]["functions"]
-_localDebugData = jCfgData["DEFAULT"]["debug"]["data"]
-_localDebugAdvanced = jCfgData["DEFAULT"]["debug"]["advanced"]
-_localQA = jCfgData["DEFAULT"]["debug"]["qa"]
+_localDebug = jCfgData["BHOM"]["debug"]
 logger = w3rkstatt.logging.getLogger(__name__)
 logFile = w3rkstatt.getJsonValue(path="$.DEFAULT.log_file", data=jCfgData)
 loglevel = w3rkstatt.getJsonValue(path="$.DEFAULT.loglevel", data=jCfgData)
@@ -146,9 +142,9 @@ def createEvent(token, event_data):
         bhom_event_id = json_data['resourceId'][0]
         if _localDebug:
             logger.debug('HTTP Response Text: %s', rst)
-            logger.info('bhom: event created: %s', bhom_event_id)
+            logger.info('BHOM: event created: %s', bhom_event_id)
     else:
-        logger.error('bhom: failed to create the event: %s', response)
+        logger.error('BHOM: failed to create the event: %s', response)
     return bhom_event_id
 
 
@@ -198,9 +194,9 @@ def acknowledgeEvent(token, event_id, event_note=""):
 
         if _localDebug:
             logger.debug('HTTP Response Text: %s', rst)
-            logger.info('bhom: event status: %s', bhom_event_status)
+            logger.info('BHOM: event status: %s', bhom_event_status)
     else:
-        logger.error('bhom: failed to acknowledge the event: %s', response)
+        logger.error('BHOM: failed to acknowledge the event: %s', response)
     return bhom_event_status
 
 
@@ -270,9 +266,9 @@ def setPriorityEvent(token,
 
         if _localDebug:
             logger.debug('HTTP Response Text: %s', rst)
-            logger.info('bhom: event status: %s', bhom_event_status)
+            logger.info('BHOM: event status: %s', bhom_event_status)
     else:
-        logger.error('bhom: failed to acknowledge the event: %s', response)
+        logger.error('BHOM: failed to set priority: %s', response)
     return bhom_event_status
 
 
@@ -329,9 +325,9 @@ def assignEvent(token, event_id, assigned_user, event_note=""):
 
         if _localDebug:
             logger.debug('HTTP Response Text: %s', rst)
-            logger.info('bhom: event status: %s', bhom_event_status)
+            logger.info('BHOM: event status: %s', bhom_event_status)
     else:
-        logger.error('bhom: failed to acknowledge the event: %s', response)
+        logger.error('BHOM: failed to assign event: %s', response)
     return bhom_event_status
 
 
@@ -382,9 +378,9 @@ def createIncidentEvent(token, event_id):
 
         if _localDebug:
             logger.debug('HTTP Response Text: %s', rst)
-            logger.info('bhom: event status: %s', bhom_event_status)
+            logger.info('BHOM: event status: %s', bhom_event_status)
     else:
-        logger.error('bhom: failed to acknowledge the event: %s', response)
+        logger.error('BHOM: failed to create incident for event: %s', response)
     return bhom_event_status
 
 
@@ -435,9 +431,9 @@ def addNoteEvent(token, event_id, event_note):
 
         if _localDebug:
             logger.debug('HTTP Response Text: %s', rst)
-            logger.info('bhom: event status: %s', bhom_event_status)
+            logger.info('BHOM: event status: %s', bhom_event_status)
     else:
-        logger.error('bhom: failed to acknowledge the event: %s', response)
+        logger.error('BHOM: failed to add note to the event: %s', response)
     return bhom_event_status
 
 
@@ -497,8 +493,8 @@ def authenticate():
         json_data = json.loads(rst)
         authToken = json_data['json_web_token']
         if _localDebug:
-            logger.info('TSPS: Response: %s', json_data)
-            logger.info('TSPS: authToken: %s', authToken)
+            logger.info('BHOM: Response: %s', json_data)
+            logger.info('BHOM: authToken: %s', authToken)
     else:
         logger.error('Authentication Failure Response Code: %s', response)
     return authToken

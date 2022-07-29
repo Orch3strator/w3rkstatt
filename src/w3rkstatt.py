@@ -70,7 +70,7 @@ except:
 _modVer = "2.0"
 _timeFormat = '%d %b %Y %H:%M:%S,%f'
 _localDebug = False
-_SecureDebug = False
+_SecureDebug = True
 
 
 # Global functions
