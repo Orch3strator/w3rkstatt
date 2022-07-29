@@ -431,15 +431,15 @@ def createITSM(data):
             "ServiceCI":
             w3rkstatt.getJsonValue(path="$.ITSM.defaults.service-ci",
                                    data=jCfgData),
-            "Assigned Group":
-            w3rkstatt.getJsonValue(path="$.ITSM.defaults.assigned-group",
-                                   data=jCfgData),
-            "Assigned Support Company":
-            w3rkstatt.getJsonValue(path="$.ITSM.defaults.support-company",
-                                   data=jCfgData),
-            "Assigned Support Organization":
-            w3rkstatt.getJsonValue(path="$.ITSM.defaults.support-organization",
-                                   data=jCfgData),
+            # "Assigned Group":
+            # w3rkstatt.getJsonValue(path="$.ITSM.defaults.assigned-group",
+            #                        data=jCfgData),
+            # "Assigned Support Company":
+            # w3rkstatt.getJsonValue(path="$.ITSM.defaults.support-company",
+            #                        data=jCfgData),
+            # "Assigned Support Organization":
+            # w3rkstatt.getJsonValue(path="$.ITSM.defaults.support-organization",
+            #                        data=jCfgData),
             "Categorization Tier 1":
             w3rkstatt.getJsonValue(path="$.ITSM.defaults.op_cat_1",
                                    data=jCfgData),
@@ -458,13 +458,13 @@ def createITSM(data):
             "Product Categorization Tier 3":
             w3rkstatt.getJsonValue(path="$.ITSM.defaults.prod_cat_3",
                                    data=jCfgData),
-            "Product Name":
-            w3rkstatt.getJsonValue(path="$.ITSM.defaults.product_name",
-                                   data=jCfgData),
+            # "Product Name":
+            # w3rkstatt.getJsonValue(path="$.ITSM.defaults.product_name",
+            #                        data=jCfgData),
             "Vendor Ticket Number":
-            sCtmVendorTicket,
-            "AWW Custom Field Name":
-            sCtmJobName + "#" + sCtmAppMain + "#" + sCtmAppSub
+            sCtmVendorTicket
+            # "AWW Custom Field Name":
+            # sCtmJobName + "#" + sCtmAppMain + "#" + sCtmAppSub
         }
     }
 
@@ -505,7 +505,7 @@ def createITSM(data):
     createWorklog(token=authToken, data=jWorklogData, incident=incidentId)
 
     # ITSM Logoff
-    itsm.itsmLogout(token=authToken)
+    # itsm.itsmLogout(token=authToken)
     logger.info('ITSM Incident: %s', incidentId)
     return incidentId
 
@@ -787,17 +787,16 @@ if __name__ == "__main__":
         if _localQA:
             jCtmAlert = {
                 "call_type": "I",
-                "alert_id": "251",
+                "alert_id": "269",
                 "data_center": "ctm-srv.trybmc.com",
                 "memname": None,
                 "order_id": "0000d",
-                "severity": "R",
+                "severity": "V",
                 "status": "Not_Noticed",
-                "send_time": "20220729010149",
+                "send_time": "20220729141238",
                 "last_user": None,
                 "last_time": None,
-                "message":
-                "STATUS OF AGENT PLATFORM ctm-em.trybmc.com CHANGED TO UNAVAILABLE",
+                "message": "Ended not OK",
                 "run_as": "dbus",
                 "sub_application": "Integration",
                 "application": "ADE",
@@ -806,7 +805,7 @@ if __name__ == "__main__":
                 "alert_type": "R",
                 "closed_from_em": None,
                 "ticket_number": None,
-                "run_counter": "00000000000",
+                "run_counter": "00004",
                 "notes": None
             }
 
@@ -837,8 +836,7 @@ if __name__ == "__main__":
                                              data=jCtmAlert).strip()
         sCtmJobCyclic = w3rkstatt.getJsonValue(path="$.jobInfo.[0].cyclic",
                                                data=jCtmAlert).strip()
-        ctmAlertNotes = w3rkstatt.getJsonValue(path="$.notes",
-                                               data=jCtmAlert).strip()
+        ctmAlertNotes = w3rkstatt.getJsonValue(path="$.notes", data=jCtmAlert)
 
         # Process only 'new' alerts
         if "New" in ctmAlertCallType:

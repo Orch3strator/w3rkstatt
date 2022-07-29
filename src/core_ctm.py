@@ -2131,7 +2131,32 @@ def transformCtmBHOM(data, category):
 
     elif category == "job":
 
-        ctmFolder = json_ctm_data["jobInfo"][0]["entries"][0]["folder"]
+        ctmjobInfoCount = int(json_ctm_data["jobInfo"][0]["count"])
+        ctmjobConfigCount = int(json_ctm_data["jobConfig"][0]["count"])
+
+        if ctmjobInfoCount > 0:
+            ctmFolder = json_ctm_data["jobInfo"][0]["entries"][0]["folder"]
+            # Job folder
+            event_data['ctmFolder'] = json_ctm_data["jobInfo"][0]["entries"][
+                0]["folder"]
+            # Job folder ID
+            event_data['ctmFolderID'] = json_ctm_data["jobInfo"][0]["entries"][
+                0]["folder_id"]
+            # Job hold status
+            event_data['ctmJobHeld'] = json_ctm_data["jobInfo"][0]["entries"][
+                0]["held"]
+            # Job Type
+            event_data['ctmJobType'] = json_ctm_data["jobInfo"][0]["entries"][
+                0]["type"]
+            # Job Schedule
+            event_data['ctmJobCyclic'] = json_ctm_data["jobInfo"][0][
+                "entries"][0]["cyclic"]
+
+        if ctmjobConfigCount > 0:
+            # The user who runs the job
+            event_data['ctmOwner'] = json_ctm_data["jobConfig"][0]["entries"][
+                0][ctmFolder]["CreatedBy"]
+
         event_data['severity'] = json_ctm_data["jobAlert"][0]["severity"]
         event_data['CLASS'] = 'CTM_JOB'
         event_data['msg'] = json_ctm_data["jobAlert"][0]["message_summary"]
@@ -2200,28 +2225,10 @@ def transformCtmBHOM(data, category):
         event_data['ctmUser'] = "TBD"
         # representation = date; # Last time the alert was updated (YYYYMMDDhhmmss)
         event_data['ctmUpdateTime'] = json_ctm_data["jobAlert"][0]["send_time"]
-        # The user who runs the job
-        event_data['ctmOwner'] = json_ctm_data["jobConfig"][0]["entries"][0][
-            ctmFolder]["CreatedBy"]
         # Alert notes
         event_data['ctmNotes'] = json_ctm_data["jobAlert"][0]["notes"]
-        # Job folder
-        event_data['ctmFolder'] = json_ctm_data["jobInfo"][0]["entries"][0][
-            "folder"]
-        # Job folder ID
-        event_data['ctmFolderID'] = json_ctm_data["jobInfo"][0]["entries"][0][
-            "folder_id"]
         # Job ID
         event_data['ctmJobID'] = json_ctm_data["jobAlert"][0]["job_id"]
-        # Job hold status
-        event_data['ctmJobHeld'] = json_ctm_data["jobInfo"][0]["entries"][0][
-            "held"]
-        # Job Type
-        event_data['ctmJobType'] = json_ctm_data["jobInfo"][0]["entries"][0][
-            "type"]
-        # Job Schedule
-        event_data['ctmJobCyclic'] = json_ctm_data["jobInfo"][0]["entries"][0][
-            "cyclic"]
 
         # The BHOM create event call expects a list of events,
         # even for just a single event.

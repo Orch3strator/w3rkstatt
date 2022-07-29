@@ -118,7 +118,7 @@ jCfgMapData = w3rkstatt.getFileJson(jCfgMapFile)
 # Assign module defaults
 _modVer = "20.22.07.00"
 _timeFormat = '%Y-%m-%dT%H:%M:%S'
-_localDebug = False
+_localDebug = jCfgData["ITSM"]["debug"]
 _localDbgAdv = False
 logger = logging.getLogger(__name__)
 logFile = w3rkstatt.getJsonValue(path="$.DEFAULT.log_file", data=jCfgData)
@@ -366,12 +366,12 @@ def apiPost(form, headers, body="", fields=""):
     if rsc == 500:
         logger.error('HTTP Response Status: %s', rsc)
         logger.error('HTTP Response Text: %s', rst)
-        data = "Error"
+        data = '{"status": "error" }'
         if _localDebug:
             logger.debug('ITSM: Text: %s', rst)
     elif rsc == 501:
         logger.error('HTTP Response Status: %s', rsc)
-        data = "Error"
+        data = '{"status": "error" }'
         if _localDebug:
             logger.debug('ITSM: Text: %s', rst)
     elif rsc == 400:
