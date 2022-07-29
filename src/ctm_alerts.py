@@ -97,6 +97,7 @@ _localDebugData = jCfgData["DEFAULT"]["debug"]["data"]
 _localDebugAdvanced = jCfgData["DEFAULT"]["debug"]["advanced"]
 _localQA = jCfgData["DEFAULT"]["debug"]["qa"]
 _localDebugBhom = jCfgData["BHOM"]["debug"]
+_localDebugITSM = jCfgData["ITSM"]["debug"]
 
 _FutureUse = False
 
@@ -966,20 +967,20 @@ if __name__ == "__main__":
                 # Create Incident only once
                 # Catch Cyclic Jobs
                 if ctmRunCounter == 1 and sCtmJobCyclic:
-                    if _localDebug:
+                    if _localDebugITSM:
                         logger.debug(
                             'CTM ITSM Integration Cyclic Job Run: "%s"',
                             ctmRunCounter)
                     incident = createITSM(data=ctmAlertDataFinal)
                 elif ctmRunCounter >= 1 and sCtmJobCyclic:
-                    if _localDebug:
+                    if _localDebugITSM:
                         logger.debug(
                             'CTM ITSM Integration Cyclic Job Run: "%s"',
                             ctmRunCounter)
                     # Update Incident Worklog only
                     incident = "WRK-0000"
                 elif ctmRunCounter >= 1 and not sCtmJobCyclic:
-                    if _localDebug:
+                    if _localDebugITSM:
                         logger.debug(
                             'CTM ITSM Integration Normal Job Run: "%s"',
                             ctmRunCounter)
@@ -1020,7 +1021,7 @@ if __name__ == "__main__":
                                       event_id=bhom_event_id,
                                       event_note=bhom_event_note)
 
-                if _localDebugBhom:
+                if _localDebugBHOM:
                     logger.debug('CTM BHOM: Event      : %s', jBhomEvent)
                     logger.debug('CTM BHOM: Event Note : "%s"',
                                  bhom_event_note)
