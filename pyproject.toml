@@ -1,6 +1,6 @@
 [project]
 name = "w3rkstatt"
-version = "0.2.12"
+version = "0.2.14"
 description = "Werkstatt Python General Tools"
 authors = [
     "Orchestrator <orchestrator@bmc.com>"

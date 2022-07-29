@@ -370,7 +370,6 @@ def getCtmJobOutput(ctmApiClient, data):
 
 def createITSM(data):
 
-    data = '{"uuid":"22365c5e-6f18-4412-95a9-38c708661fee","raw":[{"call_type": "I", "alert_id": "280", "data_center": "ctm-srv.trybmc.com", "memname": null, "order_id": "0000q", "severity": "V", "status": "Not_Noticed", "send_time": "20220729164416", "last_user": null, "last_time": null, "message": "Ended not OK", "run_as": "dbus", "sub_application": "Integration", "application": "ADE", "job_name": "Agent Health", "host_id": "ctm-net.trybmc.com", "alert_type": "R", "closed_from_em": null, "ticket_number": null, "run_counter": "00015", "notes": null}],"jobAlert":[{"alert_id": "280", "alert_type": "Regular", "application": "ADE", "call_type": "New", "closed_from_em": null, "data_center": "ctm-srv.trybmc.com", "data_center_dns": "trybmc.com", "data_center_fqdn": "ctm-srv.trybmc.com", "data_center_ip": "192.168.100.62", "host_id": "ctm-net.trybmc.com", "host_ip": "192.168.100.39", "host_ip_dns": "trybmc.com", "host_ip_fqdn": "ctm-net.trybmc.com", "job_id": "ctm-srv.trybmc.com:0000q", "job_name": "Agent Health", "job_script": null, "job_uri": "https://ctm-em.trybmc.com:8443/ControlM/#Search:id=Search_2&search=0000q&date=20220729&controlm=ctm-srv.trybmc.com", "last_time": null, "last_user": null, "memname": null, "message": "Ended not OK", "message_notes": "CTRL-M Job Agent Health failed. Job ID: ctm-srv.trybmc.com:0000q with Job Run Count: 00015", "message_summary": "Job Agent Health failed", "notes": null, "order_id": "0000q", "run_as": "dbus", "run_counter": "00015", "send_time": "2022-07-29 16:44:16", "severity": "CRITICAL", "status": "OPEN", "sub_application": "Integration", "system_category": "job", "system_class": null, "system_status": "failed", "ticket_number": null}],"jobInfo":[{"count":2,"status":true,"entries":[{"job_id": "ctm-srv.trybmc.com:0000q", "folder_id": "ctm-srv.trybmc.com:0000p", "number_of_runs": 15, "name": "Agent Health", "folder": "BHOM", "type": "Command", "status": "Ended Not OK", "held": false, "deleted": false, "cyclic": false, "start_time": "2022-07-29 16:44:14", "end_time": "2022-07-29 16:44:14", "estimated_start_time": "2022-07-29 16:44:14", "estimated_end_time": "2022-07-29 16:44:24", "order_date": "2022-07-28", "ctm": "ctm-srv.trybmc.com", "description": "ADE Integration Test: Agent Health", "host": "ctm-net.trybmc.com", "library": null, "application": "ADE", "sub_application": "Integration", "job_json": null, "output_uri": "https://ctm-em.trybmc.com:8443/automation-api/run/job/ctm-srv.trybmc.com:0000q/output", "log_uri": "https://ctm-em.trybmc.com:8443/automation-api/run/job/ctm-srv.trybmc.com:0000q/log", "count": 24}]}],"jobConfig":[{"count":1,"status":true,"entries":[{"BHOM": {"Type": "Folder", "ControlmServer": "ctm-srv.trybmc.com", "Description": "ADE Integration Test", "ActiveRetentionPolicy": "CleanEndedOK", "RunAs": "ctmem", "SubApplication": "Integration", "CreatedBy": "ctmem", "Application": "ADE", "When": {"RuleBasedCalendars": {"Included": ["EVERYDAY"], "EVERYDAY": {"Type": "Calendar:RuleBased", "When": {"DaysRelation": "OR", "WeekDays": ["NONE"], "MonthDays": ["ALL"]}}}}, "Agent Health": {"Type": "Job:Command", "SubApplication": "Integration", "Host": "ctm-net.trybmc.com", "CreatedBy": "ctmem", "Description": "ADE Integration Test: Agent Health", "RunAs": "dbus", "Application": "ADE", "Command": "ls -latr /", "When": {"WeekDays": ["NONE"], "MonthDays": ["NONE"], "DaysRelation": "OR"}}}}]}],"jobLog":[{"count": 0,"status": "experimental"}],"jobOutput":[{"count": 0,"status": "unknown"}]}'
     jCtmAlert = json.loads(data)
 
     # ITSM Login
@@ -379,24 +378,18 @@ def createITSM(data):
     # ToDO: Update Incident data
     # Add Logic to map CTM Alerts to Incident Support Groups
 
-    sCtmAppMain = w3rkstatt.getJsonValue(path="$.jobAlert.[0].application",
-                                         data=jCtmAlert)
-    sCtmAppSub = w3rkstatt.getJsonValue(path="$.jobAlert.[0].sub_application",
-                                        data=jCtmAlert)
-    sCtmJobName = w3rkstatt.getJsonValue(path="$.jobAlert.[0].job_name",
-                                         data=jCtmAlert)
-    sCtmJobCyclic = w3rkstatt.getJsonValue(path="$.jobInfo.[0].cyclic",
-                                           data=jCtmAlert)
-    sCtmJobID = w3rkstatt.getJsonValue(path="$.jobAlert.[0].job_id",
-                                       data=jCtmAlert)
-    sCtmJobRunCount = w3rkstatt.getJsonValue(path="$.jobAlert.[0].run_counter",
-                                             data=jCtmAlert)
-    sCtmAlertID = w3rkstatt.getJsonValue(path="$.jobAlert.[0].alert_id",
-                                         data=jCtmAlert)
-    sCtmJobDescSum = w3rkstatt.getJsonValue(
-        path="$.jobAlert.[0].message_summary", data=jCtmAlert)
-    sCtmJobDescDetail = w3rkstatt.getJsonValue(
-        path="$.jobAlert.[0].message_notes", data=jCtmAlert)
+    sCtmAppMain = jCtmAlert["jobAlert"][0]["application"]
+    sCtmAppSub = jCtmAlert["jobAlert"][0]["sub_application"]
+    sCtmJobName = jCtmAlert["jobAlert"][0]["job_name"]
+    sCtmJobID = jCtmAlert["jobAlert"][0]["job_id"]
+    sCtmJobRunCount = jCtmAlert["jobAlert"][0]["run_counter"]
+    sCtmAlertID = jCtmAlert["jobAlert"][0]["alert_id"]
+    sCtmJobDescSum = jCtmAlert["jobAlert"][0]["message_summary"]
+    sCtmJobDescDetail = jCtmAlert["jobAlert"][0]["message_notes"]
+    try:
+        sCtmJobCyclic = jCtmAlert["jobAlert"][0]["cyclic"]
+    except:
+        sCtmJobCyclic = None
 
     if sCtmJobCyclic:
         sCtmVendorTicket = "#" + sCtmJobID + "#Cyclic#"
@@ -409,72 +402,48 @@ def createITSM(data):
             "z1D_Action":
             "CREATE",
             "First_Name":
-            w3rkstatt.getJsonValue(path="$.ITSM.defaults.name-first",
-                                   data=jCfgData),
+            jCfgData["ITSM"]["defaults"]["name-first"],
             "Last_Name":
-            w3rkstatt.getJsonValue(path="$.ITSM.defaults.name-last",
-                                   data=jCfgData),
+            jCfgData["ITSM"]["defaults"]["name-last"],
             "Description":
             sCtmJobDescSum,
             "Detailed_Decription":
             sCtmJobDescDetail,
             "Impact":
-            w3rkstatt.getJsonValue(path="$.ITSM.incident.impact",
-                                   data=jCfgData),
+            jCfgData["ITSM"]["incident"]["impact"],
             "Urgency":
-            w3rkstatt.getJsonValue(path="$.ITSM.incident.urgency",
-                                   data=jCfgData),
+            jCfgData["ITSM"]["incident"]["urgency"],
             "Status":
-            w3rkstatt.getJsonValue(path="$.ITSM.incident.status",
-                                   data=jCfgData),
+            jCfgData["ITSM"]["incident"]["status"],
             "Reported Source":
-            w3rkstatt.getJsonValue(path="$.ITSM.incident.reported-source",
-                                   data=jCfgData),
+            jCfgData["ITSM"]["incident"]["reported-source"],
             "Service_Type":
-            w3rkstatt.getJsonValue(path="$.ITSM.incident.service-type",
-                                   data=jCfgData),
+            jCfgData["ITSM"]["incident"]["service-type"],
             "ServiceCI":
-            w3rkstatt.getJsonValue(path="$.ITSM.defaults.service-ci",
-                                   data=jCfgData),
-            # "Assigned Group":
-            # w3rkstatt.getJsonValue(path="$.ITSM.defaults.assigned-group",
-            #                        data=jCfgData),
-            # "Assigned Support Company":
-            # w3rkstatt.getJsonValue(path="$.ITSM.defaults.support-company",
-            #                        data=jCfgData),
-            # "Assigned Support Organization":
-            # w3rkstatt.getJsonValue(path="$.ITSM.defaults.support-organization",
-            #                        data=jCfgData),
+            jCfgData["ITSM"]["defaults"]["service-ci"],
             "Categorization Tier 1":
-            w3rkstatt.getJsonValue(path="$.ITSM.defaults.op_cat_1",
-                                   data=jCfgData),
+            jCfgData["ITSM"]["defaults"]["op_cat_1"],
             "Categorization Tier 2":
-            w3rkstatt.getJsonValue(path="$.ITSM.defaults.op_cat_2",
-                                   data=jCfgData),
+            jCfgData["ITSM"]["defaults"]["op_cat_2"],
             "Categorization Tier 3":
-            w3rkstatt.getJsonValue(path="$.ITSM.defaults.op_cat_3",
-                                   data=jCfgData),
+            jCfgData["ITSM"]["defaults"]["op_cat_3"],
             "Product Categorization Tier 1":
-            w3rkstatt.getJsonValue(path="$.ITSM.defaults.prod_cat_1",
-                                   data=jCfgData),
+            jCfgData["ITSM"]["defaults"]["prod_cat_1"],
             "Product Categorization Tier 2":
-            w3rkstatt.getJsonValue(path="$.ITSM.defaults.prod_cat_2",
-                                   data=jCfgData),
+            jCfgData["ITSM"]["defaults"]["prod_cat_2"],
             "Product Categorization Tier 3":
-            w3rkstatt.getJsonValue(path="$.ITSM.defaults.prod_cat_3",
-                                   data=jCfgData),
+            jCfgData["ITSM"]["defaults"]["prod_cat_3"],
             # "Product Name":
             # w3rkstatt.getJsonValue(path="$.ITSM.defaults.product_name",
             #                        data=jCfgData),
             "Vendor Ticket Number":
             sCtmVendorTicket
-            # "AWW Custom Field Name":
-            # sCtmJobName + "#" + sCtmAppMain + "#" + sCtmAppSub
         }
     }
 
     if _localDebugITSM:
         sIncidentData = w3rkstatt.jsonTranslateValues(data=jIncidentData)
+        logger.debug('ITSM Integration Data = %s ', sIncidentData)
         logger.debug('')
 
     incidentId = itsm.createIncident(token=authToken, data=jIncidentData)
@@ -993,6 +962,8 @@ if __name__ == "__main__":
                         logger.debug(
                             'CTM ITSM Integration Normal Job Run: "%s"',
                             ctmRunCounter)
+                        logger.debug('CTM Alert Data forITSM : "%s"',
+                                     ctmAlertDataFinal)
                     incident = createITSM(data=ctmAlertDataFinal)
                 elif ctmRunCounter == 0 and not sCtmJobCyclic:
                     incident = "INC-9999"
