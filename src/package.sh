@@ -126,6 +126,7 @@ FILES_REQUIRED=(
     "bridge_helix.py"
     "bridge_snow.py"
     "bridge_tso.py"
+    "setup.ctm.wcm.bridge.sh"
     "core_ctm.py"
     "core_itsm.py"
     "core_smtp.py"

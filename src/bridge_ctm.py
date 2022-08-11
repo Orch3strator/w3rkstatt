@@ -33,6 +33,7 @@ Date (YMD)    Name                  What
 20210204      Volker Scheithauer    Remove Oracle POM Test
 20210204      Volker Scheithauer    Add TrueSight Orchestrator for WCM
 20220701      Volker Scheithauer    Migrate to W3rkstatt project
+20220801      Volker Scheithauer    UAT for Helix
 """
 
 import os
@@ -86,8 +87,8 @@ itsm_tmpl_crq = w3rkstatt.getJsonValue(
 # Assign module defaults
 _modVer = "20.22.07.00"
 _timeFormat = '%Y-%m-%dT%H:%M:%S'
-_localDebug = False
-_localDbgAdv = False
+_localDebug = jCfgData["DEFAULT"]["debug"]["api"]
+_localDebugAdvanced = jCfgData["DEFAULT"]["debug"]["advanced"]
 logger = logging.getLogger(__name__)
 logFile = w3rkstatt.getJsonValue(path="$.DEFAULT.log_file", data=jCfgData)
 loglevel = w3rkstatt.getJsonValue(path="$.DEFAULT.loglevel", data=jCfgData)
@@ -520,7 +521,7 @@ def post_local_validateChangeState():
         if len(ctmChangeID) > 1:
             pass
         else:
-            ctmChangeID = "LOCAL0001"
+            ctmChangeID = "LOCAL" + str(w3rkstatt.getRandomNumber(l=10))
 
         ctmRequestID = w3rkstatt.jsonExtractSimpleValue(
             ctmDataReq, "ctmRequestID")
@@ -855,9 +856,13 @@ if __name__ == "__main__":
     logger.info('System Platform: "%s" ', platform.system())
     logger.info('Log Level: "%s"', loglevel)
     logger.info('Epoch: %s', epoch)
+    logger.info('Flask: Host: %s', ctm_bridge_host)
     logger.info('Flask: Port: %s', ctm_bridge_port)
     logger.info('Flask: Index File: "%s"', ctm_bridge_html)
     logger.info('Flask: OpenAPI Template: "%s"', oApiTempFile)
+
+    with open('./ctm-wcm.pid', 'w', encoding='utf-8') as f:
+        f.write(str(os.getpid()))
 
     ctmBridge()
 

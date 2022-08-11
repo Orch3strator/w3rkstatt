@@ -44,6 +44,7 @@ import datetime
 import urllib
 import json
 import sys
+import random
 from os.path import expanduser
 
 from io import StringIO
@@ -74,6 +75,23 @@ _SecureDebug = True
 
 
 # Global functions
+
+def getRandomNumber(l):
+    '''
+    Generate a random 10 digit number
+
+    :param int l: random number lenght
+    :return: the random number
+    :rtype: int
+    :raises ValueError: N/A
+    :raises TypeError: N/A
+    '''
+    minimum = pow(10, l-1)
+    maximum = pow(10, l) - 1
+    value = int(random.randint(minimum, maximum))
+    return value
+
+
 def getCurrentFolder():
     '''
     Get the current folder 
