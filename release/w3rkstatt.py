@@ -1260,20 +1260,6 @@ def decryptPwds(data):
             unSecPwd = decryptPwd(data=sPwd)
             print(f"Decrypted Password for {pItem}: {unSecPwd}")
 
-        # API Key
-        vPath = "$." + pItem + ".api_key"
-        sPwd = getJsonValue(path=vPath, data=sCfgData)
-        if len(sPwd) > 0:
-            unSecPwd = decryptPwd(data=sPwd)
-            print(f"Decrypted API Key for {pItem}: {unSecPwd}")
-
-        # API Secret
-        vPath = "$." + pItem + ".api_secret"
-        sPwd = getJsonValue(path=vPath, data=sCfgData)
-        if len(sPwd) > 0:
-            unSecPwd = decryptPwd(data=sPwd)
-            print(f"Decrypted API Secret for {pItem}: {unSecPwd}")
-
         if _localDebug:
             logger.debug('Core: Security Function: "%s" ', "Decrypt")
             logger.debug('Core: Security Solution: "%s" ', pItem)

@@ -562,3 +562,9 @@
  Host FDQN : lmbrjck-strix
  Host Name : lmbrjck-strix
  Host IPv4 : 172.30.168.61
+ -----------------------------------------------
+ Start date: 2023-05-22 11:52:37
+ User Name : root
+ Host FDQN : lmbrjck-strix
+ Host Name : lmbrjck-strix
+ Host IPv4 : 172.30.168.61
