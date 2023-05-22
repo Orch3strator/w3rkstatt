@@ -25,7 +25,7 @@ Change Log
 Date (YMD)    Name                  What
 --------      ------------------    ------------------------
 20220715      Volker Scheithauer    Initial Development
-
+20230522      Volker Scheithauer    Update API key issues
 
 See also: https://realpython.com/python-send-email/
 """
@@ -91,7 +91,7 @@ if bhom_ssl_ver:
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # Assign module defaults
-_modVer = "20.22.07.00"
+_modVer = "20.23.05.00"
 _timeFormat = '%d %b %Y %H:%M:%S,%f'
 _localDebug = jCfgData["BHOM"]["debug"]
 logger = w3rkstatt.logging.getLogger(__name__)
@@ -455,10 +455,8 @@ def authenticate():
     url = bhom_url_ims + 'access_keys/login'
     headers = {'content-type': "application/json", 'cache-control': "no-cache"}
 
-    bhom_key_decrypted = w3rkstatt.decryptPwd(data=bhom_api_key,
-                                              sKeyFileName=cryptoFile)
-    bhom_secret_decrypted = w3rkstatt.decryptPwd(data=bhom_api_secret,
-                                                 sKeyFileName=cryptoFile)
+    bhom_key_decrypted = bhom_api_key
+    bhom_secret_decrypted = bhom_api_secret
 
     # Create a dictionary for the request body
     request_body = {}

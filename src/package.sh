@@ -138,6 +138,7 @@ FILES_REQUIRED=(
     "disco_ctm.py"
     "w3rkstatt.py"
     "ctm_alerts.sh"
+    "ctm_alerts.bat"
     "uat.py"
     "ignore test"
 )

@@ -27,6 +27,7 @@ Date (YMD)    Name                  What
 20210513      Volker Scheithauer    Tranfer Development from other projects
 20210513      Volker Scheithauer    Add Password Encryption
 20220715      Volker Scheithauer    Add API Key Encryption
+20230522      Volker Scheithauer    Update API key issues
 
 """
 
@@ -68,7 +69,7 @@ except:
     from Crypto.Util.Padding import pad, unpad
     from Crypto.Random import get_random_bytes
 
-_modVer = "2.0"
+_modVer = "20.23.05.00"
 _timeFormat = '%d %b %Y %H:%M:%S,%f'
 _localDebug = False
 _SecureDebug = True
