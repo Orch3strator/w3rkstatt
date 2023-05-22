@@ -1186,13 +1186,9 @@ def encryptPwds(file, data, sKeyFileName=""):
         # unSecPwd = werkstatt.jsonExtractValues(jCfgData,pItem)[0]
         vPath = "$." + pItem + ".pwd"
         jPath = "$." + pItem + ".jks_pwd"
-        aPath = "$." + pItem + ".api_key"
-        sPath = "$." + pItem + ".api_secret"
 
         unSecPwd = getJsonValue(path=vPath, data=sCfgData)
         ujSecPwd = getJsonValue(path=jPath, data=sCfgData)
-        uaSecPwd = getJsonValue(path=aPath, data=sCfgData)
-        usSecPwd = getJsonValue(path=sPath, data=sCfgData)
 
         if len(unSecPwd) > 0:
             if "ENC[" in unSecPwd:
@@ -1229,39 +1225,6 @@ def encryptPwds(file, data, sKeyFileName=""):
                 sCfgData[pItem]["jks_secure"] = securePwd
                 sCfgData[pItem]["jks_pwd"] = securePwd
 
-        # API Keys
-        # disabled, need further testing
-        # uaSecPwd = ""
-        if len(uaSecPwd) > 0:
-            if "ENC[" in uaSecPwd:
-                start = uaSecPwd.find('ENC[') + 4
-                end = uaSecPwd.find(']', start)
-                sPwd = uaSecPwd[start:end]
-
-            else:
-                sPwd = uaSecPwd
-                securePwd = encryptPwd(data=sPwd, sKeyFileName=sKeyFileName)
-                logger.info('Crypto Encrypt API Key for: "%s"', pItem)
-                if _localDebug:
-                    print(f"Encrypted user API Key for {pItem}: {securePwd}")
-
-                sCfgData[pItem]["api_key"] = securePwd
-
-        # API Secret Keys
-        if len(usSecPwd) > 0:
-            if "ENC[" in usSecPwd:
-                start = usSecPwd.find('ENC[') + 4
-                end = usSecPwd.find(']', start)
-                sPwd = usSecPwd[start:end]
-
-            else:
-                sPwd = usSecPwd
-                securePwd = encryptPwd(data=sPwd, sKeyFileName=sKeyFileName)
-                logger.info('Crypto Encrypt API Key for: "%s"', pItem)
-                if _localDebug:
-                    print(f"Encrypted user API Key for {pItem}: {securePwd}")
-
-                sCfgData[pItem]["api_secret"] = securePwd
 
         if _localDebug:
             logger.debug('Core: Security Function: "%s" ', "Encrypt")
