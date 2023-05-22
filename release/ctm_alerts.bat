@@ -1,0 +1,1 @@
+D:\Programs\Python\python.exe D:\Programs\BMCS\Integrations\ctm_alerts.py %*
