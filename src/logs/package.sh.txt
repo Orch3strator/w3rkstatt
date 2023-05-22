@@ -544,3 +544,21 @@
  Host FDQN : core-docs.shytwr.net
  Host Name : core-docs
  Host IPv4 : 172.16.6.36
+ -----------------------------------------------
+ Start date: 2023-05-22 11:36:00
+ User Name : root
+ Host FDQN : lmbrjck-strix
+ Host Name : lmbrjck-strix
+ Host IPv4 : 172.30.168.61
+ -----------------------------------------------
+ Start date: 2023-05-22 11:36:18
+ User Name : root
+ Host FDQN : lmbrjck-strix
+ Host Name : lmbrjck-strix
+ Host IPv4 : 172.30.168.61
+ -----------------------------------------------
+ Start date: 2023-05-22 11:42:33
+ User Name : root
+ Host FDQN : lmbrjck-strix
+ Host Name : lmbrjck-strix
+ Host IPv4 : 172.30.168.61
