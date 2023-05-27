@@ -16,7 +16,6 @@ Welcome to w3rkstatt's documentation!
    SMTP
    TSIM
    TSO
-   DISO
    CTM
 
 
