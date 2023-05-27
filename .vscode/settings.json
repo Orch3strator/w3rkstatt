@@ -1,5 +1,6 @@
 {
     "restructuredtext.confPath": "",
     "thunder-client.saveToWorkspace": true,
-    "python.formatting.provider": "yapf"
+    "python.formatting.provider": "yapf",
+    "esbonio.sphinx.confDir": ""
 }
