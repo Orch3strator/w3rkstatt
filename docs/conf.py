@@ -9,12 +9,12 @@
 project = 'w3rkstatt'
 copyright = '2023, Volker Scheithauer'
 author = 'Volker Scheithauer'
-release = '0.3.1'
+release = 'v:stable'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = []
+extensions = ["myst_parser"]
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
