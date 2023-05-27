@@ -15,6 +15,7 @@ pyCryptodome
 json2html 
 jsonpath-ng 
 jsonpath_rw_ext
+myst-parser
 
 ###### Requirements with Version Specifiers ######`
 
