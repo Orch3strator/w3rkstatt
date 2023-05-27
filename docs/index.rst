@@ -17,6 +17,8 @@ Welcome to w3rkstatt's documentation!
    TSIM
    TSO
    CTM
+   ITSM
+   DISCO
 
 
 Indices and tables

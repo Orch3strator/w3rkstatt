@@ -17,13 +17,10 @@ release = 'v:stable'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = [
-    "myst_parser"
-]
+extensions = ["myst_parser"]
+myst_enable_extensions = ["colon_fence","dollarmath"]
 
-myst_enable_extensions = [
-    "dollarmath"
-]
+
 
 
 templates_path = ['_templates']
