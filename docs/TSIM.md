@@ -1,58 +1,62 @@
-# Werkstatt Tools
+# TrueSight Operations Manager
+
 Event Management Python module for Werkstatt projects
 
 ## Core functions for integrating with solutions using Python
+
 - Create objects in TrueSight Operations Manager
 
 ## Core Libraries and purpose
+
 - **w3rkstatt** basic project functions
 - **core_tsim** basic TrueSight Operations Manager integration
 
 ## Dependencies
+
 - [X] **Basic Libraries**
 - [X] **Cryptodome**
 - [X] **TrueSight Operations Manager**
 
-
 ## Solutions leveraging the base tools
+
 | Solution                  | API           | Python        |
-| :-------------            | :---:         | :---:         | 
-| Werkstatt Tools           | ⬜            | ✅    | 
-| TrueSight OM              | ✅            | 🔶    | 
-| TrueSight PS              | ✅            | 🔶    | 
+| :-------------            | :---:         | :---:         |
+| Werkstatt Tools           | ⬜            | ✅    |
+| TrueSight OM              | ✅            | 🔶    |
+| TrueSight PS              | ✅            | 🔶    |
 
+- ✅ — Supported
+- 🔶 — Partial support
+- 🚧 — Under development
+- ⬜ - N/A ️
 
+**ToDO**:
 
-* ✅ — Supported
-* 🔶 — Partial support
-* 🚧 — Under development
-* ⬜ - N/A ️
-
-
-**ToDO**: 
 - [x] Initial Core Development
 - [ ] Add custom event format to .load of your main TSIM cell
 
+**Configuration**:
 
-**Configuration**: 
 - After the inital run of w3rkstatt.py a local crypto key file is being generated in the /configs folder with [hostname].bin
 - After the inital run of w3rkstatt.py a local config file is being generated in the /configs folder with [hostname].json
 - Update the credentials and other settings in the [hostname].json file
 - Execute w3rkstatt.py to encrypt the passwords in [hostname].json
 - All password in cleartext will be removed
-- Update file level access for [hostname].bin to only authorized OS accounts. If the file [hostname].bin is being deleted, the encrypted passwords cannot be recovered 
+- Update file level access for [hostname].bin to only authorized OS accounts. If the file [hostname].bin is being deleted, the encrypted passwords cannot be recovered
 - The account running the python scripts needs to have access to [hostname].json and [hostname].bin
 - Update TSIM / TSPS Server settings
 
 **TrueSight Operations Manager**:
+
 - Create TrueSight Operation Manager account with proper permissions
 - Add application credentials to [hostname].json
 
 ## Module Information
-**TSIM Configuration**: 
+
+**TSIM Configuration**:
+
 - Folder: ~/.w3rkstatt/configs
 - File: [hostname].json - custome config file
-
 
 **Function**:
 **TrueSight Operations Manager Application**:
@@ -71,38 +75,39 @@ Module | Method | Description
 *core_tsim* | [**updateEvent**] | Update TSIM Event
 *core_tsim* | [**searchEvent**] | Search for TSIM Event
 
-
 ## TrueSight Operations Manager HTTP Body
+
 Update the JSON content, utlize project default settings from [hostname].json
 Sample TSIM Event payload
 
 ```bash
 [{
-	"eventSourceHostName": "host.local",
-	"attributes": {
-		"severity": "WARNING",
-		"CLASS": "EVENT",
-		"msg": "This event was created using the TSOM REST API",
-		"cdmclass": "BMC_ComputerSystem",
-		"componentalias": "BMC_ComputerSystem:host.local'",
-		"instancename": "host.local",
-		"itsm_product_name": "Control-M",
-		"mc_host": "host.local",
-		"mc_host_address": "a.b.c.d",
-		"mc_location": "",
-		"mc_object": "Job",
-		"mc_object_class": "Control-M",
-		"mc_origin": "Enterprise Manager",
-		"mc_origin_class": "Control-M",
-		"mc_tool_id": "epoch=1621631064.550844",
-		"mc_tool": "Python Script",
-		"mc_tool_rule": "uat.py",
-		"mc_tool_uri": "git.io"
-	}
+ "eventSourceHostName": "host.local",
+ "attributes": {
+  "severity": "WARNING",
+  "CLASS": "EVENT",
+  "msg": "This event was created using the TSOM REST API",
+  "cdmclass": "BMC_ComputerSystem",
+  "componentalias": "BMC_ComputerSystem:host.local'",
+  "instancename": "host.local",
+  "itsm_product_name": "Control-M",
+  "mc_host": "host.local",
+  "mc_host_address": "a.b.c.d",
+  "mc_location": "",
+  "mc_object": "Job",
+  "mc_object_class": "Control-M",
+  "mc_origin": "Enterprise Manager",
+  "mc_origin_class": "Control-M",
+  "mc_tool_id": "epoch=1621631064.550844",
+  "mc_tool": "Python Script",
+  "mc_tool_rule": "uat.py",
+  "mc_tool_uri": "git.io"
+ }
 }]
 ```
 
 **TSIM Cell Control-M Event Class**:
+
 ```bash
 #--------------------------------------------------------------------
 # File name: bmcs_ctm.baroc
@@ -177,12 +182,12 @@ END
 
 
 MC_EV_CLASS :
-	CTMX_JOB ISA CTMX_EVENT;
+ CTMX_JOB ISA CTMX_EVENT;
 END
 ```
 
-
 **TSIM Cell Collector MRL**:
+
 ```bash
 #--------------------------------------------------------------------
 # File name: bmcs_ctm.mrl
@@ -233,4 +238,3 @@ create $THIS.mc_host
 END
 
 ```
-

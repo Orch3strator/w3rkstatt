@@ -1,24 +1,28 @@
-# Werkstatt Tools
+# Setup
+
 Basic Python modules for Werkstatt projects
 
 ## Installation
+
 Install Python and dependent libraries
+
 - [ ] **For All Users**
 - [ ] **Add to system path**
 - [ ] **Instatt 3rd party editor**
 
 Install [Control-M](https://github.com/dcompane/controlm_py) Python wrapper
+
 - [ ] **Utilize Git**
 - [ ] **Offline Install**
 
-
 ## Dependencies
+
 - [ ] **Basic Libraries**
 - [ ] **Cryptodome**
 - [ ] **Control-M**
 
-
 Install dependencies
+
 ```bash
 Linux
 python3 -m pip install wheel requests urllib3 pyCryptodome pandas json2html jsonpath-ng jsonpath_rw_ext
@@ -32,6 +36,7 @@ python -m pip install git+https://github.com/dcompane/controlm_py.git
 ```
 
 ## Offline Installation
+
 - [ ] **Donwload Basic Libraries**
 - [ ] **Donwload Cryptodome**
 - [ ] **Donwload Control-M**
@@ -40,11 +45,10 @@ python -m pip install git+https://github.com/dcompane/controlm_py.git
 - [ ] **Extract tar.gz files**
 - [ ] **Install with python .\setup.py install**
 
-
 Find python package dependencies with: python -m pip show <package-name>
 
-
 ## Latest Packages
+
 Some library dependencies require specific versions. Pay attention to version and architecture.
 Find, install and publish Python packages with the [Python Package Index](https://pypi.org).
 The following list was tested on Windows. Linux is in progress.

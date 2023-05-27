@@ -1,4 +1,4 @@
-# Werkstatt Tools
+# Discovery
 
 Control-M discovery Python module for Werkstatt projects
 
