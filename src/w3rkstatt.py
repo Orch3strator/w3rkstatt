@@ -28,6 +28,7 @@ Date (YMD)    Name                  What
 20210513      Volker Scheithauer    Add Password Encryption
 20220715      Volker Scheithauer    Add API Key Encryption
 20230522      Volker Scheithauer    Update API key issues
+20240315      Rafael Ulhoa          Updated dTranslate4Json to handle attributes that have quotes in them when converting to json
 
 """
 
@@ -587,7 +588,21 @@ def dTranslate4Json(data):
     xData = sData.replace("None", "null")
     xData = xData.replace("True", "true")
     xData = xData.replace("False", "false")
+
+    # We might have attributes with values that contain quotes
+    # Example: 'AI-Key trust level': "I don't know or won't say -1",
+    # And that would break the JSON when we replace all ' with "
+    # So before doing that, we need to preserve these single quotes in double quotes by escaping them
+    pattern = r'(".*?")'
+    def replace_logic(match):
+        return match.group(0).replace("'", "\\'") # Replace with ' with \'
+    xData = re.sub(pattern, replace_logic,  xData)
+
+    # And now replace all ' with " to convert to correct JSON syntax
     xData = xData.replace("'", '"')
+
+    # And finally revert the \" back to ' so we get those original single quotes in double quotes.
+    xData = xData.replace('\\"', "'")
 
     return xData
 
